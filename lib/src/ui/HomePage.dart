@@ -1,11 +1,18 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/movies_bloc.dart';
+import '../Events/movies_events.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage();
 
+  MoviesEvent get loadAllmovies => null;
+
   @override
   Widget build(BuildContext context) {
+    final moviesBloc = BlocProvider.of<LoadMoviesBloc>(context);
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
@@ -26,7 +33,17 @@ class HomePage extends StatelessWidget {
         assert(index >= 0 && index <= 2);
         switch(index) {
           case 0:
-          return HomeTabView();
+          return BlocBuilder(bloc:moviesBloc, 
+          builder: (BuildContext context, state) { 
+            var loadAllMovies = LoadAllMovies();
+                        var cupertinoButton = CupertinoButton(
+                          onPressed: moviesBloc.add(LoadAllMovies()),
+            );
+                        return Center(child: cupertinoButton,
+            );
+          }
+          );
+
             break;
         case 1:
           return CupertinoActivityIndicator(
@@ -42,40 +59,39 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeTabView extends StatelessWidget {
-const HomeTabView();
+// class HomeTabView extends StatelessWidget {
+// const HomeTabView();
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
+//   @override
+//   Widget build(BuildContext context) {
+//     final moviesBloc = BlocProvider.of<LoadMoviesBloc>(context);
+//     return Stack(
+//       children: [
 
-          Align(
-            alignment: Alignment(0,-0.6),
-            child:  Text(
-              'Welcome to HeyMovie',
-              style: TextStyle(
-                fontSize: 20,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.bold
-              ),
-              textAlign: TextAlign.center,
+//           Align(
+//             alignment: Alignment(0,-0.6),
+//             child:  Text(
+//               'Welcome to HeyMovie',
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 fontStyle: FontStyle.normal,
+//                 fontWeight: FontWeight.bold
+//               ),
+//               textAlign: TextAlign.center,
 
-            ),
-          ),
-      GridView.count(crossAxisCount: 2,
-      children: List.generate(4, (index) {
-        return Center(
-        child: Text(
-        'Item $index',
-         style: Theme.of(context).textTheme.headline5,
-        ),
-        );
-    }),
-      ),
-      ],
-    );
-  }
-}
+//             ),
+//           ),
+//       GridView.count(crossAxisCount: 2,
+//       children:widget(
+//               child: BlocBuilder(bloc:moviesBloc, builder: (BuildContext context, state) { 
+
+//          }
+//         ),
+//       ),
+//       ),
+//       ],
+//     );
+//   }
+// }
 
 
