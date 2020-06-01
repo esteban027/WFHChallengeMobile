@@ -3,7 +3,7 @@ import 'package:http/http.dart' ;
 import 'dart:convert';
 import '../models/item_model.dart';
 
-class MovieApiProvider {
+class Network {
   Client client = Client();
 String url = 'http://wfh-movies.herokuapp.com/movie';
 
