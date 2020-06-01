@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/pages/detail_movie_view.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +34,6 @@ class _MoviesGalleryState extends State<MoviesGallery> {
   BoxShadow boxShadow = BoxShadow( color: Colors.black26, blurRadius: 10.0, spreadRadius: 2.0, offset: Offset(2.0,10.0));
   BorderRadius borderRadius = BorderRadius.circular(6.0);
 
-
   final _scrollController = new ScrollController(
     debugLabel: 'scroll',
   );
@@ -56,90 +56,25 @@ class _MoviesGalleryState extends State<MoviesGallery> {
   }
 
   Widget _movieGrid() {
-    return GridView.count(
-      crossAxisCount: 3,
-      childAspectRatio: (99/145),
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 1.0,
+        mainAxisSpacing: 1.0,
+        childAspectRatio: (99/145)
+      ),
+      itemBuilder: (contex, index){
+        return GestureDetector(
+          child: MoviePoster(movie: movies[index],),
+          onTap: (){
+            print(movies[index].title);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMovieView(movie: movies[index],)));
+          },
+        );
+      },
+      itemCount: movies.length,
       controller: _scrollController,
       padding: EdgeInsets.only(left: 10, right: 10, top: 20),
-      children: List.generate(movies.length, (index) {
-        // return _posterBuilder(movie: movies[index]);
-        return MoviePoster(movie: movies[index],);
-      }),
-    );
-  }
-
-  Widget _posterBuilder({Movie movie}) {
-    return Container(
-      child:  Column(
-        children: <Widget>[   
-          Stack(
-            children: <Widget>[
-              ClipRRect(
-                child:  FadeInImage(
-                  placeholder: AssetImage('assets/defaultcover.png'), 
-                  image:  NetworkImage(movie.getPosterImage()),
-                  height: heigthMovie,
-                  width: widthMovie,
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: borderRadius,
-              ),
-              Container(
-                width: widthMovie,
-                height: 145,
-                decoration:  BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.transparent, _blue],
-                    stops: [0.0,1],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  )
-                ),
-              ),
-              Positioned(
-                bottom: 11,
-                left: (widthMovie/2) - (_widthRating/2),
-                child: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Spacer(),
-                      Text('9.8',style: TextStyle(color: Colors.white, fontSize: 11),),
-                      Container(
-                        child: Image.asset('assets/Star.png',color: Colors.white,),
-                        width: 7.2,
-                        height: 7.2,
-                        padding: EdgeInsets.only(left: 1),
-                      ),
-                      Spacer()
-                    ],
-                  ),
-                  width: 48,
-                  height: 17,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: _orange
-                  ),
-                ),
-              )
-            ],
-            fit: StackFit.passthrough,
-          ),
-          Container(
-            child: Text(
-              movie.getTitle(),
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                fontSize: 11,
-                color: Colors.white,
-              ),
-            ),
-            width: widthMovie,
-            // alignment: Alignment.bottomCenter,
-          ),
-        ],
-      ),
-      margin: EdgeInsets.only(left: 10,right: 10),
     );
   }
 }

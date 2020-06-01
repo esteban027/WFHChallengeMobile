@@ -13,22 +13,6 @@ class DataSearch extends SearchDelegate {
 
   String selecter = '';
 
-  final lista = [
-    'uno',
-    'dos',
-    'tres',
-    'cuatro',
-    'cinco',
-    'juanchi'
-  ];
-
-  final lista2 = [
-    'maria',
-    'daniel Bermudez',
-    'daniel beltran',
-    'juanchi'
-  ];
-
   List<Movie> movies = [];
   final _scrollController = new ScrollController(
     debugLabel: 'scroll',
@@ -40,7 +24,6 @@ class DataSearch extends SearchDelegate {
     provider.getMovies();
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-        // nextPage();
         provider.getMovies();
       }
     });
@@ -59,16 +42,12 @@ class DataSearch extends SearchDelegate {
     );
   }
   
-  
   @override
   List<Widget> buildActions(BuildContext context) {
-      // TODO: implement buildActions
-      // throw UnimplementedError();
       return [
         IconButton(
           icon: Icon(Icons.clear),
           onPressed: (){
-            print('bueild actions');
             query = '';
           }, 
         )
@@ -77,14 +56,8 @@ class DataSearch extends SearchDelegate {
 
   @override
   Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-    // throw UnimplementedError();
     return 
       IconButton(
-        // icon: AnimatedIcon(
-        //   icon: AnimatedIcons.event_add,
-        //   progress: transitionAnimation,
-        // ),
         icon: Icon(Icons.search),
         onPressed: (){
           close(context, null);
@@ -94,8 +67,6 @@ class DataSearch extends SearchDelegate {
   
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    // throw UnimplementedError();
     return Center(
       child: Container(
         height: 100,
@@ -108,26 +79,7 @@ class DataSearch extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-  // TODO: implement buildSuggestions
-  // throw UnimplementedError();
-  final listaSugerida = (query.isEmpty) ? lista : lista2.where((movie) => movie.toLowerCase().startsWith(query.toLowerCase())).toList();
-  // final moviesFilter = (query.isEmpty) ? movies : movies2.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
-
   return Container(
-    // child: ListView.builder(
-    //   itemBuilder: (context, i ){
-    //     return ListTile(
-    //       leading: Icon(Icons.movie),
-    //       title: Text(listaSugerida[i]),
-    //       onTap: (){
-    //         selecter = listaSugerida[i];
-    //         showResults(context);
-    //       },
-    //     );
-    //   },
-    //   itemCount: listaSugerida.length,
-    // ),
-  
     child: Container(
       child: StreamBuilder(
        stream: provider.moviesStream,

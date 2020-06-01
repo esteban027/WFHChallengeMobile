@@ -36,7 +36,7 @@ class Provider {
       'page'  : '$_page'
     });
 
-    final resp = await http.get(url);
+    final resp = await http.get(url,headers: {'API_KEY':'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'});
     final decodedData = json.decode(resp.body);
     // print(decodedData);
     final movies = Movies.fromJsonList(decodedData['items']);

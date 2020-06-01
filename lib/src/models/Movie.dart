@@ -75,6 +75,7 @@ class Movie {
     } else {
       return posterPath;
     }
+    return posterPath;
   }
 
   getTitle() {

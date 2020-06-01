@@ -83,7 +83,6 @@ class MoviePoster extends StatelessWidget {
               ),
             ),
             width: widthMovie,
-            // alignment: Alignment.bottomCenter,
           ),
         ],
       ),

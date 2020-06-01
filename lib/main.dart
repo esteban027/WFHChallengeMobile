@@ -1,4 +1,3 @@
-// import 'package:flutter/cupertino.dart';
 import 'package:WFHchallenge/src/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:WFHchallenge/src/ui/home_page.dart';
@@ -23,21 +22,3 @@ void main() {
      );
    }
  }
-// class MyApp extends StatelessWidget {
-//   // Widget build(BuildContext context) {
-//   //   return CupertinoApp(
-//   //     title: 'app Name',
-//   //     debugShowCheckedModeBanner: false,
-//   //     home: FilterGenresView(),
-//   //   );
-//   // }
-//     @override
-//     Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Components'),
-//       ),
-//       body: FilterGenresView(),
-//     );
-//   }
-// }
