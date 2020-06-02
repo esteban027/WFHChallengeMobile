@@ -1,8 +1,4 @@
-import '../models/item_model.dart';
+import '../models/page_model.dart';
 
-abstract class MoviesEvent {}
+enum MoviesEvent {loadAllMovies}
 
-class LoadAllMovies extends MoviesEvent {
-  @override
-  String toString() => 'LoadMovies';
-}

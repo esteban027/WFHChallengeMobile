@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
-import '../resources/Repository.dart';
-import '../models/item_model.dart';
+import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/resources/repository.dart';
 import 'package:bloc/bloc.dart';
 import '../Events/movies_events.dart';
 import '../States/movies_states.dart';
@@ -9,9 +8,8 @@ import '../States/movies_states.dart';
 
 
  class LoadMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
-   final Repository repository;
+   Repository repository;
 
-   LoadMoviesBloc({@required this.repository});
 
   @override
  
@@ -20,7 +18,8 @@ import '../States/movies_states.dart';
   @override
   Stream<MoviesState> mapEventToState(MoviesEvent event) async* {
     
-    if (event is LoadAllMovies) {
+    if (event == MoviesEvent.loadAllMovies) {
+      repository =  Repository();
       yield* _mapLoadAllMovies();
           }        
         }
@@ -28,6 +27,7 @@ import '../States/movies_states.dart';
   Stream<MoviesState> _mapLoadAllMovies() async* {
     try {
       final movies = await this.repository.fetchAllMovies();
+      print(movies.items[1]);
       yield MoviesLoaded(movies);
     } catch (_) {
       yield MoviesNotLoaded();

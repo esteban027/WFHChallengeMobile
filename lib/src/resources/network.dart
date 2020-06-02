@@ -1,26 +1,35 @@
 import 'dart:async';
 import 'package:http/http.dart' ;
 import 'dart:convert';
-import '../models/item_model.dart';
+import '../models/page_model.dart';
 
 class Network {
   Client client = Client();
-String url = 'http://wfh-movies.herokuapp.com/movie';
+String _url = 'wfh-movies.herokuapp.com';
+String _endPoint = 'movie';
 
-
-Future<ItemModel> fetchMovies([List <Parameter> parameterList]) async {
+Future<PageModel> fetchMovies([List <Parameter> parameterList]) async {
   
 
-  var uri = Uri.https('http://wfh-movies.herokuapp.com', 'movie');
+  final uri = Uri.http(_url, _endPoint);
+
+  print(uri);
 
   if (parameterList != null){
     uri.replace(queryParameters: convert(parameterList));
   }
+
   Response response = await get(uri);
   if(response.statusCode == 200){
-    return ItemModel.fromJson(json.decode(response.body));
+    final decodedData = json.decode(response.body);
+
+    PageModel items = PageModel.fromJson(decodedData);
+    print(items);
+    return items;
+    
   } else {
     throw Exception('Failed to load post');
+    print(response.statusCode);
   }
 
 
