@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/item_model.dart';
+import '../models/page_model.dart';
 
 @immutable
 abstract class MoviesState {}
@@ -10,7 +10,7 @@ class MoviesLoading extends MoviesState {
 }
 
 class MoviesLoaded extends MoviesState {
-  final ItemModel movies;
+  final PageModel movies;
 
   MoviesLoaded(this.movies);
 

@@ -1,62 +1,59 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/movies_bloc.dart';
 import '../Events/movies_events.dart';
+import '../resources/repository.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage();
 
-  MoviesEvent get loadAllmovies => null;
 
   @override
   Widget build(BuildContext context) {
-    final moviesBloc = BlocProvider.of<LoadMoviesBloc>(context);
+    final moviesBloc = LoadMoviesBloc();
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
       home: CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home)
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search
-            )
-          )
-
-        ],
-      ),
-      tabBuilder: (BuildContext context, int index){
-        assert(index >= 0 && index <= 2);
-        switch(index) {
-          case 0:
-          return BlocBuilder(bloc:moviesBloc, 
+        tabBar: CupertinoTabBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(CupertinoIcons.home)),
+            BottomNavigationBarItem(icon: Icon(CupertinoIcons.search))
+          ],
+        ),
+        tabBuilder: (BuildContext context, int index) {
+          assert(index >= 0 && index <= 2);
+          switch (index) {
+            case 0:
+              return BlocBuilder(bloc:moviesBloc, 
           builder: (BuildContext context, state) { 
-            var loadAllMovies = LoadAllMovies();
-                        var cupertinoButton = CupertinoButton(
-                          onPressed: moviesBloc.add(LoadAllMovies()),
-            );
-                        return Center(child: cupertinoButton,
-            );
+            return Center(child: CupertinoButton(
+              child:Text('Load Movies') ,
+              onPressed: () => moviesBloc.add(MoviesEvent.loadAllMovies),
+              ),
+              );
           }
           );
+                  
 
-            break;
-        case 1:
-          return CupertinoActivityIndicator(
-            radius: 32,
-            animating: false,
-          );
-          break;
-        }
-        return null;
-      },
-    ),
+              break;
+            case 1:
+              return CupertinoActivityIndicator(
+                radius: 32,
+                animating: false,
+              );
+              break;
+          }
+          return null;
+        },
+      ),
     );
   }
+
+  
 }
 
 // class HomeTabView extends StatelessWidget {
@@ -83,7 +80,7 @@ class HomePage extends StatelessWidget {
 //           ),
 //       GridView.count(crossAxisCount: 2,
 //       children:widget(
-//               child: BlocBuilder(bloc:moviesBloc, builder: (BuildContext context, state) { 
+//               child: BlocBuilder(bloc:moviesBloc, builder: (BuildContext context, state) {
 
 //          }
 //         ),
@@ -93,5 +90,3 @@ class HomePage extends StatelessWidget {
 //     );
 //   }
 // }
-
-

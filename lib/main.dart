@@ -1,4 +1,4 @@
-import 'package:WFHchallenge/src/ui/HomePage.dart';
+import 'package:WFHchallenge/src/ui/home_page.dart';
 import 'package:flutter/cupertino.dart';
 
 
