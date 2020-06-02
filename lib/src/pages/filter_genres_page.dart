@@ -12,8 +12,6 @@ class FilterGenresView extends StatefulWidget {
 }
 
 class _FilterGenresViewState extends State<FilterGenresView> {
-  
-  List<Widget> widgets = [];
   final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
   Map<String,bool> genresState = {'Animation': false, 'Action': false, 'Adventure': false , 'Biography': false, 'Comedy': false, 'Crime': false, 'Drama': false, 'Documentary': false, 'Fantasy': false, 'Historical': false, 'Horror': false};
   Color _buttonColor = Colors.grey;

@@ -46,6 +46,8 @@ class Movie {
   int budget;
   int id;
   String genres;
+  double rating;
+  int voteCount;
 
   Movie({
     this.title,
@@ -56,6 +58,8 @@ class Movie {
     this.budget,
     this.id,
     this.genres,
+    this.rating,
+    this.voteCount
   });
 
   Movie.fromJsonMap(Map<String, dynamic> json) {
@@ -67,6 +71,8 @@ class Movie {
     budget      = json['budget'];
     id          = json['id'];
     genres      = json['genres'];
+    rating      = json['rating'];    
+    voteCount   = json['vote_count'];   
   }
 
   getPosterImage() {
@@ -75,10 +81,13 @@ class Movie {
     } else {
       return posterPath;
     }
-    return posterPath;
   }
 
   getTitle() {
     return title;
+  }
+
+  getRating() {
+    return rating;
   }
 }

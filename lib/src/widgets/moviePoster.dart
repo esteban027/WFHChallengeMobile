@@ -51,7 +51,7 @@ class MoviePoster extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Spacer(),
-                      Text('9.8',style: TextStyle(color: Colors.white, fontSize: 11),),
+                      Text(movie.rating.toStringAsFixed(1),style: TextStyle(color: Colors.white, fontSize: 11),),
                       Container(
                         child: Image.asset('assets/Star.png',color: Colors.white,),
                         width: 7.2,
@@ -68,7 +68,7 @@ class MoviePoster extends StatelessWidget {
                     color: _orange
                   ),
                 ),
-              )
+              ),
             ],
             fit: StackFit.passthrough,
           ),
