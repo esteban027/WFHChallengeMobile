@@ -27,7 +27,6 @@ import '../States/movies_states.dart';
   Stream<MoviesState> _mapLoadAllMovies() async* {
     try {
       final movies = await this.repository.fetchAllMovies();
-      print(movies.items[1]);
       yield MoviesLoaded(movies);
     } catch (_) {
       yield MoviesNotLoaded();

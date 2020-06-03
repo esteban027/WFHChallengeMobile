@@ -1,9 +1,10 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:WFHchallenge/src/pages/search_page.dart';
 import 'package:flutter/material.dart';
+import 'package:WFHchallenge/src/ui/home_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(HomePage());
 }
  
  class MyApp extends StatefulWidget {

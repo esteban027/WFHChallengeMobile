@@ -4,7 +4,10 @@ import '../models/page_model.dart';
 
 class Repository {
   
-  final moviesApiProvider = Network();
+  final netwok = Network();
+  static List<String> genres =  ['Romance','Animation'];
 
-  Future<PageModel> fetchAllMovies() => moviesApiProvider.fetchMovies();
+  List<Parameter> parameters= [Parameter(ParamaterType.limit,'100'), Parameter.forSupersetFilter('genres',genres)];
+
+  Future<PageModel> fetchAllMovies() => netwok.fetchMovies(parameters);
 }

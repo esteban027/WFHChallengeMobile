@@ -1,55 +1,56 @@
 import 'dart:async';
-import 'package:http/http.dart' ;
+import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/page_model.dart';
 
 class Network {
   Client client = Client();
-String _url = 'wfh-movies.herokuapp.com';
-String _endPoint = 'movie';
+  String _url = 'wfh-movies.herokuapp.com';
+  String _endPoint = 'movie';
 
-Future<PageModel> fetchMovies([List <Parameter> parameterList]) async {
-  
+  Future<PageModel> fetchMovies([List<Parameter> parameterList]) async {
+    Uri uri = Uri.http(_url, _endPoint);
 
-  final uri = Uri.http(_url, _endPoint);
+    if (parameterList != null) {
+      uri = uri.replace(queryParameters: convert(parameterList));
+    }
 
-  print(uri);
-
-  if (parameterList != null){
-    uri.replace(queryParameters: convert(parameterList));
+    Response response = await get(uri);
+    if (response.statusCode == 200) {
+      PageModel items = PageModel.fromJson(json.decode(response.body));
+      return items;
+    } else {
+      throw Exception(response.statusCode);
+    }
   }
-
-  Response response = await get(uri);
-  if(response.statusCode == 200){
-    final decodedData = json.decode(response.body);
-
-    PageModel items = PageModel.fromJson(decodedData);
-    print(items);
-    return items;
-    
-  } else {
-    throw Exception('Failed to load post');
-    print(response.statusCode);
-  }
-
-
-}
 
   convert(List<Parameter> parameters) {
-    Map<String, String> convertedParameters;
-    for (int i = 0; i > parameters.length; i++) {
-      convertedParameters.putIfAbsent(
-          parameters[i].type.toString(), () => parameters[i].value);
+    Map<String, String> convertedParameters = {};
+    print(parameters.length);
+    for (int i = 0; i < parameters.length; i++) {
+      convertedParameters[parameters[i].type.name] = parameters[i].value;
     }
     return convertedParameters;
   }
 }
 
-enum ParamaterType {
-  limit,
-  page,
-  sort,
-  filter
+enum ParamaterType { limit, page, sort, filter }
+
+extension ParameterTypeExtension on ParamaterType {
+  String get name {
+    switch (this) {
+      case ParamaterType.limit:
+        return 'limit';
+      case ParamaterType.page:
+        return 'page';
+      case ParamaterType.sort:
+        return 'sort';
+      case ParamaterType.filter:
+        return 'filter';
+      default:
+        return null;
+    }
+  }
 }
 
 enum FilterType {
@@ -57,8 +58,12 @@ enum FilterType {
   partial,
   start,
   end,
-  word_start,
-  any_of,
+  wordStart,
+  anyOf,
+  lessThan,
+  lessOrEqual,
+  greaterThan,
+  greaterOrEqual,
   superset
 }
 
@@ -73,31 +78,77 @@ extension FilterTypeExtension on FilterType {
         return 'start';
       case FilterType.end:
         return 'end';
-      case FilterType.word_start:
+      case FilterType.wordStart:
         return 'word_start';
-      case FilterType.any_of:
+      case FilterType.anyOf:
         return 'anyOf';
       case FilterType.superset:
         return 'superset';
+      case FilterType.lessThan:
+        return 'lt';
+      case FilterType.lessOrEqual:
+        return 'le';
+      case FilterType.greaterThan:
+        return 'gt';
+      case FilterType.greaterOrEqual:
+        return 'ge';
       default:
         return null;
     }
   }
 }
 
+enum SortType { ascendant, descendant }
 
+extension SortTypeExtension on SortType {
+  String get name {
+    switch (this) {
+      case SortType.ascendant:
+        return 'asc';
+      case SortType.descendant:
+        return 'desc';
+    }
+  }
+}
 
 class Parameter {
-  ParamaterType type ;
+  ParamaterType type;
+
   String value;
-  Parameter(this.type,this.value);
+
+  Parameter(this.type, this.value);
 
   Parameter.forFilter(FilterType filterType, String field, String value) {
     type = ParamaterType.filter;
-    value = buidFilterValue(filterType, field, value);
-}
+    this.value = _buildFilterValue(filterType, field, value);
+  }
 
-buidFilterValue(FilterType filterType, String field, String value) {
-return filterType.name + '(' + field + ',' + value + ')';
-}
+  Parameter.forSupersetFilter(String field, List<String> values) {
+    type = ParamaterType.filter;
+    String valuesListFormattedString = _buildValuesListString(values);
+    this.value = _buildFilterValue(
+        FilterType.superset, field, valuesListFormattedString);
+  }
+
+  Parameter.forSort(SortType sortType, String field) {
+    type = ParamaterType.sort;
+    value = field + '.' + sortType.name;
+  }
+
+  String _buildFilterValue(FilterType filterType, String field, String value) {
+    return filterType.name + '($field, $value)';
+  }
+
+  String _buildValuesListString(List<String> genres) {
+    String formattedValue = '';
+    int lastGenreListPosition = genres.length - 1;
+    for (int i = 0; i < genres.length; i++) {
+      if (i != lastGenreListPosition) {
+        formattedValue += genres[i] + '|';
+      } else {
+        formattedValue += genres[i];
+      }
+    }
+    return formattedValue;
+  }
 }

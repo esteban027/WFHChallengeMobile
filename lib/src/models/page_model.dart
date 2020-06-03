@@ -21,6 +21,18 @@ class PageModel {
     }
     _items = temp;
   }
+  int get page => _page;
+
+  int get totalPages => _totalPages;
+
+  int get totalItems => _totalItems;
+
+  int get itemsPerPage => _itemsPerPage;
+
+  bool get hasNext => _hasNext;
+
+  bool get hasPrev => _hasNext;
+
   List<_MovieModel> get items => _items;
 }
 
@@ -32,8 +44,8 @@ class _MovieModel {
   String _releaseDate;
   int _budget;
   int _id;
-  String _genre;
-  int _rating;
+  String _genres;
+  double _rating;
   int _voteCount;
 
   _MovieModel(movieModel) {
@@ -44,7 +56,7 @@ class _MovieModel {
     _releaseDate = movieModel['release_date'];
     _budget = movieModel['budget'];
     _id = movieModel['id'];
-    _genre = movieModel['genre'];
+    _genres = movieModel['genres'];
     _rating = movieModel['rating'];
     _voteCount = movieModel['vote_count'];
   }
@@ -63,9 +75,9 @@ class _MovieModel {
 
   int get id => _id;
 
-String get genre => _genre;
+String get genre => _genres;
 
-int get rating => _rating;
+double get rating => _rating;
 
 int get voteCount => _voteCount;
 }
