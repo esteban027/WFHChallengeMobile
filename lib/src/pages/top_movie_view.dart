@@ -31,7 +31,7 @@ class _TopMovieState extends State<TopMovie> {
   @override
   Widget build(BuildContext context) {
 
-    moviesBloc.add(MoviesEvent.loadAllMovies);
+    moviesBloc.add(FetchTopMovies());
     
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -48,7 +48,7 @@ class _TopMovieState extends State<TopMovie> {
               bloc: moviesBloc,
               builder: (BuildContext context, state){
                 if (state is MoviesLoaded){
-                  return topMovieCollection(state.movies.items, context);
+                  return topMovieCollection(state.moviesPage.items, context);
                 }
                 return Center(child: CircularProgressIndicator());
               }
