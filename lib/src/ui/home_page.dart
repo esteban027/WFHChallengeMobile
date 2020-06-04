@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/movies_bloc.dart';
 import '../Events/movies_events.dart';
-import '../resources/repository.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage();
@@ -34,15 +33,16 @@ class HomePage extends StatelessWidget {
           switch (index) {
             case 0:
               return BlocBuilder(
-                bloc: moviesBloc, 
-                builder: (BuildContext context, state) { 
-                  return CupertinoTabView(
-                    builder: (context){
-                      return HomeView();
-                    },
-                  );
-                }
-              );
+                  bloc: moviesBloc,
+                  builder: (BuildContext context, state) {
+                    return Center(
+                      child: CupertinoButton(
+                        child: Text('Load Movies'),
+                        onPressed: () =>
+                            moviesBloc.add(FetchTopMovies()),
+                      ),
+                    );
+                  });
               break;
             case 1:
               return CupertinoTabView(

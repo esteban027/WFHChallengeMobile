@@ -65,7 +65,7 @@ class _FilterViewState extends State<FilterView> {
             if (state is MoviesLoaded){
               setState(() {
                 return MoviesGallery(
-                  movies: state.movies.items,
+                  movies: state.moviesPage.items,
                 );
               });
             }

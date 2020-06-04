@@ -33,7 +33,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   @override
   Widget build(BuildContext context) {
 
-    moviesBloc.add(MoviesEvent.loadAllMovies);
+    moviesBloc.add(FetchTopMovies());
 
     return CupertinoPageScaffold(
       child: Container(
@@ -65,7 +65,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
           builder: (BuildContext context, state){
             if (state is MoviesLoaded){
               return MoviesGallery(
-                movies: state.movies.items,
+                movies: state.moviesPage.items,
               );
             }
             return Center(child: CircularProgressIndicator());
