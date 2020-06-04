@@ -3,11 +3,22 @@ import 'network.dart';
 import '../models/page_model.dart';
 
 class Repository {
-  
   final netwok = Network();
-  static List<String> genres =  ['Romance','Animation'];
 
-  List<Parameter> parameters= [Parameter(ParamaterType.limit,'100'), Parameter.forSupersetFilter('genres',genres)];
+  Future<PageModel> fetchAllMovies(int page) {
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString())
+    ];
+    return netwok.fetchMovies(parameters);
+  }
 
-  Future<PageModel> fetchAllMovies() => netwok.fetchMovies(parameters);
+  Future<PageModel> fetchTopMovies(int page) {
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString()),
+      Parameter.forSort(SortType.descendant, 'rating'),
+      Parameter(ParamaterType.limit, '50'),
+      Parameter.forFilter(FilterType.greaterThan, 'vote_count', '3')
+    ];
+    return netwok.fetchMovies(parameters);
+  }
 }
