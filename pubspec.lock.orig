@@ -104,6 +104,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+<<<<<<< HEAD
+=======
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -111,6 +113,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+>>>>>>> home view added and basic flow of application
   flutter_test:
     dependency: "direct dev"
     description: flutter

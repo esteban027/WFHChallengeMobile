@@ -1,4 +1,5 @@
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:flutter/material.dart';
 
 class MoviePoster extends StatelessWidget {
@@ -12,7 +13,7 @@ class MoviePoster extends StatelessWidget {
   final BoxShadow boxShadow = BoxShadow( color: Colors.black26, blurRadius: 10.0, spreadRadius: 2.0, offset: Offset(2.0,10.0));
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
 
-  final Movie movie;
+  final MovieModel movie;
   MoviePoster({ @required  this.movie});
 
   @override
@@ -23,9 +24,9 @@ class MoviePoster extends StatelessWidget {
           Stack(
             children: <Widget>[
               ClipRRect(
-                child:  FadeInImage(
+                child: FadeInImage(
                   placeholder: AssetImage('assets/defaultcover.png'), 
-                  image:  NetworkImage(movie.getPosterImage()),
+                  image: NetworkImage(movie.poster_path),
                   height: heigthMovie,
                   width: widthMovie,
                   fit: BoxFit.cover,
@@ -51,7 +52,7 @@ class MoviePoster extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Spacer(),
-                      Text('9.8',style: TextStyle(color: Colors.white, fontSize: 11),),
+                      Text(movie.rating.toStringAsFixed(1),style: TextStyle(color: Colors.white, fontSize: 11),),
                       Container(
                         child: Image.asset('assets/Star.png',color: Colors.white,),
                         width: 7.2,
@@ -68,13 +69,13 @@ class MoviePoster extends StatelessWidget {
                     color: _orange
                   ),
                 ),
-              )
+              ),
             ],
             fit: StackFit.passthrough,
           ),
           Container(
             child: Text(
-              movie.getTitle(),
+              movie.title,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -83,7 +84,6 @@ class MoviePoster extends StatelessWidget {
               ),
             ),
             width: widthMovie,
-            // alignment: Alignment.bottomCenter,
           ),
         ],
       ),

@@ -1,8 +1,7 @@
 
-// import 'package:flutter/cupertino.dart';
+import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:flutter/material.dart';
-
-import 'movies_filter_view.dart';
+import 'filter_view.dart';
 
 class FilterGenresView extends StatefulWidget {
   FilterGenresView({Key key}) : super(key: key);
@@ -12,8 +11,6 @@ class FilterGenresView extends StatefulWidget {
 }
 
 class _FilterGenresViewState extends State<FilterGenresView> {
-  
-  List<Widget> widgets = [];
   final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
   Map<String,bool> genresState = {'Animation': false, 'Action': false, 'Adventure': false , 'Biography': false, 'Comedy': false, 'Crime': false, 'Drama': false, 'Documentary': false, 'Fantasy': false, 'Historical': false, 'Horror': false};
   Color _buttonColor = Colors.grey;
@@ -23,8 +20,15 @@ class _FilterGenresViewState extends State<FilterGenresView> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(28, 31, 44, 1),
       appBar: AppBar(
-        // leading: Icon(Icons.arrow_back),
-        backgroundColor: Color.fromRGBO(28, 31, 44, 1)
+        backgroundColor: Color.fromRGBO(28, 31, 44, 1),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: (){
+              showSearch(context: context, delegate: DataSearch());
+            },
+          )
+        ]
       ),
       body: Center(
         child: Container(
@@ -59,7 +63,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   Widget _checkboxList() {
     return Container(
-      height: MediaQuery.of(context).size.height - 250,
+      height: MediaQuery.of(context).size.height - 330,
       child: ListView.builder(
         itemCount: genres.length,
         itemBuilder: (BuildContext context, int index) {

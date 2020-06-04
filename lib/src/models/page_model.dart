@@ -5,7 +5,7 @@ class PageModel {
   int _itemsPerPage;
   bool _hasNext;
   bool _hasPrev;
-  List<_MovieModel> _items = [];
+  List<MovieModel> _items = [];
 
   PageModel.fromJson(Map<String, dynamic> parsedJson) {
     _page = parsedJson['page'];
@@ -14,9 +14,9 @@ class PageModel {
     _itemsPerPage = parsedJson['items_per_page'];
     _hasNext = parsedJson['has_next'];
     _hasPrev = parsedJson['has_prev'];
-    List<_MovieModel> temp = [];
+    List<MovieModel> temp = [];
     for (int i = 0; i < parsedJson['items'].length; i++) {
-      _MovieModel movieModel = _MovieModel(parsedJson['items'][i]);
+      MovieModel movieModel = MovieModel(parsedJson['items'][i]);
       temp.add(movieModel);
     }
     _items = temp;
@@ -33,10 +33,10 @@ class PageModel {
 
   bool get hasPrev => _hasNext;
 
-  List<_MovieModel> get items => _items;
+  List<MovieModel> get items => _items;
 }
 
-class _MovieModel {
+class MovieModel {
   String _title;
   int _imdbId;
   int _tmdbId;
@@ -48,7 +48,7 @@ class _MovieModel {
   double _rating;
   int _voteCount;
 
-  _MovieModel(movieModel) {
+  MovieModel(movieModel) {
     _title = movieModel['title'];
     _imdbId = movieModel['imdb_id'];
     _tmdbId = movieModel['tmdb_id'];
@@ -67,7 +67,10 @@ class _MovieModel {
 
   int get tmdb_id => _tmdbId;
 
-  String get poster_path => _posterPath;
+  String get poster_path {
+    return _posterPath == null ? 'https://i0.wp.com/oij.org/wp-content/uploads/2016/05/placeholder.png?ssl=1' : _posterPath;
+  }
+  
 
   String get release_date => _releaseDate;
 
