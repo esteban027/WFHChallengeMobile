@@ -1,27 +1,31 @@
 import 'dart:ui';
 
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/detail_movie_view.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class MoviesGallery extends StatefulWidget {
-  final List<Movie> movies ;
-  final Function nextPage;
+  final List<MovieModel> movies ;
+  // final Function nextPage;
 
-  MoviesGallery({ @required this.movies, @required this.nextPage});
+  // MoviesGallery({ @required this.movies, @required this.nextPage});
+   MoviesGallery({ @required this.movies});
 
   @override
-  _MoviesGalleryState createState() => _MoviesGalleryState(movies: movies, nextPage: nextPage);
+  _MoviesGalleryState createState() => _MoviesGalleryState(movies: movies);
 }
 
 class _MoviesGalleryState extends State<MoviesGallery> {
   
-  final List<Movie> movies ;
-  final Function nextPage;
+  final List<MovieModel> movies ;
+  // final Function nextPage;
 
-  _MoviesGalleryState({ @required this.movies, @required this.nextPage});
+  // _MoviesGalleryState({ @required this.movies, @required this.nextPage});
+    _MoviesGalleryState({ @required this.movies});
+
 
   List<Widget> rowsOfMovies = List();
 
@@ -45,13 +49,14 @@ class _MoviesGalleryState extends State<MoviesGallery> {
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
-        nextPage();
+        // nextPage();
       }
     });
 
     return Container(
         child: _movieGrid(),
-        height: _screenSize.height - 180,
+        height: _screenSize.height - 244,
+        margin: EdgeInsets.only(top: 10),
     );
   }
 

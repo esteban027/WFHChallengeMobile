@@ -1,6 +1,6 @@
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
-import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +11,7 @@ class DataSearch extends SearchDelegate {
 
   String selecter = '';
 
-  List<Movie> movies = [];
+  List<MovieModel> movies = [];
   final _scrollController = new ScrollController(
     debugLabel: 'scroll',
   );

@@ -1,9 +1,12 @@
 
+import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
 import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class FilterView extends StatefulWidget {
@@ -15,11 +18,12 @@ class FilterView extends StatefulWidget {
 
 class _FilterViewState extends State<FilterView> {
   
-  final provider = new Provider();
-  
+  // final provider =  Provider();
+  final moviesBloc = LoadMoviesBloc();
+
   @override
   Widget build(BuildContext context) {
-    provider.getMovies();
+    // provider.getMovies();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
@@ -55,18 +59,19 @@ class _FilterViewState extends State<FilterView> {
      width: double.infinity,
      child: Column(
        children: <Widget>[
-         StreamBuilder(
-           stream: provider.moviesStream,
-           builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-             if (snapshot.hasData) {
-              return MoviesGallery(
-                movies: snapshot.data, 
-                nextPage: provider.getMovies,
-              );
-             }
-             return Center(child: CircularProgressIndicator());
-           },
-         ),
+        BlocBuilder(
+          bloc: moviesBloc,
+          builder: (BuildContext context, state){
+            if (state is MoviesLoaded){
+              setState(() {
+                return MoviesGallery(
+                  movies: state.movies.items,
+                );
+              });
+            }
+            return Center(child: CircularProgressIndicator());
+          }
+        )
        ],
      ),
    );

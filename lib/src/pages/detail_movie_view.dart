@@ -1,4 +1,5 @@
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class DetailMovieView extends StatelessWidget {
   DetailMovieView({Key key, @required this.movie,}) : super(key: key);
 
-    final Movie movie;
+    final MovieModel movie;
     final double heigthMovie = 309;
     final double widthMovie = 99;
     final double _widthRating = 48;
@@ -18,7 +19,7 @@ class DetailMovieView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> genres = movie.genres.split('|');
+    List<String> genres = movie.genre.split('|');
 
     return Scaffold(
       body: ListView(
@@ -100,7 +101,7 @@ class DetailMovieView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Text(
-                  movie.getTitle(),
+                  movie.title,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15.0
@@ -132,7 +133,7 @@ class DetailMovieView extends StatelessWidget {
           Center(
             child: Container(
               child: Text(
-                movie.description,
+                'TODOOO CHANGEEEEEE!!!!!',
                 style: TextStyle(
                 color: Colors.white,
                 fontSize: 11
@@ -262,7 +263,7 @@ class DetailMovieView extends StatelessWidget {
         ClipRRect(
           child:  FadeInImage(
             placeholder: AssetImage('assets/defaultcover.png'), 
-            image:  NetworkImage(movie.getPosterImage()),
+            image:  NetworkImage(movie.poster_path),
             height: 309,
             width: MediaQuery.of(context). size. width,
             fit: BoxFit.cover,

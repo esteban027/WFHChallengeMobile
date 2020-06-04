@@ -22,20 +22,20 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: 
-        ListView(
-          children: homeLayout2(),
-        ),
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/gradient.png'),
-            fit: BoxFit.cover
-          )
-        ),
-      )
+    return CupertinoPageScaffold(
+      child: Container(
+          child: 
+          ListView(
+            children: homeLayout2(),
+          ),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/gradient.png'),
+              fit: BoxFit.cover
+            )
+          ),
+      ),
     );
   }
 
@@ -95,7 +95,9 @@ class _HomeViewState extends State<HomeView> {
       child: _section(TypeOfCard.normal, section),
       onTap: (){
         final String title = categories[section].split('!')[0];
+
         Navigator.push(context, MaterialPageRoute(builder: (context) => TopMovieFilter(title: title,)));
+
       },
     );
   }

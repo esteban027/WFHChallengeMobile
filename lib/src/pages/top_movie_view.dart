@@ -1,7 +1,15 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
+import 'package:WFHchallenge/src/resources/network.dart';
+import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopMovie extends StatefulWidget {
   TopMovie({Key key}) : super(key: key);
@@ -12,35 +20,39 @@ class TopMovie extends StatefulWidget {
 
 class _TopMovieState extends State<TopMovie> {
   final provider = new Provider();
+  final network = Network();
   final double widthMovie = 187;
   final double heigthMovie = 128;
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
   final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
+  final moviesBloc = LoadMoviesBloc();
 
   @override
   Widget build(BuildContext context) {
-    provider.getMovies();
-    return Scaffold(
-      appBar: AppBar(backgroundColor:_blue,),
-      body: Container(
+
+    moviesBloc.add(MoviesEvent.loadAllMovies);
+    
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: _blue,
+      ),
+      child: Container(
         child: Column(
           children: <Widget>[
             Container(
               child: Text('Top Movies by Gender', style: TextStyle(fontSize: 23, color: Colors.white),),
-              margin: EdgeInsets.only(top: 15),
+              margin: EdgeInsets.only(top: 15,bottom: 20),
             ),
-            StreamBuilder(
-              stream: provider.moviesStream,
-              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                if (snapshot.hasData) {
-                  return topMovieCollection(snapshot.data, context);
-                } else {
-                  print('error ');
+            BlocBuilder(
+              bloc: moviesBloc,
+              builder: (BuildContext context, state){
+                if (state is MoviesLoaded){
+                  return topMovieCollection(state.movies.items, context);
                 }
                 return Center(child: CircularProgressIndicator());
-              },
-            ),
+              }
+            )
           ],
         ),
         width: MediaQuery.of(context).size.width,
@@ -54,7 +66,7 @@ class _TopMovieState extends State<TopMovie> {
     );
   }
 
-  Widget topMovieCollection(List<Movie> movies, BuildContext context) {
+  Widget topMovieCollection(List<MovieModel> movies, BuildContext context) {
     return Container(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -74,7 +86,7 @@ class _TopMovieState extends State<TopMovie> {
         itemCount: genres.length,
         padding: EdgeInsets.only(left: 10, right: 10, top: 20),
       ),
-      height: MediaQuery.of(context).size.height - 200,
+      height: MediaQuery.of(context).size.height - 234,
     );
   }
 
