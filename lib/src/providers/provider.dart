@@ -33,18 +33,15 @@ class Provider {
 
     final url = Uri.http(_url, _endPoint, {
       'limit' : '$_moviesPerPage',
-      'page'  : '$_page'
+      'page'  : '$_page',
     });
 
     final resp = await http.get(url,headers: {'API_KEY':'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'});
     final decodedData = json.decode(resp.body);
     // print(decodedData);
     final movies = Movies.fromJsonList(decodedData['items']);
-
     final moviesInfo = Movies.fromJsonMap(decodedData);
     final movie = movies.items[0];
-    // print(moviesInfo.items);
-    // print(movies.items[0].genres);
 
     _movies.addAll(movies.items);
     moviesSink(_movies);

@@ -44,7 +44,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
     final  _screenSize = MediaQuery.of(context).size;
 
     _scrollController.addListener(() {
-      if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
         nextPage();
       }
     });

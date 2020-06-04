@@ -23,9 +23,9 @@ class MoviePoster extends StatelessWidget {
           Stack(
             children: <Widget>[
               ClipRRect(
-                child:  FadeInImage(
+                child: FadeInImage(
                   placeholder: AssetImage('assets/defaultcover.png'), 
-                  image:  NetworkImage(movie.getPosterImage()),
+                  image: NetworkImage(movie.getPosterImage()),
                   height: heigthMovie,
                   width: widthMovie,
                   fit: BoxFit.cover,

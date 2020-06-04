@@ -1,5 +1,6 @@
 
 import 'package:WFHchallenge/src/providers/provider.dart';
+import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,7 @@ class _FilterViewState extends State<FilterView> {
     provider.getMovies();
     return Scaffold(
       appBar: AppBar(
-        // leading: Icon(Icons.arrow_back),
-        backgroundColor: Color.fromRGBO(28, 31, 44, 1)
+        backgroundColor: Color.fromRGBO(28, 31, 44, 1),
       ),
       body: Container(
         child: Center(
@@ -44,10 +44,6 @@ class _FilterViewState extends State<FilterView> {
           ),
         ),
         decoration: BoxDecoration(
-          // image: DecorationImage(
-          //   image: AssetImage('assets/gradient.png'),
-          //   fit: BoxFit.cover
-          // )
           color: Color.fromRGBO(28, 31, 44, 1)
         ),
       ),

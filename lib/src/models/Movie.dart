@@ -46,6 +46,7 @@ class Movie {
   int budget;
   int id;
   String genres;
+  String description;
   double rating;
   int voteCount;
 
@@ -58,6 +59,7 @@ class Movie {
     this.budget,
     this.id,
     this.genres,
+    this.description,
     this.rating,
     this.voteCount
   });
@@ -71,6 +73,7 @@ class Movie {
     budget      = json['budget'];
     id          = json['id'];
     genres      = json['genres'];
+    description = json['description'];
     rating      = json['rating'];    
     voteCount   = json['vote_count'];   
   }

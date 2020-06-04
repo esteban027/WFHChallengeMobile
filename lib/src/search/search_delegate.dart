@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate {
 
-  Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
-  Color _orange = Color.fromRGBO(235, 89, 25, 1);
   final provider = new Provider();
 
   String selecter = '';
@@ -58,7 +56,7 @@ class DataSearch extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return 
       IconButton(
-        icon: Icon(Icons.search),
+        icon: Icon(Icons.arrow_back),
         onPressed: (){
           close(context, null);
         }, 
