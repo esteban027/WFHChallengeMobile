@@ -12,4 +12,10 @@ class FetchTopMovies extends MoviesEvent {
 FetchTopMovies([this.page = 1]);
 }
 
+class FetchMoviesByGenres extends MoviesEvent {
+ int page ;
+ List<String> genres;
+
+ FetchMoviesByGenres(this.genres, [this.page = 1]);
+}
 
