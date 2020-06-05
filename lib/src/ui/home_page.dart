@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
                       child: CupertinoButton(
                         child: Text('Load Movies'),
                         onPressed: () =>
-                            moviesBloc.add(FetchTopMovies()),
+                            moviesBloc.add(FetchMoviesByGenres(['Romance','Animation'],1)),
                       ),
                     );
                   });
