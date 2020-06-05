@@ -1,5 +1,6 @@
 
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterView extends StatefulWidget {
   final LoadMoviesBloc moviesBloc;
-  final MoviesEvent event;
+  final PageEvent event;
 
 
   FilterView({Key key, @required this.moviesBloc, @required this.event}) : super(key: key);
@@ -24,7 +25,7 @@ class FilterView extends StatefulWidget {
 class _FilterViewState extends State<FilterView> {
   
   final LoadMoviesBloc moviesBloc;
-  final MoviesEvent event;
+  final PageEvent event;
 
   _FilterViewState(this.moviesBloc, this.event);
 
@@ -64,7 +65,7 @@ class _FilterViewState extends State<FilterView> {
     );
   }
 
- Widget _moviesGallery(MoviesEvent event) {
+ Widget _moviesGallery(PageEvent event) {
    return Container(
      width: double.infinity,
      child: Column(

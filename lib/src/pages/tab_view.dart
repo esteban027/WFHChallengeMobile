@@ -1,10 +1,7 @@
-import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../blocs/movies_bloc.dart';
 
 class TabView extends StatelessWidget {
   @override
