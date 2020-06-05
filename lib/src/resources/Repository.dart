@@ -49,4 +49,17 @@ class Repository {
     ];
     return netwok.fetchMovies(parameters);
   }
+
+  Future<PageModel> fetchTopMoviesByReleaseDate(int page) {
+    var now = new DateTime.now();
+    var year = now.year;
+    var yearStart = new DateTime.utc(year, 1, 1);
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.limit, '50'),
+      Parameter.forSort(SortType.descendant, 'rating'),
+      Parameter.forFilter(FilterType.greaterOrEqual, 'release_date', yearStart.toString())
+    ];
+    return netwok.fetchMovies(parameters);
+  }
 }
