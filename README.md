@@ -1,16 +1,20 @@
-# WFHchallenge
+# Welcome to HeyMovie!
 
-A new Flutter project.
+******HeyMovie****** is a movie recommendation platform that helps users to find movies in an easy and ordered way, the project it's composed of a mobile application and a backend service.
 
-## Getting Started
+  
 
-This project is a starting point for a Flutter application.
+# How to Use:
 
-A few resources to get you started if this is your first Flutter project:
+  
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+In the Android or IOS device enter to :
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[https://webapp.diawi.com/install](https://webapp.diawi.com/install)
+
+ And enter the following code :
+
+For android:  **8qjghn**
+
+For iOS:  **LmmFuF**
+  
