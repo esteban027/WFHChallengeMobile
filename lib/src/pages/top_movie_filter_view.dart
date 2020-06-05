@@ -37,7 +37,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _alfabetical = Colors.white;
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
-
+  List<MovieModel> movies = [];
   _TopMovieFilterState(this.title, this.bloc, this.event);
 
   final provider = new Provider();
@@ -46,12 +46,16 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
-  List<Movie> movies = [];
+  void loadMoviesPage([int page = 1]){
+    event.setPage(page);
+    bloc.add(ReturnToInitialState());
+    bloc.add(event);
+  }
 
   @override
   Widget build(BuildContext context) {
-    bloc.add(ReturnToInitialState());
-    bloc.add(event);
+    
+    loadMoviesPage();
 
     return CupertinoPageScaffold(
       child: Container(
@@ -67,20 +71,16 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
       ),
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-        // leading: Icon(Icons.arrow_back, color: Colors.white,size: 28,),
         leading: Container(
           child: FlatButton(
             onPressed: () {
               Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
-            // color: Colors.blue,
           ),
-          // color: Colors.red,
           width: 40,
           height: 15,
         ),
-
       ),
     );
   }
@@ -94,19 +94,18 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               bloc: bloc,
               builder: (BuildContext context, state) {
                 if (state is MoviesLoaded) {
-                  // filter(state.moviesPage.items);
+                  movies.addAll(state.moviesPage.items);
+                  print(state.moviesPage.page);
                   return MoviesGallery(
-                    movies: filter(state.moviesPage.items, type),
-                    // nextPage: () {
-                    //   event.setPage(page);
-                    //   return bloc.add(event);
-                    // } ,
+                    movies: filter(movies, type), nextPage: state.moviesPage.hasNext ? () => loadMoviesPage(state.moviesPage.page + 1) : null,
                   );
-                } else if (state is MoviesLoading) {
-                  return Center(child: CircularProgressIndicator());
-                }
+                } 
+                // else if (state is MoviesLoading) {
+                //   return Center(child: CircularProgressIndicator());
+                // }
                 return Center(child: CircularProgressIndicator());
-              })
+              }
+          )
         ],
       ),
     );
@@ -161,7 +160,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         break;
       default:
     }
-    print(type);
     return movies;
   }
 

@@ -10,7 +10,8 @@ class RatingsPageRepository {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
-      Parameter.forFilter(FilterType.exact, 'movie', movieId.toString())
+      Parameter.forFilter(FilterType.exact, 'movie', movieId.toString()),
+      Parameter.forSort(SortType.ascendant, 'timestamp')
     ];
     return netwok.fetchRatings(parameters);
   }
