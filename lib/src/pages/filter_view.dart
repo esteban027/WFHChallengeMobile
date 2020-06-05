@@ -30,7 +30,7 @@ class _FilterViewState extends State<FilterView> {
 
   @override
   Widget build(BuildContext context) {
-
+    // moviesBloc.add(MoviesLoading());
     moviesBloc.add(event);
 
     return Scaffold(
@@ -52,7 +52,7 @@ class _FilterViewState extends State<FilterView> {
                   ),
                 ],
                ),
-              _moviesGallery(),
+              _moviesGallery(event),
             ],
           ),
         ),
@@ -63,7 +63,7 @@ class _FilterViewState extends State<FilterView> {
     );
   }
 
- Widget _moviesGallery() {
+ Widget _moviesGallery(MoviesEvent event) {
    return Container(
      width: double.infinity,
      child: Column(
@@ -73,7 +73,8 @@ class _FilterViewState extends State<FilterView> {
           builder: (BuildContext context, state){
             if (state is MoviesLoaded){
                 return MoviesGallery(
-                  movies: state.moviesPage.items,
+                  movies: state.moviesPage.items
+                  // nextPage: () => moviesBloc.add(event),
                 );
             }
             return Center(child: CircularProgressIndicator());

@@ -111,65 +111,123 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         ),
         margin: EdgeInsets.only(top: 10),
       ),
-      onTap: () {
-        // print('filter by');
-        _settingModalBottomSheet(context);
+      onTap: (){
+        // _settingModalBottomSheet(context);
+        bottomSheet();
       },
     );
   }
 
-  void _settingModalBottomSheet(context) {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (context) {
-          return CupertinoActionSheet(
-            title: Row(
+  void bottomSheet(){
+    showModalBottomSheet(
+      context: context,
+      builder: (context){
+        return Container(
+          color: Colors.transparent,
+          child: Container(
+            child: Column(
               children: <Widget>[
-                Text(
-                  'Sort by',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 20),
-                  child: Image.asset(
-                    'assets/Sort.png',
-                    color: Colors.white,
+                Container (
+                  child: Row( children: <Widget>[
+                      Text(
+                        'Sort By',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20),
+                        child: Image.asset(
+                          'assets/Sort.png',
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
                   ),
+                  margin: EdgeInsets.all(20),
+                ),
+                ListTile(
+                  title: Text('data'),
+                  onTap: (){
+                    print('data');
+                  },
                 )
+
               ],
             ),
-            cancelButton: CupertinoActionSheetAction(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancel')),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    print('Rating');
-                  },
-                  child: Text(
-                    'Best Rating',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  )),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    print('title');
-                  },
-                  child: Text(
-                    'Alphabetical by title',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  )),
-              CupertinoActionSheetAction(
-                  onPressed: () {
-                    print('date');
-                  },
-                  child: Text(
-                    'Release date',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ))
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+              color: _blue
+            ),
+          ),
+        );
+      }
+    );
+  }
+  void _settingModalBottomSheet(context){
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: Row(
+            children: <Widget>[
+              Text('Sort by',
+                style: TextStyle(
+                //  color: Colors.white,
+                 fontSize: 20
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20),
+                child: Image.asset(
+                  'assets/Sort.png',
+                  // color: Colors.white,
+                ),
+              )
             ],
-          );
-        });
+          ),
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: (){Navigator.of(context).pop();},
+            child: Text('Cancel')
+          ),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('Rating');
+              }, 
+              child: Text(
+                'Best Rating',
+                style: TextStyle(
+                  // color: Colors.white,
+                  fontSize: 15
+                ),
+              )
+            ),
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('title');
+              },
+              child: Text(
+                'Alphabetical by title',
+                style: TextStyle(
+                  // color: Colors.white,
+                  fontSize: 15
+                ),
+              )
+            ),
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('date');
+              },
+              child: Text(
+                'Release date',
+                style: TextStyle(
+                  // color: Colors.white,
+                  fontSize: 15
+                ),
+              )
+            )
+          ],
+        );
+      }
+    );
   }
 }

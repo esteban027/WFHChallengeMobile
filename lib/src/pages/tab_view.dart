@@ -26,15 +26,18 @@ class TabView extends StatelessWidget {
             BottomNavigationBarItem(
                 icon: Icon(
               CupertinoIcons.home,
-              color: Color.fromRGBO(235, 89, 25, 1),
+              // color: Color.fromRGBO(235, 89, 25, 1),
             )),
-            BottomNavigationBarItem(
+              BottomNavigationBarItem(
                 icon: Icon(
-              CupertinoIcons.search,
-              color: Color.fromRGBO(235, 89, 25, 1),
-            ))
+                CupertinoIcons.search,
+                // color: Color.fromRGBO(235, 89, 25, 1),
+              ),
+            )
           ],
           backgroundColor: _blue,
+          inactiveColor: Colors.white30,
+          activeColor: _orange,
         ),
         tabBuilder: (BuildContext context, int index) {
           assert(index >= 0 && index <= 2);

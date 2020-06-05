@@ -12,7 +12,9 @@ class DataSearch extends SearchDelegate {
 
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   // final provider = new Provider();
-  final moviesBloc = LoadMoviesBloc();
+  final LoadMoviesBloc moviesBloc;
+  
+  DataSearch(this.moviesBloc);
 
   String selecter = '';
 
@@ -25,7 +27,7 @@ class DataSearch extends SearchDelegate {
   @override
   ThemeData appBarTheme(BuildContext context) {
 
-      moviesBloc.add(FetchTopMovies());
+      moviesBloc.add(FetchMoviesByTitle(query));
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
@@ -86,46 +88,23 @@ class DataSearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
   return Container(
     child: Container(
-      child: 
-        BlocBuilder(
-          bloc: moviesBloc,
-          builder: (BuildContext context, state){
-            if (state is MoviesLoaded){
-              final moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
-              return GridView.count(
-                crossAxisCount: 3,
-                childAspectRatio: (99/145),
-                controller: _scrollController,
-                children: List.generate(moviesFilter.length, (index) {
-                  return MoviePoster(movie: moviesFilter[index],);
-                }),
-              );
-                // return MoviesGallery(
-                //   movies: state.movies.items,
-                // );
-            }
-            return Center(child: CircularProgressIndicator());
+      child: BlocBuilder(
+        bloc: moviesBloc,
+        builder: (BuildContext context, state){
+          if (state is MoviesLoaded){
+            // final moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().contains(query.toLowerCase())).toList();
+            return GridView.count(
+              crossAxisCount: 3,
+              childAspectRatio: (99/145),
+              controller: _scrollController,
+              children: List.generate(state.moviesPage.items.length, (index) {
+                return MoviePoster(movie: state.moviesPage.items[index],);
+              }),
+            );
           }
-        ),
-      // StreamBuilder(
-      //  stream: provider.moviesStream,
-      //  builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-      //    if (snapshot.hasData) {
-      //     movies = snapshot.data;
-      //     // print(query);
-      //     final moviesFilter = (query.isEmpty) ? movies2 : movies.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
-      //     return GridView.count(
-      //       crossAxisCount: 3,
-      //       childAspectRatio: (99/145),
-      //       controller: _scrollController,
-      //       children: List.generate(moviesFilter.length, (index) {
-      //         return MoviePoster(movie: moviesFilter[index],);
-      //       }),
-      //     );
-      //   }
-      //    return Center(child: CircularProgressIndicator());
-      //  },          
-      // ),
+          return Center(child: CircularProgressIndicator());
+        }
+      ),
      height: 500,
    ),
     decoration: BoxDecoration(

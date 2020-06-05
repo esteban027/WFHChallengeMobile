@@ -38,7 +38,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: (){
-              showSearch(context: context, delegate: DataSearch());
+              showSearch(context: context, delegate: DataSearch(moviesBloc));
             },
           )
         ]
