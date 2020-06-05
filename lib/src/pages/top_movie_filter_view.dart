@@ -1,4 +1,4 @@
-import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
@@ -11,19 +11,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class TopMovieFilter extends StatefulWidget {
   final String title;
   final LoadMoviesBloc bloc;
-  final MoviesEvent event;
+  final PageEvent event;
 
-  TopMovieFilter({Key key,@required this.title, @required this.bloc, @required this.event}) :  super(key: key);
-  
+  TopMovieFilter(
+      {Key key,
+      @required this.title,
+      @required this.bloc,
+      @required this.event})
+      : super(key: key);
+
   @override
-  _TopMovieFilterState createState() => _TopMovieFilterState(title, bloc, event);
+  _TopMovieFilterState createState() =>
+      _TopMovieFilterState(title, bloc, event);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
   String title;
   LoadMoviesBloc bloc;
-  MoviesEvent event;
-
+  PageEvent event;
 
   _TopMovieFilterState(this.title, this.bloc, this.event);
 
@@ -34,10 +39,9 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
   List<Movie> movies = [];
-  
+
   @override
   Widget build(BuildContext context) {
-
     bloc.add(event);
 
     return CupertinoPageScaffold(
@@ -50,9 +54,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
             ],
           ),
         ),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(28, 31, 44, 1)
-        ),
+        decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
       ),
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
@@ -61,29 +63,28 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   Widget _moviesGallery() {
-   return Container(
-     width: double.infinity,
-     child: Column(
-       children: <Widget>[
-        BlocBuilder(
-          bloc: bloc,
-          builder: (BuildContext context, state){
-            if (state is MoviesLoaded){
-              return MoviesGallery(
-                movies: state.moviesPage.items,
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          }
-        )
-       ],
-     ),
-   );
- }
+    return Container(
+      width: double.infinity,
+      child: Column(
+        children: <Widget>[
+          BlocBuilder(
+              bloc: bloc,
+              builder: (BuildContext context, state) {
+                if (state is MoviesLoaded) {
+                  return MoviesGallery(
+                    movies: state.moviesPage.items,
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              })
+        ],
+      ),
+    );
+  }
 
-  Widget _sortBy(){  
+  Widget _sortBy() {
     double width = MediaQuery.of(context).size.width;
-    return  GestureDetector(
+    return GestureDetector(
       child: Container(
         width: width - 50,
         height: 50,
@@ -99,7 +100,10 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
             ),
             Spacer(),
             Container(
-              child: Image.asset('assets/Sort.png',color: Colors.white,),
+              child: Image.asset(
+                'assets/Sort.png',
+                color: Colors.white,
+              ),
               alignment: Alignment.centerRight,
               margin: EdgeInsets.only(right: 10),
             )
@@ -107,71 +111,65 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         ),
         margin: EdgeInsets.only(top: 10),
       ),
-      onTap: (){
+      onTap: () {
         // print('filter by');
         _settingModalBottomSheet(context);
       },
     );
   }
 
-
-  void _settingModalBottomSheet(context){
+  void _settingModalBottomSheet(context) {
     showCupertinoModalPopup(
-      context: context,
-      builder: (context) {
-        return CupertinoActionSheet(
-          title: Row(
-            children: <Widget>[
-              Text('Sort by',
-                style: TextStyle(
-                 color: Colors.white,
-                 fontSize: 20
+        context: context,
+        builder: (context) {
+          return CupertinoActionSheet(
+            title: Row(
+              children: <Widget>[
+                Text(
+                  'Sort by',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 20),
-                child: Image.asset(
-                  'assets/Sort.png',
-                  color: Colors.white,
-                ),
-              )
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Image.asset(
+                    'assets/Sort.png',
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+            cancelButton: CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel')),
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    print('Rating');
+                  },
+                  child: Text(
+                    'Best Rating',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  )),
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    print('title');
+                  },
+                  child: Text(
+                    'Alphabetical by title',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  )),
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    print('date');
+                  },
+                  child: Text(
+                    'Release date',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ))
             ],
-          ),
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: (){Navigator.of(context).pop();},
-            child: Text('Cancel')
-          ),
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('Rating');
-              }, 
-              child: Text(
-                'Best Rating',
-                style: TextStyle(color: Colors.white, fontSize: 15),
-              )
-            ),
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('title');
-              },
-              child: Text(
-                'Alphabetical by title',
-                style: TextStyle(color: Colors.white,fontSize: 15),
-              )
-            ),
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('date');
-              },
-              child: Text(
-                'Release date',
-                style: TextStyle(color: Colors.white,fontSize: 15),
-              )
-            )
-          ],
-        );
-      }
-    );
+          );
+        });
   }
 }
