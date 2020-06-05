@@ -80,7 +80,7 @@ class Movie {
 
   getPosterImage() {
     if (posterPath == null) {
-      return 'https://i0.wp.com/oij.org/wp-content/uploads/2016/05/placeholder.png?ssl=1';
+      return 'https://images.benchmarkemail.com/client1222470/image8770405.png';
     } else {
       return posterPath;
     }

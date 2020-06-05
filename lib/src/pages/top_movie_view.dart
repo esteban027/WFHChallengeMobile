@@ -1,6 +1,10 @@
+import 'package:WFHchallenge/src/Events/genres_events.dart';
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/States/genres_states.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/blocs/genres_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/models/genres_page_model.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
@@ -10,43 +14,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopMovie extends StatefulWidget {
-  TopMovie({Key key}) : super(key: key);
+  final LoadMoviesBloc bloc;
+  TopMovie({Key key, @required this.bloc}) : super(key: key);
 
   @override
-  _TopMovieState createState() => _TopMovieState();
+  _TopMovieState createState() => _TopMovieState(bloc);
 }
 
 class _TopMovieState extends State<TopMovie> {
+  final LoadMoviesBloc bloc;
   final provider = new Provider();
   final network = Network();
   final double widthMovie = 187;
   final double heigthMovie = 128;
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
-  final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
-  final moviesBloc = LoadMoviesBloc();
+  // final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
+
+  _TopMovieState(this.bloc);
+
+  final LoadGenresBloc genreBloc = LoadGenresBloc();
 
   @override
   Widget build(BuildContext context) {
-
-    moviesBloc.add(FetchTopMovies());
+    
+    genreBloc.add(FetchAllGenres());
     
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: _blue,
+                leading: Container(
+          child: FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+          ),
+          width: 40,
+          height: 15,
+        ),
       ),
       child: Container(
         child: Column(
           children: <Widget>[
             Container(
-              child: Text('Top Movies by Gender', style: TextStyle(fontSize: 23, color: Colors.white),),
+              child: Text('Top Movies by Genre', style: TextStyle(fontSize: 23, color: Colors.white),),
               margin: EdgeInsets.only(top: 15,bottom: 20),
             ),
             BlocBuilder(
-              bloc: moviesBloc,
+              bloc: genreBloc,
               builder: (BuildContext context, state){
-                if (state is MoviesLoaded){
-                  return topMovieCollection(state.moviesPage.items, context);
+                if (state is GenresLoaded){
+                  return topGenreCollection(state.genresPage.items, context);
                 }
                 return Center(child: CircularProgressIndicator());
               }
@@ -64,7 +83,7 @@ class _TopMovieState extends State<TopMovie> {
     );
   }
 
-  Widget topMovieCollection(List<MovieModel> movies, BuildContext context) {
+  Widget topGenreCollection(List<GenreModel> genres, BuildContext context) {
     return Container(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -75,9 +94,17 @@ class _TopMovieState extends State<TopMovie> {
       ),
         itemBuilder: (contex, index){
           return GestureDetector(
-            child: topMoviePoster(genres[index]),
+            child: topMoviePoster(genres[index].id,genres[index].posterPath),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TopMovieFilter(title: genres[index],)));
+              Navigator.push(
+                context, MaterialPageRoute(
+                  builder: (context) => TopMovieFilter(
+                    title: genres[index].id,
+                    bloc: bloc,
+                    event: FetchTopMoviesByGenres([genres[index].id]),
+                  )
+                )
+              );
             },
           );
         },
@@ -88,7 +115,7 @@ class _TopMovieState extends State<TopMovie> {
     );
   }
 
-  Widget topMoviePoster(String title){
+  Widget topMoviePoster(String title, String posterPath){
     return Container(
       child: Column(
         children: <Widget>[   
@@ -97,7 +124,7 @@ class _TopMovieState extends State<TopMovie> {
               ClipRRect(
                 child: FadeInImage(
                   placeholder: AssetImage('assets/defaultcover.png'), 
-                  image: NetworkImage('http://image.tmdb.org/t/p/w185//amY0NH1ksd9xJ9boXAMmods6U0D.jpg'),
+                  image: NetworkImage(posterPath),
                   height: heigthMovie,
                   width: widthMovie,
                   fit: BoxFit.cover,

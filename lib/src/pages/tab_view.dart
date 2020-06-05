@@ -1,10 +1,7 @@
-import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../blocs/movies_bloc.dart';
 
 class TabView extends StatelessWidget {
   @override
@@ -26,15 +23,18 @@ class TabView extends StatelessWidget {
             BottomNavigationBarItem(
                 icon: Icon(
               CupertinoIcons.home,
-              color: Color.fromRGBO(235, 89, 25, 1),
+              // color: Color.fromRGBO(235, 89, 25, 1),
             )),
-            BottomNavigationBarItem(
+              BottomNavigationBarItem(
                 icon: Icon(
-              CupertinoIcons.search,
-              color: Color.fromRGBO(235, 89, 25, 1),
-            ))
+                CupertinoIcons.search,
+                // color: Color.fromRGBO(235, 89, 25, 1),
+              ),
+            )
           ],
           backgroundColor: _blue,
+          inactiveColor: Colors.white30,
+          activeColor: _orange,
         ),
         tabBuilder: (BuildContext context, int index) {
           assert(index >= 0 && index <= 2);

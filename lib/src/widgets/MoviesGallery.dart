@@ -20,7 +20,7 @@ class MoviesGallery extends StatefulWidget {
 
 class _MoviesGalleryState extends State<MoviesGallery> {
   
-  final List<MovieModel> movies ;
+  List<MovieModel> movies ;
   // final Function nextPage;
 
   // _MoviesGalleryState({ @required this.movies, @required this.nextPage});
@@ -42,6 +42,12 @@ class _MoviesGalleryState extends State<MoviesGallery> {
     debugLabel: 'scroll',
   );
 
+  void updateMovies(List <MovieModel> newMovies){
+    setState(() {
+      movies = newMovies;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -49,7 +55,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
-        // nextPage();
+        // nextPage(); 
       }
     });
 
