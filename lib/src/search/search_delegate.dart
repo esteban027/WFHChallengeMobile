@@ -1,13 +1,18 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DataSearch extends SearchDelegate {
 
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
-  final provider = new Provider();
+  // final provider = new Provider();
+  final moviesBloc = LoadMoviesBloc();
 
   String selecter = '';
 
@@ -19,10 +24,12 @@ class DataSearch extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    provider.getMovies();
+
+      moviesBloc.add(MoviesEvent.loadAllMovies);
+
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-        provider.getMovies();
+        // provider.getMovies();
       }
     });
 
@@ -79,25 +86,46 @@ class DataSearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
   return Container(
     child: Container(
-      child: StreamBuilder(
-       stream: provider.moviesStream,
-       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-         if (snapshot.hasData) {
-          movies = snapshot.data;
-          print(query);
-          final moviesFilter = (query.isEmpty) ? movies2 : movies.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
-          return GridView.count(
-            crossAxisCount: 3,
-            childAspectRatio: (99/145),
-            controller: _scrollController,
-            children: List.generate(moviesFilter.length, (index) {
-              return MoviePoster(movie: moviesFilter[index],);
-            }),
-          );
-        }
-         return Center(child: CircularProgressIndicator());
-       },          
-      ),
+      child: 
+        BlocBuilder(
+          bloc: moviesBloc,
+          builder: (BuildContext context, state){
+            if (state is MoviesLoaded){
+              final moviesFilter = (query.isEmpty) ? movies2 : state.movies.items.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
+              return GridView.count(
+                crossAxisCount: 3,
+                childAspectRatio: (99/145),
+                controller: _scrollController,
+                children: List.generate(moviesFilter.length, (index) {
+                  return MoviePoster(movie: moviesFilter[index],);
+                }),
+              );
+                // return MoviesGallery(
+                //   movies: state.movies.items,
+                // );
+            }
+            return Center(child: CircularProgressIndicator());
+          }
+        ),
+      // StreamBuilder(
+      //  stream: provider.moviesStream,
+      //  builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+      //    if (snapshot.hasData) {
+      //     movies = snapshot.data;
+      //     // print(query);
+      //     final moviesFilter = (query.isEmpty) ? movies2 : movies.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
+      //     return GridView.count(
+      //       crossAxisCount: 3,
+      //       childAspectRatio: (99/145),
+      //       controller: _scrollController,
+      //       children: List.generate(moviesFilter.length, (index) {
+      //         return MoviePoster(movie: moviesFilter[index],);
+      //       }),
+      //     );
+      //   }
+      //    return Center(child: CircularProgressIndicator());
+      //  },          
+      // ),
      height: 500,
    ),
     decoration: BoxDecoration(

@@ -103,31 +103,68 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         margin: EdgeInsets.only(top: 10),
       ),
       onTap: (){
-        print('filter by');
+        // print('filter by');
+        _settingModalBottomSheet(context);
       },
     );
   }
 
 
   void _settingModalBottomSheet(context){
-    showModalBottomSheet(
+    showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext bc) {
-        return Container(
-          child: new Wrap(
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: Row(
             children: <Widget>[
-              ListTile(
-                leading: new Icon(Icons.music_note),
-                title: new Text('Music'),
-                onTap: () => {}          
+              Text('Sort by',
+                style: TextStyle(
+                 color: Colors.white,
+                 fontSize: 20
+                ),
               ),
-              ListTile(
-                leading: new Icon(Icons.videocam),
-                title: new Text('Video'),
-                onTap: () => {},          
-              ),
+              Container(
+                margin: EdgeInsets.only(left: 20),
+                child: Image.asset(
+                  'assets/Sort.png',
+                  color: Colors.white,
+                ),
+              )
             ],
           ),
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: (){Navigator.of(context).pop();},
+            child: Text('Cancel')
+          ),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('Rating');
+              }, 
+              child: Text(
+                'Best Rating',
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              )
+            ),
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('title');
+              },
+              child: Text(
+                'Alphabetical by title',
+                style: TextStyle(color: Colors.white,fontSize: 15),
+              )
+            ),
+            CupertinoActionSheetAction(
+              onPressed: (){
+                print('date');
+              },
+              child: Text(
+                'Release date',
+                style: TextStyle(color: Colors.white,fontSize: 15),
+              )
+            )
+          ],
         );
       }
     );

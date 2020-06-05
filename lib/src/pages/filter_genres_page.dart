@@ -1,5 +1,6 @@
 
 import 'package:WFHchallenge/src/search/search_delegate.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'filter_view.dart';
 
@@ -17,7 +18,34 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    // CupertinoPageScaffold(
+    //   navigationBar: CupertinoNavigationBar(
+    //     backgroundColor: Color.fromRGBO(28, 31, 44, 1),
+    //     // middle: IconButton(
+    //     //     icon: Icon(Icons.search),
+    //     //     onPressed: (){
+    //     //       showSearch(context: context, delegate: DataSearch());
+    //     //     },
+    //     //   ),
+    //   ),
+    //   child: Center(
+    //     child: Container(
+    //       child: Column(
+    //         children: <Widget>[
+    //           _filterTitle(),
+    //           // _checkboxList(),
+    //           Scaffold(body:_checkboxList(context),),
+    //           _filterButton()
+    //         ],
+    //       ),
+    //       color: Color.fromRGBO(28, 31, 44, 1),
+    //       margin: EdgeInsets.all(20),
+    //     ),
+    //   ),
+    // );
+    
+    Scaffold(
       backgroundColor: Color.fromRGBO(28, 31, 44, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
@@ -30,7 +58,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
           )
         ]
       ),
-      body: Center(
+      body:  Center(
         child: Container(
           child: Column(
             children: <Widget>[
