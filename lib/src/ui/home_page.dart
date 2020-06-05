@@ -20,6 +20,11 @@ class HomePage extends StatelessWidget {
 
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+      DefaultMaterialLocalizations.delegate,
+      DefaultWidgetsLocalizations.delegate,
+      DefaultCupertinoLocalizations.delegate,
+      ],
       home: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           items: const <BottomNavigationBarItem>[
