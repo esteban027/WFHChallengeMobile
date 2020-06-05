@@ -30,4 +30,14 @@ class Repository {
     ];
     return netwok.fetchMovies(parameters);
   }
+
+  Future<PageModel> fetchTopMoviesByGenres(int page, List<String> genres) {
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.limit, '10'),
+      Parameter.forSort(SortType.descendant, 'rating'),
+      Parameter.forSupersetFilter('genres', genres)
+    ];
+    return netwok.fetchMovies(parameters);
+  }
 }
