@@ -25,7 +25,7 @@ class DataSearch extends SearchDelegate {
   @override
   ThemeData appBarTheme(BuildContext context) {
 
-      moviesBloc.add(MoviesEvent.loadAllMovies);
+      moviesBloc.add(FetchTopMovies());
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
@@ -91,7 +91,7 @@ class DataSearch extends SearchDelegate {
           bloc: moviesBloc,
           builder: (BuildContext context, state){
             if (state is MoviesLoaded){
-              final moviesFilter = (query.isEmpty) ? movies2 : state.movies.items.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
+              final moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().startsWith(query.toLowerCase())).toList();
               return GridView.count(
                 crossAxisCount: 3,
                 childAspectRatio: (99/145),
