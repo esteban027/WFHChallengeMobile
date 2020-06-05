@@ -33,7 +33,7 @@ class _TopMovieState extends State<TopMovie> {
 
   @override
   Widget build(BuildContext context) {
-
+    
     bloc2.add(FetchTopMovies());
     
     return CupertinoPageScaffold(

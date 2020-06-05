@@ -2,11 +2,19 @@ import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+enum TypeOfFilter {
+  rating,
+  title,
+  releaseDate,
+  withuotFilter
+}
 
 class TopMovieFilter extends StatefulWidget {
   final String title;
@@ -29,6 +37,11 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   String title;
   LoadMoviesBloc bloc;
   PageEvent event;
+  int page = 1;
+  Color _bestRating = Colors.white;
+  Color _alfabetical = Colors.white;
+  Color _release = Colors.white;
+  TypeOfFilter type = TypeOfFilter.withuotFilter;
 
   _TopMovieFilterState(this.title, this.bloc, this.event);
 
@@ -42,6 +55,8 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
   @override
   Widget build(BuildContext context) {
+    
+    bloc.add(ReturnToInitialState());
     bloc.add(event);
 
     return CupertinoPageScaffold(
@@ -63,24 +78,32 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   Widget _moviesGallery() {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          BlocBuilder(
-              bloc: bloc,
-              builder: (BuildContext context, state) {
-                if (state is MoviesLoaded) {
-                  return MoviesGallery(
-                    movies: state.moviesPage.items,
-                  );
-                }
-                return Center(child: CircularProgressIndicator());
-              })
-        ],
-      ),
-    );
-  }
+   return Container(
+     width: double.infinity,
+     child: Column(
+       children: <Widget>[
+        BlocBuilder(
+          bloc: bloc,
+          builder: (BuildContext context, state){
+            if (state is MoviesLoaded){
+                // filter(state.moviesPage.items);
+              return MoviesGallery(
+                movies: filter(state.moviesPage.items,type), 
+                // nextPage: () {
+                //   event.setPage(page);
+                //   return bloc.add(event);
+                // } ,
+              );
+            } else  if (state is MoviesLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return Center(child: CircularProgressIndicator());
+          }
+        )
+       ],
+     ),
+   );
+ }
 
   Widget _sortBy() {
     double width = MediaQuery.of(context).size.width;
@@ -118,116 +141,108 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     );
   }
 
+  List<MovieModel> filter(List<MovieModel> movies, TypeOfFilter type){
+    switch (type) {
+      case TypeOfFilter.rating:
+        movies.sort((a,b) => a.rating.compareTo(b.rating));
+        break;
+      case TypeOfFilter.title:
+        movies.sort((a,b) => a.title.compareTo(b.title) );
+        break;
+      case TypeOfFilter.releaseDate:
+        movies.sort((a,b) => a.release_date.toString().compareTo(b.release_date.toString()));
+        break;
+      default:
+    }
+    print(type);
+    return movies;
+  }
+
   void bottomSheet(){
     showModalBottomSheet(
       context: context,
       builder: (context){
         return Container(
           color: Colors.transparent,
+          height: 250,
           child: Container(
             child: Column(
               children: <Widget>[
-                Container (
-                  child: Row( children: <Widget>[
-                      Text(
-                        'Sort By',
-                        style: TextStyle(color: Colors.white),
+                Container(
+                  margin: EdgeInsets.all(20),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Sort By', 
+                        style: TextStyle(color: Colors.white, fontSize: 13)
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 20),
-                        child: Image.asset(
-                          'assets/Sort.png',
-                          color: Colors.white,
-                        ),
+                        child: Image.asset('assets/Sort.png',color: Colors.white,),
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(left: 10),
                       )
                     ],
                   ),
-                  margin: EdgeInsets.all(20),
+                ),
+
+                Divider(
+                  height: 5,
+                  color: Colors.white,
+                ),
+
+                ListTile(
+                  title: Text('Best Rating',style: TextStyle(color: _bestRating, fontSize: 13,fontWeight: FontWeight.w500)),
+                  onTap: (){
+                    print('Best Rating');
+                    setState(() {
+                      _bestRating = _orange;
+                      _alfabetical = Colors.white;
+                      _release = Colors.white;
+                      type = TypeOfFilter.rating;
+                    });
+                     Navigator.pop(context);
+                  },
                 ),
                 ListTile(
-                  title: Text('data'),
+                  title: Text('Alphabetical by title', style: TextStyle(color: _alfabetical,fontSize: 13,fontWeight: FontWeight.w500)),
                   onTap: (){
-                    print('data');
+                    print('Alphabetical by title');
+                    setState(() {
+                      _alfabetical = _orange;
+                      _bestRating = Colors.white;
+                      _release = Colors.white;
+                      type = TypeOfFilter.title;
+                    });
+                     Navigator.pop(context);
                   },
-                )
-
+                ),
+                ListTile(
+                  title: Text('Release date',style: TextStyle(color: _release,fontSize: 13,fontWeight: FontWeight.w500)),
+                  onTap: (){
+                    print('Release dAte');
+                    setState(() {
+                      _release = _orange;
+                      _bestRating = Colors.white;
+                      _alfabetical = Colors.white;
+                      type = TypeOfFilter.releaseDate;
+                    });
+                     Navigator.pop(context);
+                  },
+                ),
               ],
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-              color: _blue
+              color: _blue,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              )
             ),
           ),
         );
-      }
-    );
-  }
-  void _settingModalBottomSheet(context){
-    showCupertinoModalPopup(
-      context: context,
-      builder: (context) {
-        return CupertinoActionSheet(
-          title: Row(
-            children: <Widget>[
-              Text('Sort by',
-                style: TextStyle(
-                //  color: Colors.white,
-                 fontSize: 20
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 20),
-                child: Image.asset(
-                  'assets/Sort.png',
-                  // color: Colors.white,
-                ),
-              )
-            ],
-          ),
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: (){Navigator.of(context).pop();},
-            child: Text('Cancel')
-          ),
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('Rating');
-              }, 
-              child: Text(
-                'Best Rating',
-                style: TextStyle(
-                  // color: Colors.white,
-                  fontSize: 15
-                ),
-              )
-            ),
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('title');
-              },
-              child: Text(
-                'Alphabetical by title',
-                style: TextStyle(
-                  // color: Colors.white,
-                  fontSize: 15
-                ),
-              )
-            ),
-            CupertinoActionSheetAction(
-              onPressed: (){
-                print('date');
-              },
-              child: Text(
-                'Release date',
-                style: TextStyle(
-                  // color: Colors.white,
-                  fontSize: 15
-                ),
-              )
-            )
-          ],
-        );
-      }
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20)
+      )
     );
   }
 }

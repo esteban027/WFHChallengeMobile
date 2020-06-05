@@ -113,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
                 builder: (context) => TopMovieFilter(
                   title: categories[section],
                   bloc: moviesBloc,
-                  event: FetchTopMovies(),
+                  event: FetchTopMoviesByLatestRelease(),
                 )
               )
             );

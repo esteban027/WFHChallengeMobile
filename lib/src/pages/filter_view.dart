@@ -30,7 +30,8 @@ class _FilterViewState extends State<FilterView> {
 
   @override
   Widget build(BuildContext context) {
-    // moviesBloc.add(MoviesLoading());
+
+    moviesBloc.add(ReturnToInitialState());
     moviesBloc.add(event);
 
     return Scaffold(
@@ -76,6 +77,8 @@ class _FilterViewState extends State<FilterView> {
                   movies: state.moviesPage.items
                   // nextPage: () => moviesBloc.add(event),
                 );
+            } else if (state is MoviesLoading){
+              return Center(child: CircularProgressIndicator());
             }
             return Center(child: CircularProgressIndicator());
           }
