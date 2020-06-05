@@ -9,22 +9,22 @@ import 'package:flutter/cupertino.dart';
 
 class MoviesGallery extends StatefulWidget {
   final List<MovieModel> movies ;
-  // final Function nextPage;
+  final Function nextPage;
 
-  // MoviesGallery({ @required this.movies, @required this.nextPage});
-   MoviesGallery({ @required this.movies});
+  MoviesGallery({ @required this.movies, this.nextPage});
+  //  MoviesGallery({ @required this.movies});
 
   @override
-  _MoviesGalleryState createState() => _MoviesGalleryState(movies: movies);
+  _MoviesGalleryState createState() => _MoviesGalleryState(movies: movies, nextPage: nextPage);
 }
 
 class _MoviesGalleryState extends State<MoviesGallery> {
   
   List<MovieModel> movies ;
-  // final Function nextPage;
+  final Function nextPage;
 
-  // _MoviesGalleryState({ @required this.movies, @required this.nextPage});
-    _MoviesGalleryState({ @required this.movies});
+  _MoviesGalleryState({ @required this.movies, this.nextPage});
+    // _MoviesGalleryState({ @required this.movies});
 
 
   List<Widget> rowsOfMovies = List();
@@ -55,7 +55,8 @@ class _MoviesGalleryState extends State<MoviesGallery> {
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
-        // nextPage(); 
+        print('SCrooool');
+        nextPage(); 
       }
     });
 

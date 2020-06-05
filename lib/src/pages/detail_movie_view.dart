@@ -1,9 +1,14 @@
+import 'package:WFHchallenge/src/Events/ratings_events.dart';
+import 'package:WFHchallenge/src/States/ratings_states.dart';
+import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailMovieView extends StatelessWidget {
   DetailMovieView({
@@ -14,17 +19,17 @@ class DetailMovieView extends StatelessWidget {
   final MovieModel movie;
   final double heigthMovie = 309;
   final double widthMovie = 99;
-  final double _widthRating = 48;
   final Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final Color _orange = Color.fromRGBO(235, 89, 25, 1);
   final Color _blueContainer = Color.fromRGBO(40, 65, 109, 0.10);
-  final _borderRadius = BorderRadius.circular(6.0);
+  final ratingBloc = LoadRatingsBloc();
 
   @override
   Widget build(BuildContext context) {
     final double widthContainer = MediaQuery.of(context).size.width - 80;
-
+    ratingBloc.add(FetchRatingsByMovieId(movie.id));
+    
     List<String> genres = movie.genre.split('|');
 
     return Scaffold(
@@ -155,28 +160,33 @@ class DetailMovieView extends StatelessWidget {
             margin:  EdgeInsets.only(right: 20, left: 20, top: 20),
             child:  Column(
               children: <Widget>[
-              Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(17.0),
-                    child: Text(
-                      'Movie Score',
-                      style: TextStyle(color: Colors.white, fontSize: 15.0),
-                      textAlign: TextAlign.left,
+
+                Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(17.0),
+                      child: Text(
+                        'Movie Score',
+                        style: TextStyle(color: Colors.white, fontSize: 15.0),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                  ),
-                  color: _darkBlue,
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: 52,
-                  // margin: EdgeInsets.only(top: 11),
-                ),
-                Center(
-                  child: Container(
-                    height: 300,
-                    color: _blue,
+                    color: _darkBlue,
                     width: MediaQuery.of(context).size.width - 40,
-                    child: EndPointsAxisTimeSeriesChart(_createSampleData()),
-                  ),
-                )
+                    height: 52,
+                    // margin: EdgeInsets.only(top: 11),
+                ),
+
+                BlocBuilder(
+                    bloc: ratingBloc,
+                    builder: (BuildContext context, state) {
+                      if (state is RatingsLoaded) {
+                        return _graph(context,state.ratingsPage);
+                      } else if (state is RatingsLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    }
+                ),
               ],
             ),
          ),
@@ -186,11 +196,26 @@ class DetailMovieView extends StatelessWidget {
     );
   }
 
-  static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData() {
-    RatingModel rating = RatingModel( 1,2,3.2,111);
+  Widget _graph(BuildContext context, RatingsPageModel ratings) {
 
-    List<TimeSeriesSales>  data = _timeStampsToDate([rating]);
-    List<TimeSeriesSales>  dataPoints = _timeStampsToDate([rating]);
+    return  Center(
+      child: Container(
+        height: 300,
+        color: _blue,
+        width: MediaQuery.of(context).size.width - 40,
+        child: EndPointsAxisTimeSeriesChart(_createSampleData(ratings)),
+      ),
+    );
+  }
+
+  static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData(RatingsPageModel ratings) {
+
+    List<TimeSeriesSales>  data = _timeStampsToDate(ratings);
+    List<TimeSeriesSales>  dataPoints = _timeStampsToDate(ratings);
+
+    dataPoints.forEach((element) {
+      print(element.sales);
+    });
 
     return [
       new charts.Series<TimeSeriesSales, DateTime>(
@@ -201,27 +226,30 @@ class DetailMovieView extends StatelessWidget {
         measureFn: (TimeSeriesSales sales, _) => sales.sales,
         data: data,
       ),
+
       charts.Series<TimeSeriesSales, DateTime>(
           id: 'ScorePoints',
           colorFn: (_, __) => charts.MaterialPalette.deepOrange.shadeDefault,
           domainFn: (TimeSeriesSales sales, _) => sales.time,
           measureFn: (TimeSeriesSales sales, _) => sales.sales,
-          data: dataPoints)
+          data: dataPoints
+      )
         ..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
   }
 
-  static List<TimeSeriesSales> _timeStampsToDate(List<RatingModel> ratings) {
-
+  static List<TimeSeriesSales> _timeStampsToDate(RatingsPageModel ratings) {
+    int counter = 0;
     List<DateTime> dates = [];
     List<TimeSeriesSales> points = [];
 
-    ratings.forEach((rating) {
+    ratings.items.forEach((rating) {
       dates.add(DateTime.fromMillisecondsSinceEpoch(rating.timestamp * 1000));
     });
 
     dates.forEach((element) { 
-      points.add(TimeSeriesSales(element, ratings[0].rating));
+      points.add(TimeSeriesSales(element, ratings.items[counter].rating));
+      counter++;
     });
 
     return points;
@@ -392,13 +420,4 @@ class DetailMovieView extends StatelessWidget {
       ),
     ];
   }
-}
-
-class RatingModel {
-  int user;
-  int movie;
-  double rating;
-  int timestamp;
-
-  RatingModel(this.user, this.movie, this.rating, this.timestamp);
 }
