@@ -1,4 +1,6 @@
 
+import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +17,19 @@ class _FilterGenresViewState extends State<FilterGenresView> {
   final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
   Map<String,bool> genresState = {'Animation': false, 'Action': false, 'Adventure': false , 'Biography': false, 'Comedy': false, 'Crime': false, 'Drama': false, 'Documentary': false, 'Fantasy': false, 'Historical': false, 'Horror': false};
   Color _buttonColor = Colors.grey;
+  final moviesBloc = LoadMoviesBloc();
 
   @override
   Widget build(BuildContext context) {
+
+    List<String> selectedGenres = [];
+
+    genresState.forEach((key, value) {
+      if (value == true){
+        selectedGenres.add(key);
+      }
+    });
+
     return  Scaffold(
       backgroundColor: Color.fromRGBO(28, 31, 44, 1),
       appBar: AppBar(
@@ -37,7 +49,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
             children: <Widget>[
               _filterTitle(),
               _checkboxList(),
-              _filterButton()
+              _filterButton(selectedGenres)
             ],
           ),
           color: Color.fromRGBO(28, 31, 44, 1),
@@ -91,10 +103,17 @@ class _FilterGenresViewState extends State<FilterGenresView> {
     );
   }
 
-  Widget _filterButton() {
+  Widget _filterButton(List<String> selectedGenres) {
     return RaisedButton(
       onPressed: (){
-        Navigator.push(context, MaterialPageRoute (builder: (context) => FilterView()));
+        Navigator.push(
+          context, MaterialPageRoute (
+            builder: (context) => FilterView(
+              moviesBloc: moviesBloc, 
+              event: FetchMoviesByGenres(selectedGenres),
+            )
+          )
+        );
       },
       child: Text('Apply filter'),
       padding: EdgeInsets.only(left: 140, right: 140, top: 13, bottom: 13),

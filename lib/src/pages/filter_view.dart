@@ -1,4 +1,5 @@
 
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/providers/provider.dart';
@@ -10,20 +11,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class FilterView extends StatefulWidget {
-  FilterView({Key key}) : super(key: key);
+  final LoadMoviesBloc moviesBloc;
+  final MoviesEvent event;
+
+
+  FilterView({Key key, @required this.moviesBloc, @required this.event}) : super(key: key);
 
   @override
-  _FilterViewState createState() => _FilterViewState();
+  _FilterViewState createState() => _FilterViewState(moviesBloc, event);
 }
 
 class _FilterViewState extends State<FilterView> {
   
-  // final provider =  Provider();
-  final moviesBloc = LoadMoviesBloc();
+  final LoadMoviesBloc moviesBloc;
+  final MoviesEvent event;
+
+  _FilterViewState(this.moviesBloc, this.event);
 
   @override
   Widget build(BuildContext context) {
-    // provider.getMovies();
+
+    moviesBloc.add(event);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
@@ -63,11 +72,9 @@ class _FilterViewState extends State<FilterView> {
           bloc: moviesBloc,
           builder: (BuildContext context, state){
             if (state is MoviesLoaded){
-              setState(() {
                 return MoviesGallery(
                   movies: state.moviesPage.items,
                 );
-              });
             }
             return Center(child: CircularProgressIndicator());
           }

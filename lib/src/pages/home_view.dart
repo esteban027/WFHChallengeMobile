@@ -16,7 +16,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final moviesBloc = LoadMoviesBloc();
-  
+
   List<String> categories = [
     'Top 100! You should watch them!',
     'Best Latest \n releases',
@@ -123,7 +123,7 @@ class _HomeViewState extends State<HomeView> {
           child: _section(TypeOfCard.splited, section + 1),
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => TopMovie()));
+                context, MaterialPageRoute(builder: (context) => TopMovie(bloc: moviesBloc,)));
           },
         ),
       ],

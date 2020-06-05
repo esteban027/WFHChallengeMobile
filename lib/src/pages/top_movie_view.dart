@@ -10,13 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopMovie extends StatefulWidget {
-  TopMovie({Key key}) : super(key: key);
+  final LoadMoviesBloc bloc;
+  TopMovie({Key key, @required this.bloc}) : super(key: key);
 
   @override
-  _TopMovieState createState() => _TopMovieState();
+  _TopMovieState createState() => _TopMovieState(bloc);
 }
 
 class _TopMovieState extends State<TopMovie> {
+  final LoadMoviesBloc bloc;
   final provider = new Provider();
   final network = Network();
   final double widthMovie = 187;
@@ -24,12 +26,15 @@ class _TopMovieState extends State<TopMovie> {
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
   final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
-  final moviesBloc = LoadMoviesBloc();
+
+  _TopMovieState(this.bloc);
+
+  final LoadMoviesBloc bloc2 = LoadMoviesBloc();
 
   @override
   Widget build(BuildContext context) {
 
-    moviesBloc.add(FetchTopMovies());
+    bloc2.add(FetchTopMovies());
     
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -43,7 +48,7 @@ class _TopMovieState extends State<TopMovie> {
               margin: EdgeInsets.only(top: 15,bottom: 20),
             ),
             BlocBuilder(
-              bloc: moviesBloc,
+              bloc: bloc2,
               builder: (BuildContext context, state){
                 if (state is MoviesLoaded){
                   return topMovieCollection(state.moviesPage.items, context);
@@ -77,7 +82,15 @@ class _TopMovieState extends State<TopMovie> {
           return GestureDetector(
             child: topMoviePoster(genres[index]),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TopMovieFilter(title: genres[index],)));
+              Navigator.push(
+                context, MaterialPageRoute(
+                  builder: (context) => TopMovieFilter(
+                    title: genres[index],
+                    bloc: bloc,
+                    event: FetchTopMoviesByGenres([genres[index]]),
+                  )
+                )
+              );
             },
           );
         },
