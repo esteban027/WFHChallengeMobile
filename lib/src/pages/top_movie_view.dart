@@ -37,13 +37,12 @@ class _TopMovieState extends State<TopMovie> {
 
   @override
   Widget build(BuildContext context) {
-    
     genreBloc.add(FetchAllGenres());
-    
+
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: _blue,
-                leading: Container(
+        leading: Container(
           child: FlatButton(
             onPressed: () {
               Navigator.pop(context);
@@ -58,27 +57,26 @@ class _TopMovieState extends State<TopMovie> {
         child: Column(
           children: <Widget>[
             Container(
-              child: Text('Top Movies by Genre', style: TextStyle(fontSize: 23, color: Colors.white),),
-              margin: EdgeInsets.only(top: 15,bottom: 20),
+              child: Text(
+                'Top Movies by Genre',
+                style: TextStyle(fontSize: 23, color: Colors.white),
+              ),
+              margin: EdgeInsets.only(top: 15, bottom: 20),
             ),
             BlocBuilder(
-              bloc: genreBloc,
-              builder: (BuildContext context, state){
-                if (state is GenresLoaded){
-                  return topGenreCollection(state.genresPage.items, context);
-                }
-                return Center(child: CircularProgressIndicator());
-              }
-            )
+                bloc: genreBloc,
+                builder: (BuildContext context, state) {
+                  if (state is GenresLoaded) {
+                    return topGenreCollection(state.genresPage.items, context);
+                  }
+                  return Center(child: CircularProgressIndicator());
+                })
           ],
         ),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/gradient.png'),
-            fit: BoxFit.cover
-          )
-        ),
+            image: DecorationImage(
+                image: AssetImage('assets/gradient.png'), fit: BoxFit.cover)),
       ),
     );
   }
@@ -87,24 +85,22 @@ class _TopMovieState extends State<TopMovie> {
     return Container(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
-        childAspectRatio: (157/108)
-      ),
-        itemBuilder: (contex, index){
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio: (157 / 108)),
+        itemBuilder: (contex, index) {
           return GestureDetector(
-            child: topMoviePoster(genres[index].id,genres[index].posterPath),
-            onTap: (){
+            child: topMoviePoster(genres[index].id, genres[index].posterPath),
+            onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(
-                  builder: (context) => TopMovieFilter(
-                    title: genres[index].id,
-                    bloc: bloc,
-                    event: FetchTopMoviesByGenres([genres[index].id]),
-                  )
-                )
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TopMovieFilter(
+                            title: genres[index].id,
+                            bloc: bloc,
+                            event: FetchTopMoviesByGenres([genres[index].id]),
+                          )));
             },
           );
         },
@@ -115,15 +111,15 @@ class _TopMovieState extends State<TopMovie> {
     );
   }
 
-  Widget topMoviePoster(String title, String posterPath){
+  Widget topMoviePoster(String title, String posterPath) {
     return Container(
       child: Column(
-        children: <Widget>[   
+        children: <Widget>[
           Stack(
             children: <Widget>[
               ClipRRect(
                 child: FadeInImage(
-                  placeholder: AssetImage('assets/defaultcover.png'), 
+                  placeholder: AssetImage('assets/defaultcover.png'),
                   image: NetworkImage(posterPath),
                   height: heigthMovie,
                   width: widthMovie,
@@ -134,14 +130,13 @@ class _TopMovieState extends State<TopMovie> {
               Container(
                 width: widthMovie,
                 height: heigthMovie,
-                decoration:  BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.transparent, _blue],
-                    stops: [0.0,1],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  )
-                ),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  colors: [Colors.transparent, _blue],
+                  stops: [0.0, 1],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )),
               ),
               Positioned(
                 bottom: 0,
@@ -150,11 +145,10 @@ class _TopMovieState extends State<TopMovie> {
                     title,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
                   ),
                   width: widthMovie,
                 ),
@@ -164,7 +158,7 @@ class _TopMovieState extends State<TopMovie> {
           ),
         ],
       ),
-      margin: EdgeInsets.only(left: 10,right: 10),
+      margin: EdgeInsets.only(left: 10, right: 10),
     );
   }
 }

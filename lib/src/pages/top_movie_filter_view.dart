@@ -67,20 +67,16 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
       ),
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-        // leading: Icon(Icons.arrow_back, color: Colors.white,size: 28,),
         leading: Container(
           child: FlatButton(
             onPressed: () {
               Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
-            // color: Colors.blue,
           ),
-          // color: Colors.red,
           width: 40,
           height: 15,
         ),
-
       ),
     );
   }

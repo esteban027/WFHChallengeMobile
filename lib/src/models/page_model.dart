@@ -45,6 +45,7 @@ class MovieModel {
   int _budget;
   int _id;
   String _genres;
+  String _description;
   double _rating;
   int _voteCount;
 
@@ -57,6 +58,7 @@ class MovieModel {
     _budget = movieModel['budget'];
     _id = movieModel['id'];
     _genres = movieModel['genres'];
+    _description = movieModel['description'];
     _rating = movieModel['rating'];
     _voteCount = movieModel['vote_count'];
   }
@@ -79,6 +81,8 @@ class MovieModel {
   int get id => _id;
 
 String get genre => _genres;
+
+String get description => _description;
 
 double get rating => _rating;
 
