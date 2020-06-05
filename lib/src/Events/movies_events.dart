@@ -26,3 +26,10 @@ class FetchTopMoviesByGenres extends MoviesEvent {
  FetchTopMoviesByGenres(this.genres, [this.page = 1]);
 }
 
+class FetchMoviesByTitle extends MoviesEvent {
+ int page ;
+ String title ;
+
+ FetchMoviesByTitle(this.title, [this.page = 1]);
+}
+
