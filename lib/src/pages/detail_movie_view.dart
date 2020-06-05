@@ -263,7 +263,7 @@ class DetailMovieView extends StatelessWidget {
         ClipRRect(
           child:  FadeInImage(
             placeholder: AssetImage('assets/defaultcover.png'), 
-            image:  NetworkImage(movie.poster_path),
+            image:  NetworkImage(movie.posterPath),
             height: 309,
             width: MediaQuery.of(context). size. width,
             fit: BoxFit.cover,

@@ -10,7 +10,7 @@ class MoviesLoading extends MoviesState {
 }
 
 class MoviesLoaded extends MoviesState {
-  final PageModel moviesPage;
+  final MoviesPageModel moviesPage;
 
   MoviesLoaded(this.moviesPage);
 
@@ -20,5 +20,5 @@ class MoviesLoaded extends MoviesState {
 
 class MoviesNotLoaded extends MoviesState {
   @override
-  String toString() => 'TodosNotLoaded';
+  String toString() => 'MoviesNotLoaded';
 }

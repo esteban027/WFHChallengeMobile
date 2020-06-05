@@ -26,7 +26,7 @@ class MoviePoster extends StatelessWidget {
               ClipRRect(
                 child: FadeInImage(
                   placeholder: AssetImage('assets/defaultcover.png'), 
-                  image: NetworkImage(movie.poster_path),
+                  image: NetworkImage(movie.posterPath),
                   height: heigthMovie,
                   width: widthMovie,
                   fit: BoxFit.cover,

@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'network.dart';
 import '../models/page_model.dart';
+import '../models/network_models.dart';
 
-class Repository {
+class MoviesPageRepository {
   final netwok = Network();
 
-  Future<PageModel> fetchAllMovies(int page) {
+  Future<MoviesPageModel> fetchAllMovies(int page) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString())
     ];
     return netwok.fetchMovies(parameters);
   }
 
-  Future<PageModel> fetchTopMovies(int page) {
+  Future<MoviesPageModel> fetchTopMovies(int page) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter.forSort(SortType.descendant, 'rating'),
@@ -22,7 +23,7 @@ class Repository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<PageModel> fetchMoviesByGenres(int page, List<String> genres) {
+  Future<MoviesPageModel> fetchMoviesByGenres(int page, List<String> genres) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
@@ -31,7 +32,8 @@ class Repository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<PageModel> fetchTopMoviesByGenres(int page, List<String> genres) {
+  Future<MoviesPageModel> fetchTopMoviesByGenres(
+      int page, List<String> genres) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '10'),
@@ -41,7 +43,7 @@ class Repository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<PageModel> fetchMoviesByTitle(int page, String title) {
+  Future<MoviesPageModel> fetchMoviesByTitle(int page, String title) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
@@ -50,7 +52,7 @@ class Repository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<PageModel> fetchTopMoviesByReleaseDate(int page) {
+  Future<MoviesPageModel> fetchTopMoviesByReleaseDate(int page) {
     var now = new DateTime.now();
     var year = now.year;
     var yearStart = new DateTime.utc(year, 1, 1);
@@ -58,7 +60,8 @@ class Repository {
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
       Parameter.forSort(SortType.descendant, 'rating'),
-      Parameter.forFilter(FilterType.greaterOrEqual, 'release_date', yearStart.toString())
+      Parameter.forFilter(
+          FilterType.greaterOrEqual, 'release_date', yearStart.toString())
     ];
     return netwok.fetchMovies(parameters);
   }
