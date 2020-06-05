@@ -70,7 +70,7 @@ class MovieModel {
   int get tmdb_id => _tmdbId;
 
   String get posterPath {
-    return _posterPath == null ? 'https://i0.wp.com/oij.org/wp-content/uploads/2016/05/placeholder.png?ssl=1' : _posterPath;
+    return _posterPath == null ? 'https://images.benchmarkemail.com/client1222470/image8770405.png' : _posterPath;
   }
   
 

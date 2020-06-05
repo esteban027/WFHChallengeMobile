@@ -48,13 +48,13 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
   void loadMoviesPage([int page = 1]){
     event.setPage(page);
-    bloc.add(ReturnToInitialState());
+    
     bloc.add(event);
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    bloc.add(ReturnToInitialState());
     loadMoviesPage();
 
     return CupertinoPageScaffold(
@@ -95,9 +95,9 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               builder: (BuildContext context, state) {
                 if (state is MoviesLoaded) {
                   movies.addAll(state.moviesPage.items);
-                  print(state.moviesPage.page);
+                  // filter(movies, type), nextPage: state.moviesPage.hasNext ? () => loadMoviesPage(state.moviesPage.page + 1) : null,
                   return MoviesGallery(
-                    movies: filter(movies, type), nextPage: state.moviesPage.hasNext ? () => loadMoviesPage(state.moviesPage.page + 1) : null,
+                    movies: state.moviesPage.items
                   );
                 } 
                 // else if (state is MoviesLoading) {
