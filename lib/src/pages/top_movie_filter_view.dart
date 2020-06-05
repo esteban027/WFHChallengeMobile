@@ -10,19 +10,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopMovieFilter extends StatefulWidget {
   final String title;
-  TopMovieFilter({Key key,@required this.title}) :  super(key: key);
+  final LoadMoviesBloc bloc;
+  final MoviesEvent event;
+
+  TopMovieFilter({Key key,@required this.title, @required this.bloc, @required this.event}) :  super(key: key);
   
   @override
-  _TopMovieFilterState createState() => _TopMovieFilterState(title);
+  _TopMovieFilterState createState() => _TopMovieFilterState(title, bloc, event);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
   String title;
+  LoadMoviesBloc bloc;
+  MoviesEvent event;
 
-  _TopMovieFilterState(this.title);
+
+  _TopMovieFilterState(this.title, this.bloc, this.event);
 
   final provider = new Provider();
-  final moviesBloc = LoadMoviesBloc();
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
@@ -33,7 +38,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   @override
   Widget build(BuildContext context) {
 
-    moviesBloc.add(FetchTopMovies());
+    bloc.add(event);
 
     return CupertinoPageScaffold(
       child: Container(
@@ -61,7 +66,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
      child: Column(
        children: <Widget>[
         BlocBuilder(
-          bloc: moviesBloc,
+          bloc: bloc,
           builder: (BuildContext context, state){
             if (state is MoviesLoaded){
               return MoviesGallery(

@@ -18,34 +18,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    // CupertinoPageScaffold(
-    //   navigationBar: CupertinoNavigationBar(
-    //     backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-    //     // middle: IconButton(
-    //     //     icon: Icon(Icons.search),
-    //     //     onPressed: (){
-    //     //       showSearch(context: context, delegate: DataSearch());
-    //     //     },
-    //     //   ),
-    //   ),
-    //   child: Center(
-    //     child: Container(
-    //       child: Column(
-    //         children: <Widget>[
-    //           _filterTitle(),
-    //           // _checkboxList(),
-    //           Scaffold(body:_checkboxList(context),),
-    //           _filterButton()
-    //         ],
-    //       ),
-    //       color: Color.fromRGBO(28, 31, 44, 1),
-    //       margin: EdgeInsets.all(20),
-    //     ),
-    //   ),
-    // );
-    
-    Scaffold(
+    return  Scaffold(
       backgroundColor: Color.fromRGBO(28, 31, 44, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(28, 31, 44, 1),

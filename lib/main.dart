@@ -1,9 +1,9 @@
-import 'package:WFHchallenge/src/pages/tab_bar_view.dart';
+
+import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:flutter/material.dart';
-import 'package:WFHchallenge/src/ui/home_page.dart';
 
 void main() {
-  runApp(HomePage());
+  runApp(MyApp());
 }
  
  class MyApp extends StatefulWidget {
@@ -18,7 +18,7 @@ void main() {
    Widget build(BuildContext context) {
      return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TabBarHomeView(),
+      home: TabView(),
      );
    }
  }
