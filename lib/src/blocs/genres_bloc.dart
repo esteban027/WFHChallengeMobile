@@ -22,7 +22,7 @@ class LoadGenresBloc extends Bloc<PageEvent, GenresState> {
 
   Stream<GenresState> _mapLoadAllGenres(int page) async* {
     try {
-      final genresPage = await this.repository.fetchAllGneres(page);
+      final genresPage = await this.repository.fetchAllGenres(page);
       yield GenresLoaded(genresPage);
     } catch (_) {
       yield GenresNotLoaded();
