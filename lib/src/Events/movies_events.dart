@@ -1,35 +1,48 @@
-import '../models/page_model.dart';
-
-abstract class MoviesEvent {}
-
-class FetchAllMovies extends MoviesEvent {
- int page ;
-FetchAllMovies([this.page = 1]);
+abstract class MoviesEvent {
+  void setPage(int page);
 }
 
-class FetchTopMovies extends MoviesEvent {
- int page ;
-FetchTopMovies([this.page = 1]);
+class BasicMovieEvent  extends MoviesEvent{
+int page ;
+BasicMovieEvent(this.page);
+ @override 
+  void setPage(int page ) {
+    this.page = page;
+  }
 }
 
-class FetchMoviesByGenres extends MoviesEvent {
- int page ;
+
+class ReturnToInitialState extends BasicMovieEvent {
+  ReturnToInitialState() : super(1);
+}
+
+class FetchAllMovies extends BasicMovieEvent {
+FetchAllMovies([int page = 1]) : super(page);
+}
+
+class FetchTopMovies extends BasicMovieEvent {
+FetchTopMovies([int page = 1]): super(page);
+}
+
+class FetchMoviesByGenres extends BasicMovieEvent {
  List<String> genres;
 
- FetchMoviesByGenres(this.genres, [this.page = 1]);
+ FetchMoviesByGenres(this.genres, [int page = 1]): super(page);
 }
 
-class FetchTopMoviesByGenres extends MoviesEvent {
- int page ;
+class FetchTopMoviesByGenres extends BasicMovieEvent {
  List<String> genres;
 
- FetchTopMoviesByGenres(this.genres, [this.page = 1]);
+ FetchTopMoviesByGenres(this.genres, [int page = 1]): super(page);
 }
 
-class FetchMoviesByTitle extends MoviesEvent {
- int page ;
+class FetchMoviesByTitle extends BasicMovieEvent {
  String title ;
 
- FetchMoviesByTitle(this.title, [this.page = 1]);
+ FetchMoviesByTitle(this.title, [int page = 1]): super(page);
+}
+
+class FetchTopMoviesByLatestRelease extends BasicMovieEvent {
+ FetchTopMoviesByLatestRelease([int page = 1]): super(page);
 }
 

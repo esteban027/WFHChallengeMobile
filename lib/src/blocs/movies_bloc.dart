@@ -22,7 +22,11 @@ class LoadMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     } else if (event is FetchTopMoviesByGenres) {
       yield* _mapLoadTopMoviesByGenres(event.page, event.genres);
     } else if (event is FetchMoviesByTitle) {
-      yield* _mapLoadMoviesByTitle(event.page, event.title, );
+      yield* _mapLoadMoviesByTitle(event.page, event.title);
+    } else  if (event is FetchTopMoviesByLatestRelease) {
+      yield* _mapLoadTopMoviesByReleaseDate(event.page);
+    } else if (event is ReturnToInitialState) {
+      yield initialState;
     }
   }
 
@@ -65,6 +69,15 @@ class LoadMoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   Stream<MoviesState> _mapLoadMoviesByTitle(int page , String title) async* {
     try {
       final movies = await this.repository.fetchMoviesByTitle(page, title);
+      yield MoviesLoaded(movies);
+    } catch (_) {
+      yield MoviesNotLoaded();
+    }
+  }
+
+  Stream<MoviesState> _mapLoadTopMoviesByReleaseDate(int page) async* {
+    try {
+      final movies = await this.repository.fetchTopMoviesByReleaseDate(page);
       yield MoviesLoaded(movies);
     } catch (_) {
       yield MoviesNotLoaded();
