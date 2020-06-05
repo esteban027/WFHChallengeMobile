@@ -6,7 +6,7 @@ import '../models/network_models.dart';
 class GenresPageRepository {
   final netwok = Network();
 
-  Future<GenresPageModel> fetchAllGneres(int page) {
+  Future<GenresPageModel> fetchAllGenres(int page) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50')
