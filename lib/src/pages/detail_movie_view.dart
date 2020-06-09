@@ -4,6 +4,7 @@ import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
+import 'package:WFHchallenge/src/widgets/chart.dart';
 import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -155,6 +156,7 @@ class DetailMovieView extends StatelessWidget {
               ],
             ),
           ),
+          
          Container(
             color: _blueContainer,
             margin:  EdgeInsets.only(right: 20, left: 20, top: 20),
@@ -180,7 +182,8 @@ class DetailMovieView extends StatelessWidget {
                     bloc: ratingBloc,
                     builder: (BuildContext context, state) {
                       if (state is RatingsLoaded) {
-                        return _graph(context,state.ratingsPage);
+                        // return _graph(context,state.ratingsPage);
+                        return  LineChartSample1(state.ratingsPage);
                       } else if (state is RatingsLoading) {
                         return Center(child: CircularProgressIndicator());
                       }

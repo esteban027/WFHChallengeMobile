@@ -236,7 +236,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                             fontSize: 13,
                             fontWeight: FontWeight.w500)),
                     onTap: () {
-                      // print('Release dAte');
                       setState(() {
                         _release = _orange;
                         _bestRating = Colors.white;

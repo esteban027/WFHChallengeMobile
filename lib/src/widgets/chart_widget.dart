@@ -2,6 +2,7 @@
 ///
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class EndPointsAxisTimeSeriesChart extends StatelessWidget {
   final List<charts.Series> seriesList;
