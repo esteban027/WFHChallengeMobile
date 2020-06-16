@@ -47,18 +47,18 @@ class LineChartSample1State extends State<LineChartSample1> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                const SizedBox(
-                  height: 37,
-                ),
-                const Text(
-                  'Movie score',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2),
-                  textAlign: TextAlign.center,
-                ),
+                // const SizedBox(
+                //   height: 37,
+                // ),
+                // const Text(
+                //   'Movie score',
+                //   style: TextStyle(
+                //       color: Colors.white,
+                //       fontSize: 32,
+                //       fontWeight: FontWeight.bold,
+                //       letterSpacing: 2),
+                //   textAlign: TextAlign.center,
+                // ),
                 const SizedBox(
                   height: 37,
                 ),
@@ -67,7 +67,6 @@ class LineChartSample1State extends State<LineChartSample1> {
                     padding: const EdgeInsets.only(right: 16.0, left: 6.0),
                     child: LineChart(
                       createLineChartData(minsX[graphNumber], maxsX[graphNumber]),
-                      // isShowingMainData ? sampleData1() : createLineChartData(2018, 2020),
                       swapAnimationDuration: const Duration(milliseconds: 500),
                     ),
                   ),
@@ -77,120 +76,34 @@ class LineChartSample1State extends State<LineChartSample1> {
                 ),
               ],
             ),
-            IconButton(
-              icon: Icon(
-                Icons.navigate_next,
-                color: Colors.white.withOpacity(isShowingMainData ? 1.0 : 0.5),
+            Positioned(
+              right: 0,
+              child: IconButton(
+                icon: Icon(
+                  Icons.navigate_next,
+                  color: Colors.white.withOpacity(spotsList.length == 1 ? 0 : 1),
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (graphNumber == spotsList.length){
+                      graphNumber = 0;
+                    } else {
+                      graphNumber++;
+                    }
+                  });
+                },
               ),
-              onPressed: () {
-                setState(() {
-                  // isShowingMainData = !isShowingMainData;
-                  if (graphNumber == spotsList.length){
-                    graphNumber = 0;
-                  } else {
-                    graphNumber++;
-                  }
-                });
-              },
-            )
+            ),
+
           ],
         ),
       ),
     );
   }
 
-  LineChartData sampleData1() {
-    return LineChartData(
-      lineTouchData: LineTouchData(
-        touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-        ),
-        touchCallback: (LineTouchResponse touchResponse) {},
-        handleBuiltInTouches: true,
-      ),
-      gridData: FlGridData(
-        show: true,
-      ),
-      titlesData: FlTitlesData(
-        bottomTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 22,
-          textStyle: const TextStyle(
-            color: Color(0xff72719b),
-            fontWeight: FontWeight.normal,
-            fontSize: 10,
-          ),
-          margin: 10,
-          getTitles: (value) {
-            return value.toString();
-          },
-        ),
-        leftTitles: SideTitles(
-          showTitles: true,
-          textStyle: const TextStyle(
-            color: Color(0xff75729e),
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
-          getTitles: (value) {
-            return value.toString();
-          },
-          margin: 8,
-          reservedSize: 30,
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: const Border(
-          bottom: BorderSide(
-            color: Color(0xff4e4965),
-            width: 4,
-          ),
-          left: BorderSide(
-            color: Colors.transparent,
-          ),
-          right: BorderSide(
-            color: Colors.transparent,
-          ),
-          top: BorderSide(
-            color: Colors.transparent,
-          ),
-        ),
-      ),
-      minX: minYear,
-      maxX: maxYear,
-      maxY: 5,
-      minY: 0,
-      lineBarsData: createLinebarData(0),
-    );
-  }
-
-  // List<LineChartBarData> linesBarData1() {
-  //   var spots = _timeStampsToDates(ratings)[0];
-  //   final LineChartBarData lineChartBarData1 = LineChartBarData(
-  //     spots: spots,
-  //     isCurved: false,
-  //     colors: [_orange, Colors.yellow, _orange],
-  //     barWidth: 2,
-  //     isStrokeCapRound: false,
-  //     dotData: FlDotData(
-  //       show: false,
-  //     ),
-  //     belowBarData: BarAreaData(
-  //       show: false,
-  //     ),
-  //   );
-
-  //   return [
-  //     lineChartBarData1,
-  //   ];
-  // }
-
   void maxAndMin() {
     datesList.forEach((dateList) {
       dateList.sort((a, b) => a.compareTo(b));
-      // print(dateList);
-
       minsX.add(dateList.first.toDouble());
       maxsX.add(dateList.last.toDouble());
     });
@@ -237,8 +150,7 @@ class LineChartSample1State extends State<LineChartSample1> {
       datesList.add(temporalYearDate);
     }
 
-        maxAndMin();
-
+    maxAndMin();
 
     if (spots.length > 5) {
       counter = 0;
@@ -261,12 +173,12 @@ class LineChartSample1State extends State<LineChartSample1> {
   List<LineChartBarData> createLinebarData(int number) {
     final LineChartBarData lineChartBarData = LineChartBarData(
       spots: spotsList[graphNumber],
-      isCurved: true,
+      isCurved: false,
       colors: [
         _orange
       ],
-      barWidth: 5,
-      isStrokeCapRound: false,
+      barWidth: 2,
+      isStrokeCapRound: true,
       dotData: FlDotData(
         show: true,
       ),
