@@ -5,14 +5,14 @@ import '../Events/pages_events.dart';
 import '../States/ratings_states.dart';
 
 class LoadRatingsBloc extends Bloc<PageEvent, RatingsState> {
-  RatingsPageRepository repository;
+  RatingsRepository repository;
 
   @override
   RatingsState get initialState => RatingsLoading();
 
   @override
   Stream<RatingsState> mapEventToState(PageEvent event) async* {
-    repository = RatingsPageRepository();
+    repository = RatingsRepository();
     if (event is FetchRatingsByMovieId) {
       yield* _mapLoadRatingsByMovieId(event.page, event.movieId);
     } else if (event is ReturnToInitialState) {
