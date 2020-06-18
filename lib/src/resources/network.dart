@@ -13,6 +13,8 @@ class Network {
   String _genresEndpoint = 'genre';
   String _ratingEndpoint = 'rating';
 
+  Map<String, String> JSONHeader = {'Content-Type': 'application/json; charset=UTF-8'};
+
   Future<MoviesPageModel> fetchMovies([List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
 
@@ -79,5 +81,13 @@ class Network {
       convertedParameters[parameters[i].type.name] = parameters[i].value;
     }
     return convertedParameters;
+  }
+
+  Future<Response> postNewRating(RatingModel rating) async {
+    Uri uri = Uri.http(_url, _ratingEndpoint);
+
+    return post(uri, 
+    headers: JSONHeader,
+    body: rating.toJson());
   }
 }

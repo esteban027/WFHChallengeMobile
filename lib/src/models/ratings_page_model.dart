@@ -49,6 +49,13 @@ class RatingModel {
     _timestamp = ratingModel['timestamp'];
   }
 
+  Map <String, dynamic> toJson() => {
+    "user" : this.user,
+    "movie" : this.movieId,
+    "rating" : this.rating,
+    "timestamp" : this.timestamp
+  };
+
  int get user => _user;
 
  int get movieId => _movieId;
