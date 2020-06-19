@@ -33,7 +33,7 @@ class RatingPublished extends RatingsState {
   String toString() => 'Rating Published';
 }
 
-class RaitingNotPublished extends RatingsState {
+class RatingNotPublished extends RatingsState {
    @override
   String toString() => 'Rating Not Published';
 }
