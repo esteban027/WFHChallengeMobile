@@ -20,11 +20,10 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri);
-    // , headers: {
-    //   'API_KEY':
-    //       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    // });
+    Response response = await get(uri, headers: {
+      'API_KEY':
+          'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
+    });
 
     if (response.statusCode == 200) {
       MoviesPageModel items =

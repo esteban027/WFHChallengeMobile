@@ -2,6 +2,13 @@ import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+class TimeSeriesSales {
+  final DateTime time;
+  final double sales;
+
+  TimeSeriesSales(this.time, this.sales);
+}
+
 class LineChartSample1 extends StatefulWidget {
   final RatingsPageModel ratings;
 
@@ -47,18 +54,6 @@ class LineChartSample1State extends State<LineChartSample1> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                // const SizedBox(
-                //   height: 37,
-                // ),
-                // const Text(
-                //   'Movie score',
-                //   style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 32,
-                //       fontWeight: FontWeight.bold,
-                //       letterSpacing: 2),
-                //   textAlign: TextAlign.center,
-                // ),
                 const SizedBox(
                   height: 37,
                 ),

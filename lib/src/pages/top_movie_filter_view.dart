@@ -48,7 +48,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
   void loadMoviesPage([int page = 1]){
     event.setPage(page);
-    
     bloc.add(event);
   }
 
@@ -100,10 +99,11 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                     movies: state.moviesPage.items
                   );
                 } 
-                // else if (state is MoviesLoading) {
-                //   return Center(child: CircularProgressIndicator());
-                // }
-                return Center(child: CircularProgressIndicator());
+                return Container(
+                  child: Center(child: CircularProgressIndicator()),
+                  width: MediaQuery.of(context).size.width,
+                  height:  MediaQuery.of(context).size.height - 400,
+                );
               }
           )
         ],
