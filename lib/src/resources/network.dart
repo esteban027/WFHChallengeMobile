@@ -24,6 +24,7 @@ class Network {
       'API_KEY':
           'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
     });
+
     if (response.statusCode == 200) {
       MoviesPageModel items =
           MoviesPageModel.fromJson(json.decode(response.body));
@@ -40,10 +41,11 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri, headers: {
-      'API_KEY':
-          'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    });
+    Response response = await get(uri);
+    // , headers: {
+    //   'API_KEY':
+    //       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
+    // });
     if (response.statusCode == 200) {
       GenresPageModel items =
           GenresPageModel.fromJson(json.decode(response.body));
@@ -60,10 +62,11 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri, headers: {
-      'API_KEY':
-          'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    });
+    Response response = await get(uri);
+    // , headers: {
+    //   'API_KEY':
+    //       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
+    // });
     if (response.statusCode == 200) {
       RatingsPageModel items =
           RatingsPageModel.fromJson(json.decode(response.body));

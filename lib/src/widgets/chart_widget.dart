@@ -2,6 +2,7 @@
 ///
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class EndPointsAxisTimeSeriesChart extends StatelessWidget {
   final List<charts.Series> seriesList;
@@ -26,12 +27,4 @@ class EndPointsAxisTimeSeriesChart extends StatelessWidget {
       animationDuration: Duration(seconds: 1),
     );
   }
-}
-
-/// Sample time series data type.
-class TimeSeriesSales {
-  final DateTime time;
-  final double sales;
-
-  TimeSeriesSales(this.time, this.sales);
 }

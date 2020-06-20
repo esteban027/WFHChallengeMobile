@@ -18,16 +18,19 @@ class _FilterGenresViewState extends State<FilterGenresView> {
   Map<String,bool> genresState = {'Animation': false, 'Action': false, 'Adventure': false , 'Biography': false, 'Comedy': false, 'Crime': false, 'Drama': false, 'Documentary': false, 'Fantasy': false, 'Historical': false, 'Horror': false};
   Color _buttonColor = Colors.grey;
   final moviesBloc = LoadMoviesBloc();
-
+  bool shouldEnable = false;
   @override
   Widget build(BuildContext context) {
 
     List<String> selectedGenres = [];
+    shouldEnable = false;
 
     genresState.forEach((key, value) {
       if (value == true){
         selectedGenres.add(key);
+        shouldEnable = true;
       }
+      
     });
 
     return  Scaffold(
@@ -38,6 +41,13 @@ class _FilterGenresViewState extends State<FilterGenresView> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: (){
+              
+              genresState.forEach((key, value) {
+                if (value == true){
+                  shouldEnable = true;
+                }
+              });
+
               showSearch(context: context, delegate: DataSearch(moviesBloc));
             },
           )
