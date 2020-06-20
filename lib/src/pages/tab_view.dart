@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 class TabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
     Color _blue = Color.fromRGBO(28, 31, 44, 1);
     final Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
@@ -23,12 +22,10 @@ class TabView extends StatelessWidget {
             BottomNavigationBarItem(
                 icon: Icon(
               CupertinoIcons.home,
-              // color: Color.fromRGBO(235, 89, 25, 1),
             )),
               BottomNavigationBarItem(
                 icon: Icon(
                 CupertinoIcons.search,
-                // color: Color.fromRGBO(235, 89, 25, 1),
               ),
             )
           ],
