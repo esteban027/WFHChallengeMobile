@@ -3,6 +3,8 @@ import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'genres_recomendation_view.dart';
+
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key}) : super(key: key);
 
@@ -86,7 +88,10 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _andoridButton() {
     return FlatButton(
-        onPressed: () {},
+        onPressed: () {
+           Navigator.push(
+              context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
+        },
         child: Container(
           child: Row(
             children: <Widget>[
