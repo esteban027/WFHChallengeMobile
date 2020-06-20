@@ -1,5 +1,6 @@
 
 import 'package:WFHchallenge/src/pages/tab_view.dart';
+import 'package:WFHchallenge/src/pages/welcome_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +19,8 @@ void main() {
    Widget build(BuildContext context) {
      return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TabView(),
+      // home: TabView(),
+      home: WelcomePage(),
      );
    }
  }
