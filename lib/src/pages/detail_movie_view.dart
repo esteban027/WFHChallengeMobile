@@ -238,7 +238,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     bloc: ratingBloc,
                     builder: (BuildContext context, state) {
                       if (state is RatingsLoaded) {
-                        // return _graph(context,state.ratingsPage);
                         return LineChartSample1(state.ratingsPage);
                       } else if (state is RatingsLoading) {
                         return Center(child: CircularProgressIndicator());

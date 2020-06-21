@@ -56,7 +56,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
     _scrollController.addListener(() {
       if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
         print('SCrooool');
-        nextPage(); 
+        // nextPage(); 
       }
     });
 

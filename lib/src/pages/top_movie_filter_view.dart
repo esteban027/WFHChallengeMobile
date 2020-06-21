@@ -85,6 +85,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   Widget _moviesGallery() {
+    movies = [];
     return Container(
       width: double.infinity,
       child: Column(
@@ -94,9 +95,9 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               builder: (BuildContext context, state) {
                 if (state is MoviesLoaded) {
                   movies.addAll(state.moviesPage.items);
-                  // filter(movies, type), nextPage: state.moviesPage.hasNext ? () => loadMoviesPage(state.moviesPage.page + 1) : null,
+                  final filteredmovies =  filter(movies, type);
                   return MoviesGallery(
-                    movies: state.moviesPage.items
+                    movies: filteredmovies
                   );
                 } 
                 return Container(

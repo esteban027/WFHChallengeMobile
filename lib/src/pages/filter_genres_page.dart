@@ -62,7 +62,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                 },
               ),
               decoration: BoxDecoration(
-                color:  Colors.deepOrange, 
+                // color:  Colors.deepOrange, 
               ),
             )
           ]),
@@ -162,6 +162,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                 builder: (context) => FilterView(
                       moviesBloc: moviesBloc,
                       event: FetchMoviesByGenres(selectedGenres),
+                      genres: selectedGenres,
                     )));
       },
 
