@@ -18,7 +18,7 @@ class RatingsRepository {
     return netwok.fetchRatings(parameters);
   }
 
-  Future<Response> postNewRating(RatingModel rating) {
+  Future<bool> postNewRating(RatingModel rating) {
     return netwok.postNewRating(rating);
   }
 }

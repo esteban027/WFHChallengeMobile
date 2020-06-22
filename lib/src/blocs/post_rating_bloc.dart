@@ -26,8 +26,8 @@ class PostRatingBloc extends Bloc<PostEvent, RatingsState> {
 
   Stream<RatingsState> _mapPublishNewRating(RatingModel rating) async* {
     try {
-      final ratingsPostResponse = await this.repository.postNewRating(rating);
-      if (ratingsPostResponse.statusCode == 200) {
+      final ratingsPostSuccess = await this.repository.postNewRating(rating);
+      if (ratingsPostSuccess) {
         yield RatingPublished();
       } else {
         yield RatingNotPublished();

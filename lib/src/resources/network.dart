@@ -13,7 +13,11 @@ class Network {
   String _genresEndpoint = 'genre';
   String _ratingEndpoint = 'rating';
 
-  Map<String, String> JSONHeader = {'Content-Type': 'application/json; charset=UTF-8'};
+  Map<String, String> PostHeader = {
+      'API_KEY':
+      'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC',
+      'Content-Type': 'application/json; charset=UTF-8'
+    };
 
   Future<MoviesPageModel> fetchMovies([List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
@@ -86,11 +90,19 @@ class Network {
     return convertedParameters;
   }
 
-  Future<Response> postNewRating(RatingModel rating) async {
+  Future<bool> postNewRating(RatingModel rating) async {
     Uri uri = Uri.http(_url, _ratingEndpoint);
-
-    return post(uri, 
-    headers: JSONHeader,
-    body: rating.toJson());
+     
+    var request =   post(uri,
+    body: jsonEncode(rating),
+    headers: PostHeader
+    );
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
+
 }

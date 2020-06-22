@@ -49,7 +49,10 @@ class RatingModel {
     _timestamp = ratingModel['timestamp'];
   }
 
-  Map <String, dynamic> toJson() => {
+  RatingModel.createNewRatingInit(
+      this._user, this._movieId, this._rating, this._timestamp);
+
+  Map toJson() => {
     "user" : this.user,
     "movie" : this.movieId,
     "rating" : this.rating,
