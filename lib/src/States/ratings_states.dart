@@ -22,3 +22,18 @@ class RatingsNotLoaded extends RatingsState {
   @override
   String toString() => 'RatingsNotLoaded';
 }
+
+class PublishingRating extends RatingsState {
+  @override
+  String toString() => 'Publishing Rating';
+}
+
+class RatingPublished extends RatingsState {
+  @override
+  String toString() => 'Rating Published';
+}
+
+class RatingNotPublished extends RatingsState {
+   @override
+  String toString() => 'Rating Not Published';
+}

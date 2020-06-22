@@ -49,6 +49,16 @@ class RatingModel {
     _timestamp = ratingModel['timestamp'];
   }
 
+  RatingModel.createNewRatingInit(
+      this._user, this._movieId, this._rating, this._timestamp);
+
+  Map toJson() => {
+    "user" : this.user,
+    "movie" : this.movieId,
+    "rating" : this.rating,
+    "timestamp" : this.timestamp
+  };
+
  int get user => _user;
 
  int get movieId => _movieId;
