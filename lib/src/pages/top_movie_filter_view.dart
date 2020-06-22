@@ -46,7 +46,9 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
-  void loadMoviesPage([int page = 1]){
+  double heightOfModalBottomSheet = 200;
+
+  void loadMoviesPage([int page = 1]) {
     event.setPage(page);
     bloc.add(event);
   }
@@ -61,7 +63,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         child: Center(
           child: Column(
             children: <Widget>[
-              _sortBy(),
+              _sortBy(context),
               _moviesGallery(),
             ],
           ),
@@ -95,24 +97,21 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               builder: (BuildContext context, state) {
                 if (state is MoviesLoaded) {
                   movies.addAll(state.moviesPage.items);
-                  final filteredmovies =  filter(movies, type);
-                  return MoviesGallery(
-                    movies: filteredmovies
-                  );
-                } 
+                  final filteredmovies = filter(movies, type);
+                  return MoviesGallery(movies: filteredmovies);
+                }
                 return Container(
                   child: Center(child: CircularProgressIndicator()),
                   width: MediaQuery.of(context).size.width,
-                  height:  MediaQuery.of(context).size.height - 400,
+                  height: MediaQuery.of(context).size.height - 400,
                 );
-              }
-          )
+              })
         ],
       ),
     );
   }
 
-  Widget _sortBy() {
+  Widget _sortBy(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       child: Container(
@@ -203,7 +202,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                             fontSize: 13,
                             fontWeight: FontWeight.w500)),
                     onTap: () {
-                      // print('Best Rating');
                       setState(() {
                         _bestRating = _orange;
                         _alfabetical = Colors.white;
