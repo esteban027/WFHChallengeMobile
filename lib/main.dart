@@ -1,6 +1,7 @@
 
 import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:WFHchallenge/src/pages/welcome_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 void main() {

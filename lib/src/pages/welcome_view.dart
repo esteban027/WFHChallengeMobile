@@ -1,4 +1,4 @@
-import 'package:WFHchallenge/src/pages/home_view.dart';
+import 'package:WFHchallenge/src/resources/google_sign_in_repository.dart';
 import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,7 +23,7 @@ class _WelcomePageState extends State<WelcomePage> {
           children: <Widget>[
             _welcomeToHeyMovie(),
             Spacer(),
-            _andoridButton(),
+            _googleButton(),
             _appleButton()
           ],
         ),
@@ -86,11 +86,13 @@ class _WelcomePageState extends State<WelcomePage> {
         ));
   }
 
-  Widget _andoridButton() {
+  Widget _googleButton() {
     return FlatButton(
         onPressed: () {
-           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
+          //  Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
+          final GoogleSignInRepository googleSignInRepository = GoogleSignInRepository();
+          googleSignInRepository.signinWithGoogle();
         },
         child: Container(
           child: Row(

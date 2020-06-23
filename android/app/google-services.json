@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "342170726324",
+    "firebase_url": "https://heymovie-538c6.firebaseio.com",
+    "project_id": "heymovie-538c6",
+    "storage_bucket": "heymovie-538c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342170726324:android:b516c3bcb111937d3d0ce1",
+        "android_client_info": {
+          "package_name": "com.losabandonados.heymovie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342170726324-jv5p735ns15n4c4m2nqm2cksobtpel23.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.losabandonados.heymovie",
+            "certificate_hash": "f367a524fb10ce4895784cdb469dd7906d980566"
+          }
+        },
+        {
+          "client_id": "342170726324-76a8hmet4tn8uphp33mn1gc1mqkhfht5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzXCpYfRSYr5OY6ejvWktGdCQ0aoFEK_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342170726324-76a8hmet4tn8uphp33mn1gc1mqkhfht5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

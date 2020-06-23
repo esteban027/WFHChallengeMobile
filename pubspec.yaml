@@ -38,6 +38,10 @@ dev_dependencies:
   flutter_bloc: ^4.0.0
   http: ^0.12.1
   fl_chart: ^0.10.0
+  firebase_auth: ^0.16.1
+  google_sign_in: ^4.5.1
+  device_info: ^0.4.1+4
+  apple_sign_in: ^0.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
