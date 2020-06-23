@@ -76,7 +76,7 @@ class _WelcomePageState extends State<WelcomePage> {
               )
             ],
           ),
-          margin: EdgeInsets.only(left: 60, right: 60, bottom: 76),
+          margin: EdgeInsets.only(left: 40, right: 40, bottom: 76),
           padding: EdgeInsets.symmetric(horizontal: 47),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(108),
@@ -107,7 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ],
           ),
           // margin: EdgeInsets.symmetric(horizontal: 60),
-          margin: EdgeInsets.only(left: 60, right: 60, bottom: 24),
+          margin: EdgeInsets.only(left: 40, right: 40, bottom: 24),
           padding: EdgeInsets.symmetric(horizontal: 47),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(108),

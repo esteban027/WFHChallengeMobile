@@ -1,3 +1,4 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
@@ -32,7 +33,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   String title;
   LoadMoviesBloc bloc;
   PageEvent event;
-  int page = 1;
+  int page = 0;
   Color _bestRating = Colors.white;
   Color _alfabetical = Colors.white;
   Color _release = Colors.white;
@@ -45,19 +46,30 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
-
   double heightOfModalBottomSheet = 200;
+  bool shouldReloadMovies = true;
+  bool didFinishLoading = true;
 
-  void loadMoviesPage([int page = 1]) {
-    event.setPage(page);
-    bloc.add(event);
+  Future<void> loadMoviesPage([bool isLoading = true]) async {
+    shouldReloadMovies = true;
+
+    if (event.toString() == "Instance of 'FetchTopMovies'" && isLoading) {
+      page++;
+      print(page);
+      bloc.add(FetchTopMovies(page: page));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    shouldReloadMovies = true;
+    bloc.add(ReturnToInitialState());
+    loadMoviesPage(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    bloc.add(ReturnToInitialState());
-    loadMoviesPage();
-
     return CupertinoPageScaffold(
       child: Container(
         child: Center(
@@ -87,25 +99,37 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   Widget _moviesGallery() {
-    movies = [];
+    final filteredmovies = filter(movies, type);
     return Container(
       width: double.infinity,
       child: Column(
         children: <Widget>[
-          BlocBuilder(
-              bloc: bloc,
-              builder: (BuildContext context, state) {
-                if (state is MoviesLoaded) {
-                  movies.addAll(state.moviesPage.items);
-                  final filteredmovies = filter(movies, type);
-                  return MoviesGallery(movies: filteredmovies);
-                }
-                return Container(
-                  child: Center(child: CircularProgressIndicator()),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height - 400,
-                );
-              })
+          shouldReloadMovies
+              ? BlocBuilder(
+                  bloc: bloc,
+                  builder: (BuildContext context, state) {
+                    print(state);
+                    if (state is MoviesLoaded) {
+                      movies.addAll(state.moviesPage.items);
+                      didFinishLoading = true;
+
+                      var gallery = MoviesGallery(
+                        movies: movies,
+                        nextPage: loadMoviesPage,
+                        isFirstCall: true,
+                      );
+                      gallery.changeStatus();
+
+                      return gallery;
+                    }
+
+                    return Container(
+                      child: Center(child: CircularProgressIndicator()),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 400,
+                    );
+                  })
+              : MoviesGallery(movies: filteredmovies, nextPage: loadMoviesPage)
         ],
       ),
     );
@@ -164,6 +188,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   void bottomSheet() {
+    shouldReloadMovies = false;
     showModalBottomSheet(
         context: context,
         builder: (context) {

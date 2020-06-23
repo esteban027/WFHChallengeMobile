@@ -88,7 +88,8 @@ class _TopMovieState extends State<TopMovie> {
             crossAxisCount: 2,
             crossAxisSpacing: 10.0,
             mainAxisSpacing: 10.0,
-            childAspectRatio: (157 / 108)),
+            childAspectRatio: (157 / 108)
+        ),
         itemBuilder: (contex, index) {
           return GestureDetector(
             child: topMoviePoster(genres[index].id, genres[index].posterPath),
@@ -107,58 +108,53 @@ class _TopMovieState extends State<TopMovie> {
         itemCount: genres.length,
         padding: EdgeInsets.only(left: 10, right: 10, top: 20),
       ),
-      height: MediaQuery.of(context).size.height - 234,
+      height: MediaQuery.of(context).size.height - 200,
     );
   }
 
   Widget topMoviePoster(String title, String posterPath) {
     return Container(
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              ClipRRect(
-                child: FadeInImage(
-                  placeholder: AssetImage('assets/defaultcover.png'),
-                  image: NetworkImage(posterPath),
-                  height: heigthMovie,
-                  width: widthMovie,
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: borderRadius,
+          ClipRRect(
+            child: FadeInImage(
+              placeholder: AssetImage('assets/defaultcover.png'),
+              image: NetworkImage(posterPath),
+              height: heigthMovie,
+              width: widthMovie,
+              fit: BoxFit.cover,
+            ),
+            borderRadius: borderRadius,
+          ),
+          Container(
+            width: widthMovie,
+            height: heigthMovie,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              colors: [Colors.transparent, _blue],
+              stops: [0.0, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              child: Text(
+                title,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
-              Container(
-                width: widthMovie,
-                height: heigthMovie,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  colors: [Colors.transparent, _blue],
-                  stops: [0.0, 1],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )),
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  width: widthMovie,
-                ),
-              ),
-            ],
-            fit: StackFit.passthrough,
+              width: widthMovie,
+            ),
           ),
         ],
+        fit: StackFit.passthrough,
       ),
-      margin: EdgeInsets.only(left: 10, right: 10),
     );
   }
 }

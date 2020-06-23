@@ -554,16 +554,20 @@ class _DetailMovieViewState extends State<DetailMovieView> {
             ),
             Container(
               child: FlatButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-                child: Text('Rate It', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500),)
-              ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Rate It',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  )),
               width: MediaQuery.of(context).size.width - 40,
               decoration: BoxDecoration(
-               color: _buttonColor,
-               borderRadius: BorderRadius.circular(108) 
-              ),
+                  color: _buttonColor,
+                  borderRadius: BorderRadius.circular(108)),
             )
           ],
         ),

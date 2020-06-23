@@ -1,7 +1,7 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/pages/top_movie_bygenre_view.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
-import 'package:WFHchallenge/src/pages/top_movie_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -93,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
             builder: (context) => TopMovieFilter(
               title: title,
               bloc: moviesBloc,
-              event: FetchTopMovies(),
+              event: FetchTopMovies(page: null),
             )
           )
         );

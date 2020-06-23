@@ -3,7 +3,21 @@ import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TabView extends StatelessWidget {
+class TabView extends StatefulWidget {
+  
+  @override
+  _TabViewState createState() => _TabViewState();
+}
+
+class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+  
   @override
   Widget build(BuildContext context) {
     Color _blue = Color.fromRGBO(28, 31, 44, 1);
