@@ -7,7 +7,6 @@ import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/genres_page_model.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
-import 'package:WFHchallenge/src/providers/provider.dart';
 import 'package:WFHchallenge/src/resources/network.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ class TopMovie extends StatefulWidget {
 
 class _TopMovieState extends State<TopMovie> {
   final LoadMoviesBloc bloc;
-  final provider = new Provider();
   final network = Network();
   final double widthMovie = 187;
   final double heigthMovie = 128;
