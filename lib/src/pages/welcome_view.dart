@@ -1,9 +1,10 @@
-import 'package:WFHchallenge/src/pages/home_view.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 
-import 'genres_recomendation_view.dart';
 
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key}) : super(key: key);
@@ -17,13 +18,15 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return Scaffold(
       body: Container(
         child: Column(
           children: <Widget>[
             _welcomeToHeyMovie(),
             Spacer(),
-            _andoridButton(),
+            _googleButton(),
+            if (signInRepository.appleSignInIsAvailable)
             _appleButton()
           ],
         ),
@@ -55,17 +58,21 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Widget _appleButton() {
+    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => TabView()));
+        onPressed: () async {
+          UserModel user = await signInRepository.getUserInfo();
+          print(user.name);
+
+       /* String user = await signInRepository.getCurrentUser();
+          print(user);*/
         },
         child: Container(
           child: Row(
             children: <Widget>[
               Image.asset('assets/IconApple.png'),
               SizedBox(
-                width:10 ,
+                width:10,
               ),
               Text(
                 'Log In with Apple',
@@ -86,11 +93,15 @@ class _WelcomePageState extends State<WelcomePage> {
         ));
   }
 
-  Widget _andoridButton() {
+  Widget _googleButton() {
+    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
-        onPressed: () {
-           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
+        onPressed: () async {
+          //  Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
+
+         UserModel user = await signInRepository.signinWithGoogle();
+         print(user);
         },
         child: Container(
           child: Row(

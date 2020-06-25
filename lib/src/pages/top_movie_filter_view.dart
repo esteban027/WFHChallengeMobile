@@ -3,7 +3,6 @@ import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
-import 'package:WFHchallenge/src/providers/provider.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +38,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
   _TopMovieFilterState(this.title, this.bloc, this.event);
-
-  final provider = new Provider();
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);

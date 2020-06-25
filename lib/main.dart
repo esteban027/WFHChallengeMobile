@@ -1,10 +1,16 @@
-
-import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:WFHchallenge/src/pages/welcome_view.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final signInRepository = await SignInRepository.check();
+
+  runApp(Provider<SignInRepository>.value(
+    value: signInRepository,
+    child: MyApp(),
+  ));
 }
  
  class MyApp extends StatefulWidget {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>342170726324-1oair6voen457ensl6d6h5o8qg4enac3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.342170726324-1oair6voen457ensl6d6h5o8qg4enac3</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>342170726324-jv5p735ns15n4c4m2nqm2cksobtpel23.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD1kyFDtrTP5XTvifbNcrY1PcEp64li02M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>342170726324</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.losabandonados.heymovie</string>
+	<key>PROJECT_ID</key>
+	<string>heymovie-538c6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>heymovie-538c6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:342170726324:ios:9fd4d0f6a7b039383d0ce1</string>
+	<key>DATABASE_URL</key>
+	<string>https://heymovie-538c6.firebaseio.com</string>
+</dict>
+</plist>
