@@ -2,6 +2,8 @@ import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';

@@ -50,10 +50,6 @@ class SignInRepository {
     await googleSignIn.signOut();
   }
 
-  Future<String> getCurrentUser() async {
-    FirebaseUser user = await _auth.currentUser();
-    return user.email;
-  }
 
   static Future<SignInRepository> check() async {
     return SignInRepository( await AppleSignIn.isAvailable());
@@ -106,7 +102,7 @@ class SignInRepository {
     }
   }
 
- Future<bool>_createUser( UserModel user) async {
+ Future<bool>createUser( UserModel user) async {
     try {
       UserModel backEndUser = await _network.postUser(user);
       final prefs = await SharedPreferences.getInstance();

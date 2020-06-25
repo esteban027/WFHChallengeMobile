@@ -1,20 +1,28 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_bygenre_view.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 
 enum TypeOfCard { normal, splited }
 
 class HomeView extends StatefulWidget {
-  HomeView({Key key}) : super(key: key);
+  String userName;
+
+
+  HomeView({ @required this.userName});
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _HomeViewState createState() => _HomeViewState(userName);
 }
 
 class _HomeViewState extends State<HomeView> {
+  String userName;
+  _HomeViewState(@required this.userName);
   final moviesBloc = LoadMoviesBloc();
 
   List<String> categories = [
@@ -28,6 +36,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+
     return CupertinoPageScaffold(
       child: Container(
         child: ListView(
@@ -65,6 +74,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _title() {
+    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final user = signInRepository.getUserInfo();
     return Column(
       children: <Widget>[
         Container(
@@ -77,14 +88,25 @@ class _HomeViewState extends State<HomeView> {
                   fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
-            Text(
-              'Maria',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  fontWeight: FontWeight.w100),
-              textAlign: TextAlign.center,
-            ),
+            FutureBuilder<UserModel>(
+              future: user,
+              builder:
+                  (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      snapshot.data.name.split(' ').first,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 23,
+                          fontWeight: FontWeight.w100),
+                      textAlign: TextAlign.center,
+                    );
+                  }
+                  return Container(child:Center(child: CircularProgressIndicator()),width: 50,height: 50,);
+                }
+              },
+            )
           ], mainAxisAlignment: MainAxisAlignment.center),
           margin: EdgeInsets.only(top: 40),
         ),

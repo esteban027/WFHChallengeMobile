@@ -2,24 +2,28 @@ import 'package:WFHchallenge/src/Events/genres_events.dart';
 import 'package:WFHchallenge/src/States/genres_states.dart';
 import 'package:WFHchallenge/src/blocs/genres_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/pages/tab_view.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class GenresRecomendationView extends StatefulWidget {
-  final String name;
+  final UserModel user;
 
-  GenresRecomendationView({@required this.name});
+  GenresRecomendationView({@required this.user});
   @override
   _GenresRecomendationViewState createState() =>
-      _GenresRecomendationViewState(name: name);
+      _GenresRecomendationViewState(user: user);
 }
 
 class _GenresRecomendationViewState extends State<GenresRecomendationView> {
-  final String name;
+  final UserModel user;
 
-  _GenresRecomendationViewState({@required this.name});
+
+  _GenresRecomendationViewState({@required this.user});
 
   final _separatorColor = Color.fromRGBO(40, 65, 109, 1.0);
   final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
@@ -62,7 +66,7 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
             _choseOne(),
             _blockBuilder(),
             Spacer(),
-            _filterButton(selectedGenres)
+            _filterButton(selectedGenres,user)
           ],
         ),
         width: MediaQuery.of(context).size.width,
@@ -75,7 +79,9 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
   }
 
   Widget _heyName() {
+    var userName = user.name.split(' ').first;
     return Container(
+
       child: Row(
         children: <Widget>[
           Text(
@@ -83,7 +89,7 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
             style: TextStyle(
                 fontSize: 27, fontWeight: FontWeight.w600, color: Colors.white),
           ),
-          Text(name.toString(),
+          Text(userName,
               style: TextStyle(
                   fontSize: 27,
                   fontWeight: FontWeight.w100,
@@ -220,12 +226,22 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
     );
   }
 
-  Widget _filterButton(List<String> selectedGenres) {
-    bool isEmpty = selectedGenres.isEmpty;
-
+  Widget _filterButton(List<String> selectedGenres, UserModel user) {
+    bool isEmpty = selectedGenres.length <  5;
+    String genresString = '';
+    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return Container(
       child: RaisedButton(
-        onPressed: isEmpty ? null :() {
+        onPressed: isEmpty ? null :() async {
+          for (int i = 0 ; i < selectedGenres.length; i++) {
+            if (i== 0) {
+              genresString = selectedGenres[i];
+            } else {
+              genresString +='|'+selectedGenres[i];
+            }
+          }
+          user.genres = genresString;
+          await signInRepository.createUser(user);
           Navigator.push(
             context,
             MaterialPageRoute(

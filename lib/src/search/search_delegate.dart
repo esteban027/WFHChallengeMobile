@@ -3,6 +3,7 @@ import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

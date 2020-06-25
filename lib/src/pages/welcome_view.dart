@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:WFHchallenge/src/models/user_model.dart';
 
+import 'genres_recomendation_view.dart';
+
 
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key}) : super(key: key);
@@ -16,6 +18,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Color darkBlue = Color.fromRGBO(28, 31, 44, 1);
   double height;
   double width;
+  String userName;
   @override
   Widget build(BuildContext context) {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
@@ -64,8 +67,8 @@ class _WelcomePageState extends State<WelcomePage> {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
-          UserModel user = await signInRepository.getUserInfo();
-          print(user.name);
+          UserModel user = await signInRepository.sigInWithApple();
+          determineRoute(user);
 
        /* String user = await signInRepository.getCurrentUser();
           print(user);*/
@@ -100,16 +103,21 @@ class _WelcomePageState extends State<WelcomePage> {
           height: 41,
         ));
   }
-
+void determineRoute(UserModel user) {
+  if (user.genres.isEmpty) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => GenresRecomendationView(user: user,)));
+  } else {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TabView()));
+  }
+}
   Widget _googleButton() {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
-          //  Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
-
          UserModel user = await signInRepository.signinWithGoogle();
-         print(user);
+         determineRoute(user);
         },
         child: Container(
           child: Center(
