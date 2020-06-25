@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/page_model.dart';
 import '../models/network_models.dart';
 import '../models/genres_page_model.dart';
 import '../models/ratings_page_model.dart';
+import '../models/user_model.dart';
+import '../models/user_page_model.dart';
 
 class Network {
   Client client = Client();
@@ -12,12 +15,18 @@ class Network {
   String _movieEndpoint = 'movie';
   String _genresEndpoint = 'genre';
   String _ratingEndpoint = 'rating';
+  String _userEndpoint = 'user';
 
-  Map<String, String> PostHeader = {
+  Map<String, String> postHeader = {
       'API_KEY':
       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC',
       'Content-Type': 'application/json; charset=UTF-8'
     };
+
+  Map<String, String> getHeader = {
+    'API_KEY':
+    'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
+  };
 
   Future<MoviesPageModel> fetchMovies([List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
@@ -26,10 +35,7 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri, headers: {
-      'API_KEY':
-          'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    });
+    Response response = await get(uri, headers: getHeader);
 
     if (response.statusCode == 200) {
       MoviesPageModel items =
@@ -47,11 +53,8 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri);
-    // , headers: {
-    //   'API_KEY':
-    //       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    // });
+    Response response = await get(uri, headers: getHeader);
+
     if (response.statusCode == 200) {
       GenresPageModel items =
           GenresPageModel.fromJson(json.decode(response.body));
@@ -68,11 +71,8 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri);
-    // , headers: {
-    //   'API_KEY':
-    //       'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
-    // });
+    Response response = await get(uri
+     , headers: getHeader);
     if (response.statusCode == 200) {
       RatingsPageModel items =
           RatingsPageModel.fromJson(json.decode(response.body));
@@ -95,7 +95,7 @@ class Network {
      
     var request =   post(uri,
     body: jsonEncode(rating),
-    headers: PostHeader
+    headers: postHeader
     );
     Response response = await request;
     if (response.statusCode == 200) {
@@ -105,4 +105,33 @@ class Network {
     }
   }
 
+  Future<UserModel> postUser(UserModel user) async {
+    Uri uri = Uri.http(_url, _userEndpoint);
+
+    var request = post(uri, body: jsonEncode(user), headers: postHeader);
+
+    Response response = await request;
+    if (response.statusCode == 200) {
+      UserModel user = UserModel.fromJson(json.decode(response.body));
+      return user;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+  
+  Future<UserModel> getUser(List<Parameter> parameterList) async {
+    Uri uri = Uri.http(_url, _userEndpoint);
+
+    uri = uri.replace(queryParameters: convert(parameterList));
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      UserPageModel userPage =
+      UserPageModel.fromJson(json.decode(response.body));
+      return userPage.items.first;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
 }

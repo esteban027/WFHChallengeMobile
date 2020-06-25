@@ -3,6 +3,7 @@ import 'package:WFHchallenge/src/pages/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 
 
 class WelcomePage extends StatefulWidget {
@@ -60,7 +61,9 @@ class _WelcomePageState extends State<WelcomePage> {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
-          signInRepository.sigInWithApple();
+          UserModel user = await signInRepository.getUserInfo();
+          print(user.name);
+
        /* String user = await signInRepository.getCurrentUser();
           print(user);*/
         },
@@ -93,11 +96,12 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _googleButton() {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
-        onPressed: () {
+        onPressed: () async {
           //  Navigator.push(
           //     context, MaterialPageRoute(builder: (context) => GenresRecomendationView(name: 'Maria',)));
 
-          signInRepository.signinWithGoogle();
+         UserModel user = await signInRepository.signinWithGoogle();
+         print(user);
         },
         child: Container(
           child: Row(
