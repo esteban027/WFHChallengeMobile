@@ -38,9 +38,12 @@ class RatingsPageModel {
 
 class RatingModel {
   int _user;
+  //611
   int _movieId;
+  // 33
   double _rating;
   int _timestamp;
+  // milisec / 1000
 
   RatingModel(ratingModel) {
     _user = ratingModel['user'];

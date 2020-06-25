@@ -22,3 +22,8 @@ class MoviesNotLoaded extends MoviesState {
   @override
   String toString() => 'MoviesNotLoaded';
 }
+
+class MoviesPaginationLoading extends MoviesState {
+  @override
+  String toString() => 'MoviesPaginationLoading';
+} 

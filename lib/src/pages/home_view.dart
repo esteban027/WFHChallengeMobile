@@ -1,7 +1,7 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/pages/top_movie_bygenre_view.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
-import 'package:WFHchallenge/src/pages/top_movie_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -23,6 +23,7 @@ class _HomeViewState extends State<HomeView> {
     'Top Movies \n by Genre',
     ' Best Movies of all time'
   ];
+
   List<String> moviesDescription = ['Movie title', '', '', 'Movie title'];
 
   @override
@@ -64,21 +65,39 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _title() {
-    return Container(
-      child: Row(children: <Widget>[
-        Text(
-          'Hey',
-          style: TextStyle(color: Colors.white, fontSize: 32),
-          textAlign: TextAlign.center,
+    return Column(
+      children: <Widget>[
+        Container(
+          child: Row(children: <Widget>[
+            Text(
+              'Hey',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Maria',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w100),
+              textAlign: TextAlign.center,
+            ),
+          ], mainAxisAlignment: MainAxisAlignment.center),
+          margin: EdgeInsets.only(top: 40),
         ),
-        Text(
-          'Movie',
-          style: TextStyle(
-              color: Colors.white, fontSize: 32, fontWeight: FontWeight.w100),
-          textAlign: TextAlign.center,
+        Container(
+          child: Text(
+            'Welcome to HeyMovie',
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300),
+            textAlign: TextAlign.center,
+          ),
+          margin: EdgeInsets.only(top: 5),
         ),
-      ], mainAxisAlignment: MainAxisAlignment.center),
-      margin: EdgeInsets.only(top: 40),
+      ],
     );
   }
 
@@ -88,15 +107,13 @@ class _HomeViewState extends State<HomeView> {
       onTap: () {
         final String title = categories[section].split('!')[0];
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TopMovieFilter(
-              title: title,
-              bloc: moviesBloc,
-              event: FetchTopMovies(),
-            )
-          )
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => TopMovieFilter(
+                      title: title,
+                      bloc: moviesBloc,
+                      event: FetchTopMovies(page: null),
+                    )));
       },
     );
   }
@@ -108,22 +125,24 @@ class _HomeViewState extends State<HomeView> {
           child: _section(TypeOfCard.splited, section),
           onTap: () {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TopMovieFilter(
-                  title: categories[section],
-                  bloc: moviesBloc,
-                  event: FetchTopMoviesByLatestRelease(),
-                )
-              )
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TopMovieFilter(
+                          title: categories[section],
+                          bloc: moviesBloc,
+                          event: FetchTopMoviesByLatestRelease(),
+                        )));
           },
         ),
         GestureDetector(
           child: _section(TypeOfCard.splited, section + 1),
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => TopMovie(bloc: moviesBloc,)));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TopMovie(
+                          bloc: moviesBloc,
+                        )));
           },
         ),
       ],
@@ -132,86 +151,76 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _section(TypeOfCard type, int section) {
+    final width = (MediaQuery.of(context).size.width)  ;
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
-    final double widthMovie = type == TypeOfCard.normal ? 335 : 157;
+    final double widthMovie = type == TypeOfCard.normal ? width : width - 250;
 
     final BorderRadius borderRadius = BorderRadius.circular(6.0);
-    final Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
-    final Color _orange = Color.fromRGBO(235, 89, 25, 1);
-    final BoxShadow boxShadow = BoxShadow(
-        color: Colors.black26,
-        blurRadius: 10.0,
-        spreadRadius: 2.0,
-        offset: Offset(2.0, 10.0));
 
     return Container(
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              ClipRRect(
-                child: FadeInImage(
-                  placeholder: AssetImage('assets/defaultcover.png'),
-                  image: NetworkImage(
-                      'http://image.tmdb.org/t/p/w185//uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg'),
-                  height: heigthMovie,
-                  width: widthMovie,
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: borderRadius,
+          ClipRRect(
+            child: FadeInImage(
+              placeholder: AssetImage('assets/defaultcover.png'),
+              image: NetworkImage(
+                  'http://image.tmdb.org/t/p/w185//uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg'),
+              height: heigthMovie,
+              width: widthMovie,
+              fit: BoxFit.cover,
+            ),
+            borderRadius: borderRadius,
+          ),
+          Container(
+            width: widthMovie,
+            height: heigthMovie,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.transparent, _blue],
+                stops: [0.0, 1],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              Container(
-                width: widthMovie,
-                height: heigthMovie,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.transparent, _blue],
-                    stops: [0.0, 1],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+              borderRadius: borderRadius,
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    categories[section],
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
                   ),
-                  borderRadius: borderRadius,
-                ),
-              ),
-              Positioned(
-                bottom: 10,
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        categories[section],
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
+                  Container(
+                    child: Text(
+                      moviesDescription[section],
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 11,
                           color: Colors.white,
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          moviesDescription[section],
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w100),
-                        ),
-                        padding: EdgeInsets.only(left: 2),
-                      ),
-                    ],
+                          fontWeight: FontWeight.w100),
+                    ),
+                    padding: EdgeInsets.only(left: 2),
                   ),
-                  width: widthMovie,
-                  padding: EdgeInsets.only(left: 15),
-                  height: 47,
-                ),
+                ],
               ),
-            ],
-            fit: StackFit.passthrough,
+              width: widthMovie,
+              padding: EdgeInsets.only(left: 15),
+              height: 47,
+            ),
           ),
         ],
+        fit: StackFit.passthrough,
       ),
       margin: EdgeInsets.only(
         left: type == TypeOfCard.normal ? 35 : 10,

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import '../Events/pages_events.dart';
 
 class FetchAllMovies extends BasicPageEvent {
@@ -5,7 +6,9 @@ class FetchAllMovies extends BasicPageEvent {
 }
 
 class FetchTopMovies extends BasicPageEvent {
-  FetchTopMovies([int page = 1]) : super(page);
+  final int page;
+
+  FetchTopMovies({ @required this.page}) : super(page);
 }
 
 class FetchMoviesByGenres extends BasicPageEvent {
@@ -28,4 +31,8 @@ class FetchMoviesByTitle extends BasicPageEvent {
 
 class FetchTopMoviesByLatestRelease extends BasicPageEvent {
   FetchTopMoviesByLatestRelease([int page = 1]) : super(page);
+}
+
+class PaginateMovies extends BasicPageEvent {
+  PaginateMovies() : super(1);
 }

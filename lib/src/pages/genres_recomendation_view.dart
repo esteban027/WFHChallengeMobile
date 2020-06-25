@@ -96,7 +96,7 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
         ],
         mainAxisAlignment: MainAxisAlignment.center,
       ),
-      margin: EdgeInsets.only(left: 110, right: 110, top: 80),
+      margin: EdgeInsets.only(left: 110, right: 110, top: 60),
     );
   }
 

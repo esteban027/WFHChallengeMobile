@@ -27,6 +27,8 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
       yield* _mapLoadTopMoviesByReleaseDate(event.page);
     } else if (event is ReturnToInitialState) {
       yield initialState;
+    } else if (event is PaginateMovies){
+      yield  MoviesPaginationLoading();
     }
   }
 

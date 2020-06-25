@@ -78,12 +78,14 @@ class MoviePoster extends StatelessWidget {
               movie.title,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+              maxLines: 2,
+              style: TextStyle(
                 fontSize: 11,
                 color: Colors.white,
               ),
             ),
             width: widthMovie,
+            margin: EdgeInsets.only(left: 15, top: 10),
           ),
         ],
       ),
