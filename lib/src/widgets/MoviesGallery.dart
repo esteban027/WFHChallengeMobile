@@ -86,7 +86,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
           crossAxisCount: 3,
           crossAxisSpacing: 1.0,
           mainAxisSpacing: 1.0,
-          childAspectRatio: (99 / 145)),
+          childAspectRatio: (90 / 145)),
       itemBuilder: (contex, index) {
         return GestureDetector(
           child: MoviePoster(

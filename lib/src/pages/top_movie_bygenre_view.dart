@@ -108,7 +108,8 @@ class _TopMovieState extends State<TopMovie> {
         itemCount: genres.length,
         padding: EdgeInsets.only(left: 10, right: 10, top: 20),
       ),
-      height: MediaQuery.of(context).size.height - 200,
+      // height: MediaQuery.of(context).size.height - 176,
+      height: MediaQuery.of(context).size.height - 234,
     );
   }
 

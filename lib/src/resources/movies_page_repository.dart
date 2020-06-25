@@ -18,7 +18,7 @@ class MoviesPageRepository {
       Parameter(ParamaterType.page, page.toString()),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter(ParamaterType.limit, '50'),
-      Parameter.forFilter(FilterType.greaterThan, 'vote_count', '3')
+      Parameter.forFilter(FilterType.greaterThan, 'vote_count', '10')
     ];
     return netwok.fetchMovies(parameters);
   }

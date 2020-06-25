@@ -32,6 +32,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.height);
     genreBloc.add(FetchAllGenres());
 
     List<String> selectedGenres = [];
@@ -87,14 +88,17 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                     }
                     return Center(child: CircularProgressIndicator());
                   }),
-              height: MediaQuery.of(context).size.height - 325,
+              // height: MediaQuery.of(context).size.height - 325,
+              height: MediaQuery.of(context).size.height - 304 ,
             ),
+            // SizedBox(height: 40,),
             _filterButton(selectedGenres)
           ],
         ),
         color: _containerColor,
-        margin: EdgeInsets.all(20),
-        height: MediaQuery.of(context).size.height - 200,
+        // margin: EdgeInsets.all(20),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+        height: MediaQuery.of(context).size.height,
       ),
     );
   }
@@ -153,7 +157,6 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   Widget _filterButton(List<String> selectedGenres) {
     bool isEmpty = selectedGenres.isEmpty;
-
     return RaisedButton(
       onPressed: isEmpty ? null :() {
         Navigator.push(
@@ -167,12 +170,11 @@ class _FilterGenresViewState extends State<FilterGenresView> {
       },
 
       child: Text('Apply filter'),
-      padding: EdgeInsets.only(left: 140, right: 140, top: 13, bottom: 13),
+      padding: EdgeInsets.only(left: 100, right: 100, top: 13, bottom: 13),
       color: isEmpty ? Colors.grey : _buttonColor,
       textColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       disabledColor: Colors.grey,
-
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
+import 'package:WFHchallenge/src/blocs/post_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
@@ -53,7 +54,7 @@ class DetailMovieView extends StatefulWidget {
     int counter = 0;
     List<DateTime> dates = [];
     List<TimeSeriesSales> points = [];
-
+    
     ratings.items.forEach((rating) {
       dates.add(DateTime.fromMillisecondsSinceEpoch(rating.timestamp * 1000));
     });
@@ -75,6 +76,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final Color _orange = Color.fromRGBO(235, 89, 25, 1);
   final Color _blueContainer = Color.fromRGBO(40, 65, 109, 0.10);
   Color _buttonColor = Colors.grey;
+  int dateas = (DateTime.now().millisecondsSinceEpoch);
 
   List<Color> starsColor = [
     Colors.grey,
@@ -87,6 +89,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   Map<int, bool> starState = {0: false, 1: false, 2: false, 3: false, 4: false};
 
   final ratingBloc = LoadRatingsBloc();
+  final postRatingBloc = PostRatingBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -176,11 +179,11 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                       widget.movie.title,
                       style: TextStyle(color: Colors.white, fontSize: 15.0),
                       textAlign: TextAlign.left,
+                      overflow: TextOverflow.clip,
                     ),
                   ),
                   color: _darkBlue,
                   width: MediaQuery.of(context).size.width - 40,
-                  height: 52,
                 ),
 
                 // MOVIE INFO
@@ -242,6 +245,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     builder: (BuildContext context, state) {
                       if (state is RatingsLoaded) {
                         return LineChartSample1(state.ratingsPage);
+                        // return LineChartSample2(state.ratingsPage);
                       } else if (state is RatingsLoading) {
                         return Center(child: CircularProgressIndicator());
                       }
@@ -509,6 +513,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   }
 
   Widget alert(StateSetter setStateModal2) {
+    var qwer = (dateas / 1000).round();
+    print(qwer);
     return Container(
       color: Colors.transparent,
       height: 250,
@@ -555,6 +561,21 @@ class _DetailMovieViewState extends State<DetailMovieView> {
             Container(
               child: FlatButton(
                   onPressed: () {
+                      postRatingBloc.add(PublishNewRating(RatingModel.createNewRatingInit(611, 33, 1, qwer)));
+
+                    BlocBuilder(
+                    bloc: postRatingBloc,
+                    builder: (BuildContext context, state) {
+                      print(state);
+                      if (state is RatingPublished) {
+                        print('RatingPubllished');
+                        return Spacer();
+                      } else if (state is RatingNotPublished) {
+                        print('Rating no Publlished');
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    });
                     Navigator.pop(context);
                   },
                   child: Text(

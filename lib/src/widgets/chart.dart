@@ -27,6 +27,7 @@ class LineChartSample1State extends State<LineChartSample1> {
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
   LineChartSample1State(this.ratings);
+  List<double> intervals = [];
 
   List<List<FlSpot>> spotsList = [];
   List<List<int>> datesList = [];
@@ -42,9 +43,9 @@ class LineChartSample1State extends State<LineChartSample1> {
     isShowingMainData = true;
   }
 
-  @override  
+  @override
   Widget build(BuildContext context) {
-      _timeStampsToDates(ratings);
+    _timeStampsToDates(ratings);
 
     return AspectRatio(
       aspectRatio: 1.23,
@@ -61,12 +62,13 @@ class LineChartSample1State extends State<LineChartSample1> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16.0, left: 6.0),
                     child: LineChart(
-                      createLineChartData(minsX[graphNumber], maxsX[graphNumber]),
+                      createLineChartData(
+                          minsX[graphNumber], maxsX[graphNumber]),
                       swapAnimationDuration: const Duration(milliseconds: 500),
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 10,
                 ),
               ],
@@ -76,11 +78,12 @@ class LineChartSample1State extends State<LineChartSample1> {
               child: IconButton(
                 icon: Icon(
                   Icons.navigate_next,
-                  color: Colors.white.withOpacity(spotsList.length == 1 ? 0 : 1),
+                  color:
+                      Colors.white.withOpacity(spotsList.length == 1 ? 0 : 1),
                 ),
                 onPressed: () {
                   setState(() {
-                    if (graphNumber == spotsList.length){
+                    if (graphNumber == spotsList.length - 1) {
                       graphNumber = 0;
                     } else {
                       graphNumber++;
@@ -89,7 +92,6 @@ class LineChartSample1State extends State<LineChartSample1> {
                 },
               ),
             ),
-
           ],
         ),
       ),
@@ -98,18 +100,22 @@ class LineChartSample1State extends State<LineChartSample1> {
 
   void maxAndMin() {
     datesList.forEach((dateList) {
-      dateList.sort((a, b) => a.compareTo(b));
-      minsX.add(dateList.first.toDouble());
-      maxsX.add(dateList.last.toDouble());
+      if (dateList.length > 1) {
+        dateList.sort((a, b) => a.compareTo(b));
+        minsX.add(dateList.first.toDouble());
+        maxsX.add(dateList.last.toDouble());
+      }
     });
   }
 
- void _timeStampsToDates(RatingsPageModel ratings) {
+  void _timeStampsToDates(RatingsPageModel ratings) {
     List<DateTime> dates = [];
     List<FlSpot> spots = [];
     int counter = 0;
-        
-    List<FlSpot> temporalSpots = [];
+    spotsList = [];
+    intervals = [];
+    datesList = [];
+
     List<int> temporalYearDate = [];
 
     ratings.items.forEach((rating) {
@@ -124,8 +130,7 @@ class LineChartSample1State extends State<LineChartSample1> {
       counter++;
     });
 
-    // datelist 
-
+    // datelist
     if (dates.length > 5) {
       counter = 0;
       dates.forEach((date) {
@@ -137,7 +142,7 @@ class LineChartSample1State extends State<LineChartSample1> {
           temporalYearDate = [];
         }
       });
-       datesList.add(temporalYearDate);
+      datesList.add(temporalYearDate);
     } else {
       dates.forEach((date) {
         temporalYearDate.add(date.year);
@@ -148,6 +153,7 @@ class LineChartSample1State extends State<LineChartSample1> {
     maxAndMin();
 
     if (spots.length > 5) {
+      List<FlSpot> temporalSpots = [];
       counter = 0;
       spots.forEach((spot) {
         counter++;
@@ -158,20 +164,36 @@ class LineChartSample1State extends State<LineChartSample1> {
           temporalSpots = [];
         }
       });
-    spotsList.add(temporalSpots);
+
+      bool isdividedBy5 = (spots.length ~/ 5) is int;
+      if (!isdividedBy5) {
+        spotsList.add(temporalSpots);
+      }
     } else {
       spotsList.add(spots);
     }
 
+    spotsList.forEach((spot) {
+      if (spot.length > 1) {
+        double diferenceYears = spot.last.x - spot.first.x;
+        bool diferenceIsInt = (diferenceYears / 5) is int;
+        if (diferenceYears == 0 && diferenceYears < 5) {
+          diferenceYears = 1;
+        } else if (!diferenceIsInt) {
+          diferenceYears = (diferenceYears ~/ 5).toDouble() + 1;
+        }
+        intervals.add(diferenceYears);
+      } else {
+        intervals.add(1);
+      }
+    });
   }
 
   List<LineChartBarData> createLinebarData(int number) {
     final LineChartBarData lineChartBarData = LineChartBarData(
       spots: spotsList[graphNumber],
       isCurved: false,
-      colors: [
-        _orange
-      ],
+      colors: [_orange],
       barWidth: 2,
       isStrokeCapRound: true,
       dotData: FlDotData(
@@ -212,6 +234,7 @@ class LineChartSample1State extends State<LineChartSample1> {
           getTitles: (value) {
             return value.toString();
           },
+          interval: intervals[graphNumber],
         ),
         leftTitles: SideTitles(
           showTitles: true,
@@ -227,6 +250,7 @@ class LineChartSample1State extends State<LineChartSample1> {
           reservedSize: 30,
         ),
       ),
+
       borderData: FlBorderData(
         show: true,
         border: const Border(
