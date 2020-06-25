@@ -8,7 +8,16 @@ class FetchRatingsByMovieId extends BasicPageEvent {
   FetchRatingsByMovieId(this.movieId, [int page = 1] ) : super(page);
 }
 
-class PublishNewRating extends PostEvent {
+class BasicRatingEvent extends BasicPageEvent with PostEvent {
+  BasicRatingEvent(int page) : super(page);
+}
+
+class PublishNewRating extends BasicRatingEvent {
   RatingModel rating;
-  PublishNewRating(this.rating);
+  PublishNewRating(this.rating) : super(0);
+}
+
+class FetchRatingByUserId extends BasicRatingEvent {
+    int userId;
+    FetchRatingByUserId(this.userId, [int page = 1] ) : super(page);
 }

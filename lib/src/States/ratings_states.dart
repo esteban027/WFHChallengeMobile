@@ -37,3 +37,4 @@ class RatingNotPublished extends RatingsState {
    @override
   String toString() => 'Rating Not Published';
 }
+

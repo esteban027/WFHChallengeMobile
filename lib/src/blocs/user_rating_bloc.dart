@@ -8,17 +8,19 @@ import '../Events/ratings_events.dart';
 import '../Events/post_events.dart';
 import '../States/ratings_states.dart';
 
-class PostRatingBloc extends Bloc<PostEvent, RatingsState> {
+class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
   RatingsRepository repository;
 
   @override
   RatingsState get initialState => PublishingRating();
 
   @override
-  Stream<RatingsState> mapEventToState(PostEvent event) async* {
+  Stream<RatingsState> mapEventToState(BasicRatingEvent event) async* {
     repository = RatingsRepository();
     if (event is PublishNewRating) {
       yield* _mapPublishNewRating(event.rating);
+    } else if (event is FetchRatingByUserId) {
+      yield* _mapFetchRatingsByUserId(event.page, event.userId);
     } else if (event is ReturnToInitialState) {
       yield initialState;
     }
@@ -35,6 +37,15 @@ class PostRatingBloc extends Bloc<PostEvent, RatingsState> {
 
     } catch (_) {
       yield RatingNotPublished();
+    }
+  }
+
+  Stream<RatingsState> _mapFetchRatingsByUserId( int page, int userId,) async* {
+    try {
+      final ratingsPage = await this.repository.fetchRatingsByUserId(page, userId);
+      yield RatingsLoaded(ratingsPage);
+    } catch (_) {
+      yield RatingsNotLoaded();
     }
   }
 }
