@@ -77,3 +77,14 @@ class RatingModel {
 
  int get timestamp => _timestamp;
  }
+
+ class GraphicRating {
+  int _year;
+  double _rating;
+
+  GraphicRating(this._year,this._rating);
+
+  int get year => _year;
+
+  double get rating => _rating;
+ }

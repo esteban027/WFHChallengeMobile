@@ -253,15 +253,15 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   Container(
-                    child: Text(
-                      "moviesDescription[section]",
+                    child: sectionModel.description !=' '? Text(
+                      sectionModel.description,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontSize: 11,
                           color: Colors.white,
                           fontWeight: FontWeight.w100),
-                    ),
+                    ):null,
                     padding: EdgeInsets.only(left: 2),
                   ),
                 ],

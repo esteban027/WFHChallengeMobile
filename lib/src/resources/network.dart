@@ -201,4 +201,24 @@ class Network {
       throw Exception(response.statusCode);
     }
   }
+
+  Future<List<GraphicRating>> getGraphicRatingByMovie(int movieId) async {
+    Uri uri = Uri.http(_url, _ratingEndpoint+'/rolling-avg/'+movieId.toString());
+
+    List<GraphicRating> ratingsConverted = [];
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> ratings = jsonDecode(response.body);
+      ratings.forEach((key, value) {
+        var rating = GraphicRating(int.parse(key),double.parse(value));
+        ratingsConverted.add(rating);
+      });
+      return ratingsConverted;
+    } else {
+      throw Exception(response.statusCode);
+    }
+
+  }
 }

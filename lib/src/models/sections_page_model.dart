@@ -39,10 +39,16 @@ class SectionsPageModel {
 class SectionModel {
   String _id;
   String _posterPath;
+  String _description;
 
   SectionModel(sectionModel) {
     _posterPath = sectionModel['poster_path'];
     _id = sectionModel['id'];
+    try {
+      _description = sectionModel['description'];
+    } catch (_) {
+      _description = null;
+    }
   }
 
   String get posterPath {
@@ -52,4 +58,6 @@ class SectionModel {
   }
 
   String get id => _id;
+
+  String get description => _description;
 }

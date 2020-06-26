@@ -10,7 +10,7 @@ class TimeSeriesSales {
 }
 
 class LineChartSample1 extends StatefulWidget {
-  final RatingsPageModel ratings;
+  final List<GraphicRating> ratings;
 
   LineChartSample1(this.ratings);
 
@@ -20,13 +20,13 @@ class LineChartSample1 extends StatefulWidget {
 
 class LineChartSample1State extends State<LineChartSample1> {
   bool isShowingMainData;
-  RatingsPageModel ratings;
+  List<GraphicRating> ratingsList;
   double minYear;
   double maxYear;
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
-  LineChartSample1State(this.ratings);
+  LineChartSample1State(this.ratingsList);
   List<double> intervals = [];
 
   List<List<FlSpot>> spotsList = [];
@@ -45,7 +45,7 @@ class LineChartSample1State extends State<LineChartSample1> {
 
   @override
   Widget build(BuildContext context) {
-    _timeStampsToDates(ratings);
+    _timeStampsToDates();
 
     return AspectRatio(
       aspectRatio: 1.23,
@@ -108,8 +108,9 @@ class LineChartSample1State extends State<LineChartSample1> {
     });
   }
 
-  void _timeStampsToDates(RatingsPageModel ratings) {
+  void _timeStampsToDates() {
     List<DateTime> dates = [];
+    List<int> years = [];
     List<FlSpot> spots = [];
     int counter = 0;
     spotsList = [];
@@ -118,24 +119,22 @@ class LineChartSample1State extends State<LineChartSample1> {
 
     List<int> temporalYearDate = [];
 
-    ratings.items.forEach((rating) {
-      dates.add(DateTime.fromMillisecondsSinceEpoch(rating.timestamp * 1000));
+    ratingsList.forEach((rating) {
+      years.add(rating.year);
     });
 
-    dates.forEach((date) {
-      int year = date.year.toInt();
-      double rating = ratings.items[counter].rating;
-      FlSpot spot = FlSpot(year.toDouble(), rating);
+    for (int i = 0; i< ratingsList.length; i++) {
+      FlSpot spot = FlSpot(ratingsList[i].year.toDouble(), ratingsList[i].rating);
+      years.add(ratingsList[i].year);
       spots.add(spot);
-      counter++;
-    });
+    }
 
     // datelist
-    if (dates.length > 5) {
+    if (years.length > 5) {
       counter = 0;
-      dates.forEach((date) {
+      years.forEach((year) {
         counter++;
-        temporalYearDate.add(date.year);
+        temporalYearDate.add(year);
         if (counter == 5) {
           counter = 0;
           datesList.add(temporalYearDate);

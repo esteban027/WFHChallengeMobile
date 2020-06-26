@@ -14,16 +14,16 @@ class LoadRatingsBloc extends Bloc<PageEvent, RatingsState> {
   Stream<RatingsState> mapEventToState(PageEvent event) async* {
     repository = RatingsRepository();
     if (event is FetchRatingsByMovieId) {
-      yield* _mapLoadRatingsByMovieId(event.page, event.movieId);
+      yield* _mapLoadRatingsByMovieId(event.movieId);
     } else if (event is ReturnToInitialState) {
       yield initialState;
     }
   }
 
-  Stream<RatingsState> _mapLoadRatingsByMovieId(int page, int movieId) async* {
+  Stream<RatingsState> _mapLoadRatingsByMovieId(int movieId) async* {
     try {
-      final ratingsPage = await this.repository.fetchRatingsByMovieId(page, movieId);
-      yield RatingsLoaded(ratingsPage);
+      final ratingList = await this.repository.fetchRatingsByMovieId(movieId);
+      yield GraphicRatingsLoaded(ratingList);
     } catch (_) {
       yield RatingsNotLoaded();
     }
