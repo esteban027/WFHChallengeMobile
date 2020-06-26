@@ -195,6 +195,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                       style: TextStyle(color: Colors.white, fontSize: 15.0),
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
+                      maxLines: 2,
                     ),
                   ),
                   color: _darkBlue,
@@ -744,7 +745,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
       }
     });
 
-    // _buttonColor = state ? _orange : Colors.grey;
     _buttonColor = state ? _orange : Colors.grey;
   }
 }

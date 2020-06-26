@@ -4,6 +4,7 @@ import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,14 @@ class TopMovieFilter extends StatefulWidget {
   final LoadMoviesBloc bloc;
   final PageEvent event;
   final String genreEvent;
+  final int userModel;
 
   TopMovieFilter(
       {Key key,
       @required this.title,
       @required this.bloc,
       @required this.event,
+      this.userModel,
       this.genreEvent})
       : super(key: key);
 
@@ -52,7 +55,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
   Future<void> loadMoviesPage([bool isLoading = true]) async {
     shouldReloadMovies = true;
-
     switch (event.toString()) {
       case "Instance of 'FetchTopMovies'":
         if (isLoading) {
@@ -67,6 +69,12 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
       case "Instance of 'FetchTopMoviesByGenres'":
         if (isLoading) {
           bloc.add(FetchTopMoviesByGenres([genreEvent]));
+        }
+        break;
+
+      case "Instance of 'FetchMoviesRecommendationToUser'":
+        if (isLoading) {
+          bloc.add(FetchMoviesRecommendationToUser(widget.userModel));
         }
         break;
     }

@@ -92,7 +92,7 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
 
   Stream<MoviesState> _mapRecommendMoviesTo(int userId, int page)  async* {
     try {
-      final movies = await this.repository.fetchTopMoviesByReleaseDate(page);
+      final movies = await this.repository.fetchMoviesRecommendationTo(userId, page);
       yield MoviesLoaded(movies);
     } catch (_) {
       yield MoviesNotLoaded();
