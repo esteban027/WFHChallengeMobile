@@ -17,7 +17,7 @@ class MoviesPageRepository {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter.forSort(SortType.descendant, 'rating'),
-      Parameter(ParamaterType.limit, '50'),
+      Parameter(ParamaterType.limit, '100'),
       Parameter.forFilter(FilterType.greaterThan, 'vote_count', '10')
     ];
     return netwok.fetchMovies(parameters);
@@ -64,5 +64,12 @@ class MoviesPageRepository {
           FilterType.greaterOrEqual, 'release_date', yearStart.toString())
     ];
     return netwok.fetchMovies(parameters);
+  }
+
+  Future<MoviesPageModel> fetchMoviesRecommendationTo(int userId, int page ) {
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString())
+    ];
+    return netwok.fetchRecommendations(userId,parameters);
   }
 }

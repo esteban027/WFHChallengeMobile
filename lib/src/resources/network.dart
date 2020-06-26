@@ -17,6 +17,7 @@ class Network {
   String _ratingEndpoint = 'rating';
   String _userEndpoint = 'user';
   String _homeSectionsEndpoint = 'section';
+  String _recommendationsEndpoint = 'recommendation';
 
   Map<String, String> postHeader = {
       'API_KEY':
@@ -41,6 +42,23 @@ class Network {
     if (response.statusCode == 200) {
       MoviesPageModel items =
           MoviesPageModel.fromJson(json.decode(response.body));
+      return items;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+  Future<MoviesPageModel> fetchRecommendations(int userId, [List<Parameter> parameterList]) async {
+    Uri uri = Uri.http(_url, _movieEndpoint+ ' /' + _userEndpoint + '/'+ userId.toString());
+
+    if (parameterList != null) {
+      uri = uri.replace(queryParameters: convert(parameterList));
+    }
+
+    Response response = await get(uri, headers: getHeader);
+
+    if (response.statusCode == 200) {
+      MoviesPageModel items =
+      MoviesPageModel.fromJson(json.decode(response.body));
       return items;
     } else {
       throw Exception(response.statusCode);

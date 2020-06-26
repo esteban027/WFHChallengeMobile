@@ -27,6 +27,8 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
       yield* _mapLoadTopMoviesByReleaseDate(event.page);
     } else if (event is ReturnToInitialState) {
       yield initialState;
+    } else if (event is FetchMoviesRecommendationToUser) {
+      yield*  _mapRecommendMoviesTo(event.userId, event.page);
     } else if (event is PaginateMovies){
       yield  MoviesPaginationLoading();
     }
@@ -80,6 +82,15 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
   }
 
   Stream<MoviesState> _mapLoadTopMoviesByReleaseDate(int page) async* {
+    try {
+      final movies = await this.repository.fetchTopMoviesByReleaseDate(page);
+      yield MoviesLoaded(movies);
+    } catch (_) {
+      yield MoviesNotLoaded();
+    }
+  }
+
+  Stream<MoviesState> _mapRecommendMoviesTo(int userId, int page)  async* {
     try {
       final movies = await this.repository.fetchTopMoviesByReleaseDate(page);
       yield MoviesLoaded(movies);

@@ -48,6 +48,8 @@ class MovieModel {
   String _description;
   double _rating;
   int _voteCount;
+  String _expectedRating;
+  int _cosineSimilarity;
 
   MovieModel(movieModel) {
     _title = movieModel['title'];
@@ -61,6 +63,16 @@ class MovieModel {
     _description = movieModel['description'];
     _rating = movieModel['rating'];
     _voteCount = movieModel['vote_count'];
+    try {
+      _expectedRating = movieModel['expected_rating'];
+    }catch(_){
+      _expectedRating = null;
+    }
+    try {
+      _cosineSimilarity = movieModel['cosine_similarity'];
+    }catch(_){
+      _cosineSimilarity = null;
+    }
   }
 
   String get title => _title;
@@ -87,5 +99,9 @@ String get description => _description;
 double get rating => _rating;
 
 int get voteCount => _voteCount;
+
+String get expectedRate => _expectedRating;
+
+int get cosineSimilarity => _cosineSimilarity;
 }
 
