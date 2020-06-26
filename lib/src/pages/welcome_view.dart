@@ -7,7 +7,6 @@ import 'package:WFHchallenge/src/models/user_model.dart';
 
 import 'genres_recomendation_view.dart';
 
-
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key}) : super(key: key);
   @override
@@ -16,12 +15,17 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   Color darkBlue = Color.fromRGBO(28, 31, 44, 1);
+  Color _orange = Color.fromRGBO(235, 89, 25, 1);
+
   double height;
   double width;
   String userName;
+  bool showProgress = false;
+
   @override
   Widget build(BuildContext context) {
-    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
 
@@ -30,10 +34,10 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Column(
           children: <Widget>[
             _welcomeToHeyMovie(),
+            shouldShowProgreesIndicator(showProgress),
             Spacer(),
             _googleButton(),
-            if (signInRepository.appleSignInIsAvailable)
-            _appleButton()
+            if (signInRepository.appleSignInIsAvailable) _appleButton()
           ],
         ),
         width: MediaQuery.of(context).size.width,
@@ -67,11 +71,11 @@ class _WelcomePageState extends State<WelcomePage> {
     final signInRepository = Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
+          setState(() {
+            showProgress = true;
+          });
           UserModel user = await signInRepository.sigInWithApple();
           determineRoute(user);
-
-       /* String user = await signInRepository.getCurrentUser();
-          print(user);*/
         },
         child: Container(
           child: Center(
@@ -103,21 +107,36 @@ class _WelcomePageState extends State<WelcomePage> {
           height: 41,
         ));
   }
-void determineRoute(UserModel user) {
-  if (user.genres.isEmpty) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => GenresRecomendationView(user: user,)));
-  } else {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TabView()));
+
+  void determineRoute(UserModel user) {
+    if (user.genres.isEmpty) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GenresRecomendationView(
+                    user: user,
+                  )));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => TabView()));
+    }
   }
-}
+
+  Widget shouldShowProgreesIndicator(bool state){
+    return state ? Container(child: CircularProgressIndicator(backgroundColor: _orange, strokeWidth: 5, valueColor:  AlwaysStoppedAnimation(darkBlue),),margin: EdgeInsets.only(top: 50),) :
+    SizedBox(height: 5,width: 5,);
+  }
+
   Widget _googleButton() {
-    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
-         UserModel user = await signInRepository.signinWithGoogle();
-         determineRoute(user);
+          setState(() {
+            showProgress = true;
+          });
+          UserModel user = await signInRepository.signinWithGoogle();
+          determineRoute(user);
         },
         child: Container(
           child: Center(

@@ -11,19 +11,15 @@ import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 enum TypeOfCard { normal, splited }
 
 class HomeView extends StatefulWidget {
-  String userName;
-
-
-  HomeView({ @required this.userName});
 
   @override
-  _HomeViewState createState() => _HomeViewState(userName);
+  _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  String userName;
-  _HomeViewState(@required this.userName);
   final moviesBloc = LoadMoviesBloc();
+  final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
+  final _orange = Color.fromRGBO(235, 89, 25, 1);
 
   List<String> categories = [
     'Top 100! You should watch them!',
@@ -36,7 +32,6 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-
     return CupertinoPageScaffold(
       child: Container(
         child: ListView(
@@ -74,7 +69,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _title() {
-    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     final user = signInRepository.getUserInfo();
     return Column(
       children: <Widget>[
@@ -103,8 +99,21 @@ class _HomeViewState extends State<HomeView> {
                       textAlign: TextAlign.center,
                     );
                   }
-                  return Container(child:Center(child: CircularProgressIndicator()),width: 50,height: 50,);
+                  return Container(
+                    child: CircularProgressIndicator(
+                      backgroundColor: _orange,
+                      strokeWidth: 5,
+                      valueColor: AlwaysStoppedAnimation(_darkblue),
+                    ),
+                    width: 20,
+                    height: 20,
+                  );
                 }
+                return CircularProgressIndicator(
+                  backgroundColor: _orange,
+                  strokeWidth: 5,
+                  valueColor: AlwaysStoppedAnimation(_darkblue),
+                );
               },
             )
           ], mainAxisAlignment: MainAxisAlignment.center),
@@ -173,7 +182,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _section(TypeOfCard type, int section) {
-    final width = (MediaQuery.of(context).size.width)  ;
+    final width = (MediaQuery.of(context).size.width);
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
     final double widthMovie = type == TypeOfCard.normal ? width : width - 250;
 
