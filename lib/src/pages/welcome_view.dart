@@ -24,8 +24,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final signInRepository =
-        Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =Provider.of<SignInRepository>(context, listen: false);
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
 

@@ -34,7 +34,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   String title;
   LoadMoviesBloc bloc;
   PageEvent event;
-  int page = 0;
+  int page = 1;
   String genreEvent;
   Color _bestRating = Colors.white;
   Color _alfabetical = Colors.white;
@@ -56,15 +56,11 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     switch (event.toString()) {
       case "Instance of 'FetchTopMovies'":
         if (isLoading) {
-          // page++;
-          // print(page);
           bloc.add(FetchTopMovies(page: page));
         }
         break;
       case "Instance of 'FetchTopMoviesByLatestRelease'":
         if (isLoading) {
-          // page++;
-          // print(page);
           bloc.add(FetchTopMoviesByLatestRelease());
         }
         break;
