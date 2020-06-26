@@ -8,14 +8,14 @@ import '../models/network_models.dart';
 class RatingsRepository {
   final netwok = Network();
 
-  Future<RatingsPageModel> fetchRatingsByMovieId(int page, int movieId) {
-    List<Parameter> parameters = [
+  Future<List<GraphicRating>> fetchRatingsByMovieId(int movieId) {
+   /* List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
       Parameter.forFilter(FilterType.exact, 'movie', movieId.toString()),
       Parameter.forSort(SortType.ascendant, 'timestamp')
-    ];
-    return netwok.fetchRatings(parameters);
+    ];*/
+    return netwok.getGraphicRatingByMovie(movieId);
   }
 
   Future<RatingModel> fetchRatingsByUserId(int page, int userId,int movieId) {
@@ -29,6 +29,9 @@ class RatingsRepository {
   Future<bool> updateRating(RatingModel rating) {
     return netwok.updateRating(rating);
   }
+
+
+
 
 
 }

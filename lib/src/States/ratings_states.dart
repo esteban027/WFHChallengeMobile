@@ -18,6 +18,15 @@ class RatingsLoaded extends RatingsState {
   String toString() => 'RatingsLoaded{genres: $ratingsPage}';
 }
 
+class GraphicRatingsLoaded extends RatingsState {
+  List<GraphicRating> ratingList ;
+
+  GraphicRatingsLoaded(this.ratingList);
+
+  @override
+  String toString() => 'RatingsLoaded{genres: $ratingList}';
+}
+
 class  SingleRatingLoaded extends RatingsState {
 final RatingModel rating;
 

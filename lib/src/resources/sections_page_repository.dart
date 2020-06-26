@@ -16,8 +16,10 @@ class SectionsPageRepository {
 
   Future<SectionsPageModel> fetchAllHomeSections(int page) {
     List<Parameter> parameters = [
+      Parameter.forSort(SortType.ascendant, 'section_ordering'),
       Parameter(ParamaterType.page, page.toString()),
-      Parameter(ParamaterType.limit, '50')
+      Parameter(ParamaterType.limit, '50'),
+
     ];
     return netwok.fetchHomeSections(parameters);
   }
