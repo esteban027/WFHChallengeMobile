@@ -81,6 +81,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   int dateas = (DateTime.now().millisecondsSinceEpoch);
   double buttonSected = 0;
   var userId = 0;
+  bool isfirstLaunch = true;
 
   List<Color> starsColor = [
     Colors.grey,
@@ -615,10 +616,11 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   Widget alert(StateSetter setStateModal2, RatingModel ratingModel) {
     var timeStapFromatted = (dateas / 1000).round();
 
-    if (ratingModel != null){
+    if (ratingModel != null && isfirstLaunch){
       for (int i = 0; i< starState.length ; i++){
         starState[i] = i <= ratingModel.rating.round();
       }
+      isfirstLaunch = !isfirstLaunch;
         paintStarts();
     }
 

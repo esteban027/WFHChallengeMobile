@@ -48,7 +48,7 @@ class Network {
     }
   }
   Future<MoviesPageModel> fetchRecommendations(int userId, [List<Parameter> parameterList]) async {
-    Uri uri = Uri.http(_url, _movieEndpoint+ ' /' + _userEndpoint + '/'+ userId.toString());
+    Uri uri = Uri.http(_url, _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ userId.toString());
 
     if (parameterList != null) {
       uri = uri.replace(queryParameters: convert(parameterList));
