@@ -212,7 +212,7 @@ class Network {
     if (response.statusCode == 200) {
       Map<String, dynamic> ratings = jsonDecode(response.body);
       ratings.forEach((key, value) {
-        var rating = GraphicRating(int.parse(key),double.parse(value));
+        var rating = GraphicRating(int.parse(key),value);
         ratingsConverted.add(rating);
       });
       return ratingsConverted;
