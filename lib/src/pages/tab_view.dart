@@ -69,7 +69,7 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
               );
               break;
           }
-          return null;
+          return CircularProgressIndicator();
         },
       ),
     );

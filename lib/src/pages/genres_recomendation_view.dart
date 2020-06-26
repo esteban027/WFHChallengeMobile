@@ -22,13 +22,13 @@ class GenresRecomendationView extends StatefulWidget {
 class _GenresRecomendationViewState extends State<GenresRecomendationView> {
   final UserModel user;
 
-
   _GenresRecomendationViewState({@required this.user});
 
   final _separatorColor = Color.fromRGBO(40, 65, 109, 1.0);
   final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
   final _orange = Color.fromRGBO(235, 89, 25, 1);
   final genreColor = Colors.grey;
+  bool showProgress = false;
 
   bool shouldEnable = false;
   bool firstTime = true;
@@ -64,9 +64,19 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
             ),
             _title2(),
             _choseOne(),
-            _blockBuilder(),
+            Stack(
+              children: <Widget>[
+                _blockBuilder(),
+                Positioned(
+                  child: shouldShowProgreesIndicator(showProgress),
+                  left: MediaQuery.of(context).size.width / 2 - 25,
+                  top: MediaQuery.of(context).size.height / 8,
+                ),
+              ],
+              fit: StackFit.loose,
+            ),
             Spacer(),
-            _filterButton(selectedGenres,user)
+            _filterButton(selectedGenres, user)
           ],
         ),
         width: MediaQuery.of(context).size.width,
@@ -81,7 +91,6 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
   Widget _heyName() {
     var userName = user.name.split(' ').first;
     return Container(
-
       child: Row(
         children: <Widget>[
           Text(
@@ -194,29 +203,32 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
 
     genres.forEach((genre) {
       rows.add(Container(
-        child: Center(child: Text(genre, style: TextStyle(color: Colors.white, fontSize: 14),overflow: TextOverflow.fade,)),
+        child: Center(
+            child: Text(
+          genre,
+          style: TextStyle(color: Colors.white, fontSize: 14),
+          overflow: TextOverflow.fade,
+        )),
         padding: EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
-          color: genresState[genres[index]] ? _orange : genreColor,
-          borderRadius: BorderRadius.circular(10)
-        ),
+            color: genresState[genres[index]] ? _orange : genreColor,
+            borderRadius: BorderRadius.circular(10)),
       ));
       index++;
     });
 
-    return  GridView.builder(
+    return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 20.0,
-        mainAxisSpacing: 20.0,
-        childAspectRatio: (100/45)
-      ),
-      itemBuilder: (contex, index){
+          crossAxisCount: 3,
+          crossAxisSpacing: 20.0,
+          mainAxisSpacing: 20.0,
+          childAspectRatio: (100 / 45)),
+      itemBuilder: (contex, index) {
         return GestureDetector(
           child: rows[index],
-          onTap: (){
+          onTap: () {
             setState(() {
-              genresState[genres[index]] =  !genresState[genres[index]];              
+              genresState[genres[index]] = !genresState[genres[index]];
             });
           },
         );
@@ -226,30 +238,47 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
     );
   }
 
+  Widget shouldShowProgreesIndicator(bool state) {
+    return state
+        ? Container(
+            child: CircularProgressIndicator(
+              backgroundColor: _orange,
+              strokeWidth: 5,
+              valueColor: AlwaysStoppedAnimation(_darkblue),
+            ),
+          )
+        : SizedBox(
+            height: 5,
+            width: 5,
+          );
+  }
+
   Widget _filterButton(List<String> selectedGenres, UserModel user) {
-    bool isEmpty = selectedGenres.length <  5;
+    bool isEmpty = selectedGenres.length < 5;
     String genresString = '';
-    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     return Container(
       child: RaisedButton(
-        onPressed: isEmpty ? null :() async {
-          for (int i = 0 ; i < selectedGenres.length; i++) {
-            if (i== 0) {
-              genresString = selectedGenres[i];
-            } else {
-              genresString +='|'+selectedGenres[i];
-            }
-          }
-          user.genres = genresString;
-          await signInRepository.createUser(user);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TabView()
-            )
-          );
-        },
+        onPressed: isEmpty
+            ? null
+            : () async {
+                setState(() {
+                  showProgress = true;
+                });
 
+                for (int i = 0; i < selectedGenres.length; i++) {
+                  if (i == 0) {
+                    genresString = selectedGenres[i];
+                  } else {
+                    genresString += '|' + selectedGenres[i];
+                  }
+                }
+                user.genres = genresString;
+                await signInRepository.createUser(user);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TabView()));
+              },
         child: Text('Apply filter'),
         padding: EdgeInsets.only(left: 140, right: 140, top: 13, bottom: 13),
         color: isEmpty ? Colors.grey : _orange,
