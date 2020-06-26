@@ -3,7 +3,7 @@ import 'network.dart';
 import '../models/sections_page_model.dart';
 import '../models/network_models.dart';
 
-class GenresPageRepository {
+class SectionsPageRepository {
   final netwok = Network();
 
   Future<SectionsPageModel> fetchAllGenresSections(int page) {

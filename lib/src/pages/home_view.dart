@@ -1,43 +1,50 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/Events/sections_events.dart';
+import 'package:WFHchallenge/src/States/sections_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
+import 'package:WFHchallenge/src/models/sections_page_model.dart';
 import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_bygenre_view.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 
 enum TypeOfCard { normal, splited }
 
 class HomeView extends StatefulWidget {
-
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
   final moviesBloc = LoadMoviesBloc();
+  final sectionsBloc = LoadSectionsBloc();
+
   final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
   final _orange = Color.fromRGBO(235, 89, 25, 1);
 
-  List<String> categories = [
-    'Top 100! You should watch them!',
-    'Best Latest \n releases',
-    'Top Movies \n by Genre',
-    ' Best Movies of all time'
-  ];
+  List<String> categories = [];
 
   List<String> moviesDescription = ['Movie title', '', '', 'Movie title'];
+  List<SectionModel> sections = [];
+
+  @override
+  void initState() {
+    super.initState();
+    sectionsBloc.add(FetchAllHomeSections());
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Container(
-        child: ListView(
-          children: homeLayout2(),
-        ),
+        child: _blocBuilder(),
         width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/gradient.png'), fit: BoxFit.cover)),
@@ -45,27 +52,29 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  List<Widget> homeLayout2() {
-    int section = 0;
-    List<Widget> tops = [];
-    tops.add(_title());
-    int counter = 0;
-
-    categories.forEach((movie) {
-      if (section < categories.length) {
-        if (counter == 0) {
-          tops.add(normalCategory(section));
-          section += 1;
-          counter += 2;
-        } else {
-          tops.add(splitCategory(section));
-          section += 2;
-          counter = 0;
-        }
-      }
-    });
-
-    return tops;
+  Widget _blocBuilder() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _title(),
+          Container(
+            child: BlocBuilder(
+                bloc: sectionsBloc,
+                builder: (BuildContext context, state) {
+                  if (state is SectionLoaded) {
+                    sections = state.sectionsPage.items;
+                    return _drawSections();
+                  }
+                  return Center(child: CircularProgressIndicator());
+                }),
+            height: MediaQuery.of(context).size.height - 250,
+            // width: MediaQuery.of(context).size.width,
+          ),
+        ],
+      ),
+      // height: MediaQuery.of(context).size.height - 84,
+      // width: MediaQuery.of(context).size.width,
+    );
   }
 
   Widget _title() {
@@ -117,7 +126,7 @@ class _HomeViewState extends State<HomeView> {
               },
             )
           ], mainAxisAlignment: MainAxisAlignment.center),
-          margin: EdgeInsets.only(top: 40),
+          margin: EdgeInsets.only(top: 80),
         ),
         Container(
           child: Text(
@@ -132,11 +141,24 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  Widget _drawSections() {
+    List<Widget> sectionWidgets = [];
+
+    for (var i = 0; i <= sections.length; i += 3) {
+      sectionWidgets.add(normalCategory(i));
+      if (i + 2 < sections.length) {
+        sectionWidgets.add(splitCategory(i + 2));
+      }
+    }
+
+    return ListView(children: sectionWidgets);
+  }
+
   Widget normalCategory(int section) {
     return GestureDetector(
-      child: _section(TypeOfCard.normal, section),
+      child: _section(TypeOfCard.normal, sections[section]),
       onTap: () {
-        final String title = categories[section].split('!')[0];
+        final String title = sections[section].id.split("!")[0];
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -153,20 +175,20 @@ class _HomeViewState extends State<HomeView> {
     return Row(
       children: <Widget>[
         GestureDetector(
-          child: _section(TypeOfCard.splited, section),
+          child: _section(TypeOfCard.splited, sections[section - 1]),
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => TopMovieFilter(
-                          title: categories[section],
+                          title: sections[section].id,
                           bloc: moviesBloc,
                           event: FetchTopMoviesByLatestRelease(),
                         )));
           },
         ),
         GestureDetector(
-          child: _section(TypeOfCard.splited, section + 1),
+          child: _section(TypeOfCard.splited, sections[section]),
           onTap: () {
             Navigator.push(
                 context,
@@ -175,13 +197,13 @@ class _HomeViewState extends State<HomeView> {
                           bloc: moviesBloc,
                         )));
           },
-        ),
+        )
       ],
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
-  Widget _section(TypeOfCard type, int section) {
+  Widget _section(TypeOfCard type, SectionModel sectionModel) {
     final width = (MediaQuery.of(context).size.width);
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
     final double widthMovie = type == TypeOfCard.normal ? width : width - 250;
@@ -195,8 +217,7 @@ class _HomeViewState extends State<HomeView> {
           ClipRRect(
             child: FadeInImage(
               placeholder: AssetImage('assets/defaultcover.png'),
-              image: NetworkImage(
-                  'http://image.tmdb.org/t/p/w185//uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg'),
+              image: NetworkImage(sectionModel.posterPath),
               height: heigthMovie,
               width: widthMovie,
               fit: BoxFit.cover,
@@ -223,7 +244,7 @@ class _HomeViewState extends State<HomeView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    categories[section],
+                    sectionModel.id,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -233,7 +254,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   Container(
                     child: Text(
-                      moviesDescription[section],
+                      "moviesDescription[section]",
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

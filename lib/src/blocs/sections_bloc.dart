@@ -5,14 +5,14 @@ import '../Events/pages_events.dart';
 import '../States/sections_states.dart';
 
 class LoadSectionsBloc extends Bloc<PageEvent, SectionsState> {
-  GenresPageRepository repository;
+  SectionsPageRepository repository;
 
   @override
   SectionsState get initialState => SectionsLoading();
 
   @override
   Stream<SectionsState> mapEventToState(PageEvent event) async* {
-    repository = GenresPageRepository();
+    repository = SectionsPageRepository();
     if (event is FetchAllGenresSections) {
       yield* _mapLoadAllGenres(event.page);
     } else if (event is FetchAllHomeSections) {
