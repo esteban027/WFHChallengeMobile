@@ -1,6 +1,6 @@
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
-import 'package:WFHchallenge/src/blocs/post_rating_bloc.dart';
+import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
@@ -89,7 +89,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   Map<int, bool> starState = {0: false, 1: false, 2: false, 3: false, 4: false};
 
   final ratingBloc = LoadRatingsBloc();
-  final postRatingBloc = PostRatingBloc();
+  final postRatingBloc = UserRatingBloc();
 
   @override
   Widget build(BuildContext context) {

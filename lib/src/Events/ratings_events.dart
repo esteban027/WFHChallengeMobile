@@ -17,7 +17,8 @@ class PublishNewRating extends BasicRatingEvent {
   PublishNewRating(this.rating) : super(0);
 }
 
-class FetchRatingByUserId extends BasicRatingEvent {
+class FetchRatingByUserIdAndMovieId extends BasicRatingEvent {
     int userId;
-    FetchRatingByUserId(this.userId, [int page = 1] ) : super(page);
+    int movieId;
+    FetchRatingByUserIdAndMovieId(this.userId, this.movieId, [int page = 1] ) : super(page);
 }

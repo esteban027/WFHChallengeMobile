@@ -52,6 +52,13 @@ class RatingModel {
     _timestamp = ratingModel['timestamp'];
   }
 
+  RatingModel.fromJson(Map<String, dynamic> parsedJson) {
+    _user = parsedJson['user'];
+    _movieId = parsedJson['movie'];
+    _rating = parsedJson['rating'];
+    _timestamp = parsedJson['timestamp'];
+  }
+
   RatingModel.createNewRatingInit(
       this._user, this._movieId, this._rating, this._timestamp);
 

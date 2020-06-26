@@ -19,8 +19,8 @@ class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
     repository = RatingsRepository();
     if (event is PublishNewRating) {
       yield* _mapPublishNewRating(event.rating);
-    } else if (event is FetchRatingByUserId) {
-      yield* _mapFetchRatingsByUserId(event.page, event.userId);
+    } else if (event is FetchRatingByUserIdAndMovieId) {
+      yield* _mapFetchRatingsByUserIdAndMovieId(event.page, event.userId, event.movieId);
     } else if (event is ReturnToInitialState) {
       yield initialState;
     }
@@ -40,10 +40,10 @@ class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
     }
   }
 
-  Stream<RatingsState> _mapFetchRatingsByUserId( int page, int userId,) async* {
+  Stream<RatingsState> _mapFetchRatingsByUserIdAndMovieId( int page, int userId,int movieId) async* {
     try {
-      final ratingsPage = await this.repository.fetchRatingsByUserId(page, userId);
-      yield RatingsLoaded(ratingsPage);
+      final rating = await this.repository.fetchRatingsByUserId(page, userId, movieId);
+      yield SingleRatingLoaded(rating);
     } catch (_) {
       yield RatingsNotLoaded();
     }

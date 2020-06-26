@@ -18,6 +18,14 @@ class RatingsLoaded extends RatingsState {
   String toString() => 'RatingsLoaded{genres: $ratingsPage}';
 }
 
+class  SingleRatingLoaded extends RatingsState {
+final RatingModel rating;
+
+SingleRatingLoaded(this.rating);
+
+@override
+String toString() => 'RatingLoaded{genres: $rating}';
+}
 class RatingsNotLoaded extends RatingsState {
   @override
   String toString() => 'RatingsNotLoaded';

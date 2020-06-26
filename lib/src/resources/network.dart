@@ -101,6 +101,20 @@ class Network {
     }
   }
 
+  Future<RatingModel> fetchUserRatingByMovie(String userMovie) async {
+    Uri uri = Uri.http(_url, _ratingEndpoint+'/'+userMovie);
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      RatingModel rating =
+      RatingModel.fromJson(json.decode(response.body));
+      return rating;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
   convert(List<Parameter> parameters) {
     Map<String, String> convertedParameters = {};
     for (int i = 0; i < parameters.length; i++) {
