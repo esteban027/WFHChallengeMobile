@@ -1,22 +1,22 @@
-class GenresPageModel {
+class SectionsPageModel {
   int _page;
   int _totalPages;
   int _totalItems;
   int _itemsPerPage;
   bool _hasNext;
   bool _hasPrev;
-  List<GenreModel> _items = [];
+  List<SectionModel> _items = [];
 
-  GenresPageModel.fromJson(Map<String, dynamic> parsedJson) {
+  SectionsPageModel.fromJson(Map<String, dynamic> parsedJson) {
     _page = parsedJson['page'];
     _totalPages = parsedJson['total_pages'];
     _totalItems = parsedJson['total_items'];
     _itemsPerPage = parsedJson['items_per_page'];
     _hasNext = parsedJson['has_next'];
     _hasPrev = parsedJson['has_prev'];
-    List<GenreModel> temp = [];
+    List<SectionModel> temp = [];
     for (int i = 0; i < parsedJson['items'].length; i++) {
-      GenreModel genreModel = GenreModel(parsedJson['items'][i]);
+      SectionModel genreModel = SectionModel(parsedJson['items'][i]);
       temp.add(genreModel);
     }
     _items = temp;
@@ -33,16 +33,16 @@ class GenresPageModel {
 
   bool get hasPrev => _hasNext;
 
-  List<GenreModel> get items => _items;
+  List<SectionModel> get items => _items;
 }
 
-class GenreModel {
+class SectionModel {
   String _id;
   String _posterPath;
 
-  GenreModel(genreModel) {
-    _posterPath = genreModel['poster_path'];
-    _id = genreModel['id'];
+  SectionModel(sectionModel) {
+    _posterPath = sectionModel['poster_path'];
+    _id = sectionModel['id'];
   }
 
   String get posterPath {

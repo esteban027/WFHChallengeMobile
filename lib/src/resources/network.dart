@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/page_model.dart';
 import '../models/network_models.dart';
-import '../models/genres_page_model.dart';
+import '../models/sections_page_model.dart';
 import '../models/ratings_page_model.dart';
 import '../models/user_model.dart';
 import '../models/user_page_model.dart';
@@ -13,9 +13,10 @@ class Network {
   Client client = Client();
   String _url = 'wfh-movies.herokuapp.com';
   String _movieEndpoint = 'movie';
-  String _genresEndpoint = 'genre';
+  String _genresSectionsEndpoint = 'genre';
   String _ratingEndpoint = 'rating';
   String _userEndpoint = 'user';
+  String _homeSectionsEndpoint = 'section';
 
   Map<String, String> postHeader = {
       'API_KEY':
@@ -46,8 +47,8 @@ class Network {
     }
   }
 
-  Future<GenresPageModel> fetchGenres([List<Parameter> parameterList]) async {
-    Uri uri = Uri.http(_url, _genresEndpoint);
+  Future<SectionsPageModel> fetchGenresSections([List<Parameter> parameterList]) async {
+    Uri uri = Uri.http(_url, _genresSectionsEndpoint);
 
     if (parameterList != null) {
       uri = uri.replace(queryParameters: convert(parameterList));
@@ -56,8 +57,26 @@ class Network {
     Response response = await get(uri, headers: getHeader);
 
     if (response.statusCode == 200) {
-      GenresPageModel items =
-          GenresPageModel.fromJson(json.decode(response.body));
+      SectionsPageModel items =
+          SectionsPageModel.fromJson(json.decode(response.body));
+      return items;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
+  Future<SectionsPageModel> fetchHomeSections([List<Parameter> parameterList]) async {
+    Uri uri = Uri.http(_url, _homeSectionsEndpoint);
+
+    if (parameterList != null) {
+      uri = uri.replace(queryParameters: convert(parameterList));
+    }
+
+    Response response = await get(uri, headers: getHeader);
+
+    if (response.statusCode == 200) {
+      SectionsPageModel items =
+      SectionsPageModel.fromJson(json.decode(response.body));
       return items;
     } else {
       throw Exception(response.statusCode);

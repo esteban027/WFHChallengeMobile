@@ -1,9 +1,9 @@
-import 'package:WFHchallenge/src/Events/genres_events.dart';
+import 'package:WFHchallenge/src/Events/sections_events.dart';
 import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/States/genres_states.dart';
-import 'package:WFHchallenge/src/blocs/genres_bloc.dart';
+import 'package:WFHchallenge/src/States/sections_states.dart';
+import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
-import 'package:WFHchallenge/src/models/genres_page_model.dart';
+import 'package:WFHchallenge/src/models/sections_page_model.dart';
 import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
   Map<String, bool> genresState = {};
 
   Color _buttonColor = Colors.grey;
-  final LoadGenresBloc genreBloc = LoadGenresBloc();
+  final LoadSectionsBloc genreBloc = LoadSectionsBloc();
   get moviesBloc => LoadMoviesBloc();
   bool shouldEnable = false;
   bool firstTime = true;
@@ -33,7 +33,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height);
-    genreBloc.add(FetchAllGenres());
+    genreBloc.add(FetchAllGenresSections());
 
     List<String> selectedGenres = [];
     shouldEnable = false;
@@ -75,9 +75,9 @@ class _FilterGenresViewState extends State<FilterGenresView> {
               child: BlocBuilder(
                   bloc: genreBloc,
                   builder: (BuildContext context, state) {
-                    if (state is GenresLoaded) {
+                    if (state is SectionLoaded) {
                       if (firstTime) {
-                        state.genresPage.items.forEach((genre) {
+                        state.sectionsPage.items.forEach((genre) {
                           genres.add(genre.id);
                           genresState[genre.id] = false;
                         });

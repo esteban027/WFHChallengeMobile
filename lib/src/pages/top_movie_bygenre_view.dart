@@ -1,10 +1,10 @@
-import 'package:WFHchallenge/src/Events/genres_events.dart';
+import 'package:WFHchallenge/src/Events/sections_events.dart';
 import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/States/genres_states.dart';
+import 'package:WFHchallenge/src/States/sections_states.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
-import 'package:WFHchallenge/src/blocs/genres_bloc.dart';
+import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
-import 'package:WFHchallenge/src/models/genres_page_model.dart';
+import 'package:WFHchallenge/src/models/sections_page_model.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/resources/network.dart';
@@ -31,11 +31,11 @@ class _TopMovieState extends State<TopMovie> {
 
   _TopMovieState(this.bloc);
 
-  final LoadGenresBloc genreBloc = LoadGenresBloc();
+  final LoadSectionsBloc genreBloc = LoadSectionsBloc();
 
   @override
   Widget build(BuildContext context) {
-    genreBloc.add(FetchAllGenres());
+    genreBloc.add(FetchAllGenresSections());
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -64,8 +64,8 @@ class _TopMovieState extends State<TopMovie> {
             BlocBuilder(
                 bloc: genreBloc,
                 builder: (BuildContext context, state) {
-                  if (state is GenresLoaded) {
-                    return topGenreCollection(state.genresPage.items, context);
+                  if (state is SectionLoaded) {
+                    return topGenreCollection(state.sectionsPage.items, context);
                   }
                   return Center(child: CircularProgressIndicator());
                 })
@@ -79,7 +79,7 @@ class _TopMovieState extends State<TopMovie> {
     );
   }
 
-  Widget topGenreCollection(List<GenreModel> genres, BuildContext context) {
+  Widget topGenreCollection(List<SectionModel> genres, BuildContext context) {
     return Container(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

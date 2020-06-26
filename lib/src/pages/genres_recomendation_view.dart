@@ -1,6 +1,6 @@
-import 'package:WFHchallenge/src/Events/genres_events.dart';
-import 'package:WFHchallenge/src/States/genres_states.dart';
-import 'package:WFHchallenge/src/blocs/genres_bloc.dart';
+import 'package:WFHchallenge/src/Events/sections_events.dart';
+import 'package:WFHchallenge/src/States/sections_states.dart';
+import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/pages/tab_view.dart';
@@ -36,13 +36,13 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
   final List<String> genres = [];
   Map<String, bool> genresState = {};
 
-  final LoadGenresBloc genreBloc = LoadGenresBloc();
+  final LoadSectionsBloc genreBloc = LoadSectionsBloc();
 
   @override
   Widget build(BuildContext context) {
     List<String> selectedGenres = [];
 
-    genreBloc.add(FetchAllGenres());
+    genreBloc.add(FetchAllGenresSections());
     shouldEnable = false;
 
     genresState.forEach((key, value) {
@@ -170,9 +170,9 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
       child: BlocBuilder(
           bloc: genreBloc,
           builder: (BuildContext context, state) {
-            if (state is GenresLoaded) {
+            if (state is SectionLoaded) {
               if (firstTime) {
-                state.genresPage.items.forEach((genre) {
+                state.sectionsPage.items.forEach((genre) {
                   genres.add(genre.id);
                   genresState[genre.id] = false;
                 });
