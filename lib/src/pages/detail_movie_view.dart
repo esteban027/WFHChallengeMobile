@@ -5,12 +5,14 @@ import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
 import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class DetailMovieView extends StatefulWidget {
   DetailMovieView({
@@ -54,7 +56,7 @@ class DetailMovieView extends StatefulWidget {
     int counter = 0;
     List<DateTime> dates = [];
     List<TimeSeriesSales> points = [];
-    
+
     ratings.items.forEach((rating) {
       dates.add(DateTime.fromMillisecondsSinceEpoch(rating.timestamp * 1000));
     });
@@ -77,6 +79,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final Color _blueContainer = Color.fromRGBO(40, 65, 109, 0.10);
   Color _buttonColor = Colors.grey;
   int dateas = (DateTime.now().millisecondsSinceEpoch);
+  double buttonSected = 0;
+  var userId = 0;
 
   List<Color> starsColor = [
     Colors.grey,
@@ -92,9 +96,14 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final postRatingBloc = UserRatingBloc();
 
   @override
+  void initState() {
+    super.initState();
+    ratingBloc.add(FetchRatingsByMovieId(widget.movie.id));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double widthContainer = MediaQuery.of(context).size.width - 80;
-    ratingBloc.add(FetchRatingsByMovieId(widget.movie.id));
 
     List<String> genres = widget.movie.genre.split('|');
 
@@ -111,7 +120,13 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 child: Column(
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final signInRepository = Provider.of<SignInRepository>(
+                            context,
+                            listen: false);
+                        userId = await signInRepository.getUserId();
+                        postRatingBloc.add(FetchRatingByUserIdAndMovieId(
+                            userId, widget.movie.id));
                         bottomSheet();
                       },
                       child: Image.asset(
@@ -428,57 +443,65 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     return Container(
       child: FlatButton(
           onPressed: () {
-            switch (number) {
-              case 1:
-                setStateSheet(() {
-                  starState[0] = !starState[0];
+            setStateSheet(() {
+              switch (number) {
+                case 1:
+                  starState[0] = true;
+                  starState[1] = false;
+                  starState[2] = false;
+                  starState[3] = false;
+                  starState[4] = false;
                   _buttonColor = _orange;
-                });
-                break;
+                  buttonSected = 1;
+                  break;
 
-              case 2:
-                setStateSheet(() {
-                  starState[0] = !starState[0];
-                  starState[1] = !starState[1];
+                case 2:
+                  starState[0] = true;
+                  starState[1] = true;
+                  starState[2] = false;
+                  starState[3] = false;
+                  starState[4] = false;
                   _buttonColor = _orange;
-                });
-                break;
+                  buttonSected = 2;
+                  break;
 
-              case 3:
-                setStateSheet(() {
-                  starState[0] = !starState[0];
-                  starState[1] = !starState[1];
-                  starState[2] = !starState[2];
+                case 3:
+                  starState[0] = true;
+                  starState[1] = true;
+                  starState[2] = true;
+                  starState[3] = false;
+                  starState[4] = false;
                   _buttonColor = _orange;
-                });
-                break;
+                  buttonSected = 3;
+                  break;
 
-              case 4:
-                setStateSheet(() {
-                  starState[0] = !starState[0];
-                  starState[1] = !starState[1];
-                  starState[2] = !starState[2];
-                  starState[3] = !starState[3];
+                case 4:
+                  starState[0] = true;
+                  starState[1] = true;
+                  starState[2] = true;
+                  starState[3] = true;
+                  starState[4] = false;
                   _buttonColor = _orange;
-                });
-                break;
+                  buttonSected = 4;
+                  break;
 
-              case 5:
-                setStateSheet(() {
-                  starState[0] = !starState[0];
-                  starState[1] = !starState[1];
-                  starState[2] = !starState[2];
-                  starState[3] = !starState[3];
-                  starState[4] = !starState[4];
+                case 5:
+                  starState[0] = true;
+                  starState[1] = true;
+                  starState[2] = true;
+                  starState[3] = true;
+                  starState[4] = true;
                   _buttonColor = _orange;
-                });
-                break;
+                  buttonSected = 5;
+                  break;
 
-              default:
-            }
-            paintStarts();
-            clearStates();
+                default:
+              }
+              // clearStates();
+              paintStarts();
+            });
           },
+
           child: Column(
             children: <Widget>[
               Container(
@@ -506,15 +529,98 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, setStateModal) {
-            return alert(setStateModal);
+            return BlocBuilder(
+                bloc: postRatingBloc,
+                builder: (BuildContext context, state) {
+                  if (state is SingleRatingLoaded) {
+                    return alert(setStateModal, state.rating);
+                  } else if (state is RatingsNotLoaded) {
+                    return alert(setStateModal, null);
+                  }
+                  return Center(child: CircularProgressIndicator());
+                });
           });
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
   }
 
-  Widget alert(StateSetter setStateModal2) {
-    var qwer = (dateas / 1000).round();
-    print(qwer);
+  
+  // void updateRating(RatingModel ratingModel) {
+  //   if (ratingModel != null) {
+  //     switch (ratingModel.rating.round()) {
+  //       case 0:
+  //         starState[0] = false;
+  //         starState[1] = false;
+  //         starState[2] = false;
+  //         starState[3] = false;
+  //         starState[4] = false;
+  //         break;
+  //       case 1:
+  //         starState[0] = true;
+  //         starState[1] = false;
+  //         starState[2] = false;
+  //         starState[3] = false;
+  //         starState[4] = false;
+  //         break;
+  //       case 2:
+  //         starState[0] = true;
+  //         starState[1] = true;
+  //         starState[2] = false;
+  //         starState[3] = false;
+  //         starState[4] = false;
+  //         break;
+  //       case 3:
+  //         starState[0] = true;
+  //         starState[1] = true;
+  //         starState[2] = true;
+  //         starState[3] = false;
+  //         starState[4] = false;
+  //         break;
+  //       case 4:
+  //         starState[0] = true;
+  //         starState[1] = true;
+  //         starState[2] = true;
+  //         starState[3] = false;
+  //         starState[4] = false;
+  //         break;
+  //       case 5:
+  //         starState[0] = true;
+  //         starState[1] = true;
+  //         starState[2] = true;
+  //         starState[3] = true;
+  //         starState[4] = true;
+  //         break;
+  //       default:
+  //     }
+  //   }
+  // }
+
+  void drawStar(int starSelected) {
+    if (starSelected == 0 && buttonSected == 0) {
+      clearStates();
+    } else {
+      for (var i = 0; i <= starState.length; i++) {
+        if (i <= starSelected) {
+          starState[i] = !starState[i];
+        } else {
+          starState[i] = false;
+        }
+      }
+    }
+
+    paintStarts();
+  }
+
+  Widget alert(StateSetter setStateModal2, RatingModel ratingModel) {
+    var timeStapFromatted = (dateas / 1000).round();
+
+    if (ratingModel != null){
+      for (int i = 0; i< starState.length ; i++){
+        starState[i] = i <= ratingModel.rating.round();
+      }
+        paintStarts();
+    }
+
     return Container(
       color: Colors.transparent,
       height: 250,
@@ -561,21 +667,35 @@ class _DetailMovieViewState extends State<DetailMovieView> {
             Container(
               child: FlatButton(
                   onPressed: () {
-                      postRatingBloc.add(PublishNewRating(RatingModel.createNewRatingInit(611, 33, 1, qwer)));
+                    if (ratingModel != null) {
+                      postRatingBloc.add(UpdateRating(
+                          RatingModel.createNewRatingInit(
+                              userId,
+                              widget.movie.id,
+                              buttonSected,
+                              timeStapFromatted)));
+                    } else {
+                      postRatingBloc.add(PublishNewRating(
+                          RatingModel.createNewRatingInit(
+                              userId,
+                              widget.movie.id,
+                              buttonSected,
+                              timeStapFromatted)));
+                    }
 
                     BlocBuilder(
-                    bloc: postRatingBloc,
-                    builder: (BuildContext context, state) {
-                      print(state);
-                      if (state is RatingPublished) {
-                        print('RatingPubllished');
-                        return Spacer();
-                      } else if (state is RatingNotPublished) {
-                        print('Rating no Publlished');
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    });
+                        bloc: postRatingBloc,
+                        builder: (BuildContext context, state) {
+                          print(state);
+                          if (state is RatingPublished) {
+                            print('RatingPubllished');
+                            return Spacer();
+                          } else if (state is RatingNotPublished) {
+                            print('Rating no Publlished');
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        });
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -611,10 +731,20 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   }
 
   void paintStarts() {
+    bool state = false;
     starsColor[0] = starState[0] ? _orange : Colors.grey;
     starsColor[1] = starState[1] ? _orange : Colors.grey;
     starsColor[2] = starState[2] ? _orange : Colors.grey;
     starsColor[3] = starState[3] ? _orange : Colors.grey;
     starsColor[4] = starState[4] ? _orange : Colors.grey;
+
+    starsColor.forEach((star) {
+      if (star == _orange) {
+        state = true;
+      }
+    });
+
+    // _buttonColor = state ? _orange : Colors.grey;
+    _buttonColor = state ? _orange : Colors.grey;
   }
 }
