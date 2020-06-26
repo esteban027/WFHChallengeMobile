@@ -111,7 +111,7 @@ class _HomeViewState extends State<HomeView> {
                 }
                 return CircularProgressIndicator(
                   backgroundColor: _orange,
-                  strokeWidth: 5,
+                  strokeWidth: 1,
                   valueColor: AlwaysStoppedAnimation(_darkblue),
                 );
               },

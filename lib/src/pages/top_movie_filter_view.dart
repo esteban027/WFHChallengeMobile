@@ -15,17 +15,19 @@ class TopMovieFilter extends StatefulWidget {
   final String title;
   final LoadMoviesBloc bloc;
   final PageEvent event;
+  final String genreEvent;
 
   TopMovieFilter(
       {Key key,
       @required this.title,
       @required this.bloc,
-      @required this.event})
+      @required this.event,
+      this.genreEvent})
       : super(key: key);
 
   @override
   _TopMovieFilterState createState() =>
-      _TopMovieFilterState(title, bloc, event);
+      _TopMovieFilterState(title, bloc, event,genreEvent);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
@@ -33,12 +35,13 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   LoadMoviesBloc bloc;
   PageEvent event;
   int page = 0;
+  String genreEvent;
   Color _bestRating = Colors.white;
   Color _alfabetical = Colors.white;
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
-  _TopMovieFilterState(this.title, this.bloc, this.event);
+  _TopMovieFilterState(this.title, this.bloc, this.event, this.genreEvent);
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
@@ -50,10 +53,26 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Future<void> loadMoviesPage([bool isLoading = true]) async {
     shouldReloadMovies = true;
 
-    if (event.toString() == "Instance of 'FetchTopMovies'" && isLoading) {
-      page++;
-      print(page);
-      bloc.add(FetchTopMovies(page: page));
+    switch (event.toString()) {
+      case "Instance of 'FetchTopMovies'":
+        if (isLoading) {
+          // page++;
+          // print(page);
+          bloc.add(FetchTopMovies(page: page));
+        }
+        break;
+      case "Instance of 'FetchTopMoviesByLatestRelease'":
+        if (isLoading) {
+          // page++;
+          // print(page);
+          bloc.add(FetchTopMoviesByLatestRelease());
+        }
+        break;
+      case "Instance of 'FetchTopMoviesByGenres'":
+        if (isLoading) {
+          bloc.add(FetchTopMoviesByGenres([genreEvent]));
+        }
+        break;
     }
   }
 

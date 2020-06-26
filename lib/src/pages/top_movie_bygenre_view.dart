@@ -99,6 +99,7 @@ class _TopMovieState extends State<TopMovie> {
                             title: genres[index].id,
                             bloc: bloc,
                             event: FetchTopMoviesByGenres([genres[index].id]),
+                            genreEvent: genres[index].id,
                           )));
             },
           );
