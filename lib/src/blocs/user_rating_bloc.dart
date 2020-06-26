@@ -21,6 +21,8 @@ class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
       yield* _mapPublishNewRating(event.rating);
     } else if (event is FetchRatingByUserIdAndMovieId) {
       yield* _mapFetchRatingsByUserIdAndMovieId(event.page, event.userId, event.movieId);
+    } else if (event is UpdateRating) {
+      yield* _mapUpdateRating(event.rating);
     } else if (event is ReturnToInitialState) {
       yield initialState;
     }
@@ -39,6 +41,20 @@ class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
       yield RatingNotPublished();
     }
   }
+
+  Stream<RatingsState> _mapUpdateRating(RatingModel rating) async* {
+    try {
+      final ratingsPostSuccess = await this.repository.updateRating(rating);
+      if (ratingsPostSuccess) {
+        yield RatingPublished();
+      } else {
+        yield RatingNotPublished();
+      }
+    } catch (_) {
+      yield RatingNotPublished();
+    }
+  }
+
 
   Stream<RatingsState> _mapFetchRatingsByUserIdAndMovieId( int page, int userId,int movieId) async* {
     try {

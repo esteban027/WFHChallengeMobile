@@ -17,6 +17,11 @@ class PublishNewRating extends BasicRatingEvent {
   PublishNewRating(this.rating) : super(0);
 }
 
+class UpdateRating extends BasicRatingEvent {
+  RatingModel rating;
+  UpdateRating(this.rating) : super(0);
+}
+
 class FetchRatingByUserIdAndMovieId extends BasicRatingEvent {
     int userId;
     int movieId;

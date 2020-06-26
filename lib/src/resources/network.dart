@@ -125,10 +125,26 @@ class Network {
 
   Future<bool> postNewRating(RatingModel rating) async {
     Uri uri = Uri.http(_url, _ratingEndpoint);
-     
+
     var request =   post(uri,
     body: jsonEncode(rating),
     headers: postHeader
+    );
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateRating(RatingModel rating) async {
+    var completeRatingEndpoint = _ratingEndpoint+'/'+rating.movieId.toString()+'_'+rating.user.toString();
+    Uri uri = Uri.http(_url,completeRatingEndpoint );
+
+    var request =   put(uri,
+        body: jsonEncode(rating),
+        headers: postHeader
     );
     Response response = await request;
     if (response.statusCode == 200) {

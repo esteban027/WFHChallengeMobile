@@ -25,4 +25,10 @@ class RatingsRepository {
   Future<bool> postNewRating(RatingModel rating) {
     return netwok.postNewRating(rating);
   }
+
+  Future<bool> updateRating(RatingModel rating) {
+    return netwok.updateRating(rating);
+  }
+
+
 }
