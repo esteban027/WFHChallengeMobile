@@ -5,20 +5,19 @@ import 'package:flutter/material.dart';
 
 
 class TabView extends StatefulWidget {
-
   @override
   _TabViewState createState() => _TabViewState();
 }
 
 class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  // TabController _tabController;
   String userName = '';
 
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    // _tabController = TabController(length: 3, vsync: this);
   }
   
   @override
@@ -35,6 +34,7 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
         DefaultCupertinoLocalizations.delegate,
       ],
       home: CupertinoTabScaffold(
+        resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

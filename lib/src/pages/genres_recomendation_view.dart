@@ -35,6 +35,7 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
 
   final List<String> genres = [];
   Map<String, bool> genresState = {};
+  Color _clearBlue = Color.fromRGBO(119, 165, 244, 1);
 
   final LoadSectionsBloc genreBloc = LoadSectionsBloc();
 
@@ -211,18 +212,20 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
         )),
         padding: EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
-            color: genresState[genres[index]] ? _orange : genreColor,
-            borderRadius: BorderRadius.circular(10)),
+            color: genresState[genres[index]] ? _clearBlue : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.blue)
+        ),
       ));
       index++;
     });
 
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+          crossAxisCount: 2,
           crossAxisSpacing: 20.0,
           mainAxisSpacing: 20.0,
-          childAspectRatio: (100 / 45)),
+          childAspectRatio: (150 / 45)),
       itemBuilder: (contex, index) {
         return GestureDetector(
           child: rows[index],

@@ -23,6 +23,7 @@ class LoadRatingsBloc extends Bloc<PageEvent, RatingsState> {
   Stream<RatingsState> _mapLoadRatingsByMovieId(int movieId) async* {
     try {
       final ratingList = await this.repository.fetchRatingsByMovieId(movieId);
+      print(ratingList);
       yield GraphicRatingsLoaded(ratingList);
     } catch (_) {
       yield RatingsNotLoaded();

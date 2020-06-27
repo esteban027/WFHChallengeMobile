@@ -446,64 +446,14 @@ class _DetailMovieViewState extends State<DetailMovieView> {
       child: FlatButton(
           onPressed: () {
             setStateSheet(() {
-              switch (number) {
-                case 1:
-                  starState[0] = true;
-                  starState[1] = false;
-                  starState[2] = false;
-                  starState[3] = false;
-                  starState[4] = false;
-                  _buttonColor = _orange;
-                  buttonSected = 1;
-                  break;
-
-                case 2:
-                  starState[0] = true;
-                  starState[1] = true;
-                  starState[2] = false;
-                  starState[3] = false;
-                  starState[4] = false;
-                  _buttonColor = _orange;
-                  buttonSected = 2;
-                  break;
-
-                case 3:
-                  starState[0] = true;
-                  starState[1] = true;
-                  starState[2] = true;
-                  starState[3] = false;
-                  starState[4] = false;
-                  _buttonColor = _orange;
-                  buttonSected = 3;
-                  break;
-
-                case 4:
-                  starState[0] = true;
-                  starState[1] = true;
-                  starState[2] = true;
-                  starState[3] = true;
-                  starState[4] = false;
-                  _buttonColor = _orange;
-                  buttonSected = 4;
-                  break;
-
-                case 5:
-                  starState[0] = true;
-                  starState[1] = true;
-                  starState[2] = true;
-                  starState[3] = true;
-                  starState[4] = true;
-                  _buttonColor = _orange;
-                  buttonSected = 5;
-                  break;
-
-                default:
+              for (int i = 0; i < starState.length; i++) {
+                starState[i] = i < number;
               }
-              // clearStates();
+              buttonSected = number.toDouble();
+              _buttonColor = _orange;
               paintStarts();
             });
           },
-
           child: Column(
             children: <Widget>[
               Container(
@@ -527,6 +477,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
   void bottomSheet() {
     showModalBottomSheet(
+        useRootNavigator: true,
         context: context,
         builder: (context) {
           return StatefulBuilder(
@@ -539,94 +490,31 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   } else if (state is RatingsNotLoaded) {
                     return alert(setStateModal, null);
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return Container(
+                    child: CircularProgressIndicator(),
+                    height: MediaQuery.of(context).size.height / 3,
+                    color: _darkBlue,
+                  );
                 });
           });
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
   }
 
-  
-  // void updateRating(RatingModel ratingModel) {
-  //   if (ratingModel != null) {
-  //     switch (ratingModel.rating.round()) {
-  //       case 0:
-  //         starState[0] = false;
-  //         starState[1] = false;
-  //         starState[2] = false;
-  //         starState[3] = false;
-  //         starState[4] = false;
-  //         break;
-  //       case 1:
-  //         starState[0] = true;
-  //         starState[1] = false;
-  //         starState[2] = false;
-  //         starState[3] = false;
-  //         starState[4] = false;
-  //         break;
-  //       case 2:
-  //         starState[0] = true;
-  //         starState[1] = true;
-  //         starState[2] = false;
-  //         starState[3] = false;
-  //         starState[4] = false;
-  //         break;
-  //       case 3:
-  //         starState[0] = true;
-  //         starState[1] = true;
-  //         starState[2] = true;
-  //         starState[3] = false;
-  //         starState[4] = false;
-  //         break;
-  //       case 4:
-  //         starState[0] = true;
-  //         starState[1] = true;
-  //         starState[2] = true;
-  //         starState[3] = false;
-  //         starState[4] = false;
-  //         break;
-  //       case 5:
-  //         starState[0] = true;
-  //         starState[1] = true;
-  //         starState[2] = true;
-  //         starState[3] = true;
-  //         starState[4] = true;
-  //         break;
-  //       default:
-  //     }
-  //   }
-  // }
-
-  void drawStar(int starSelected) {
-    if (starSelected == 0 && buttonSected == 0) {
-      clearStates();
-    } else {
-      for (var i = 0; i <= starState.length; i++) {
-        if (i <= starSelected) {
-          starState[i] = !starState[i];
-        } else {
-          starState[i] = false;
-        }
-      }
-    }
-
-    paintStarts();
-  }
-
   Widget alert(StateSetter setStateModal2, RatingModel ratingModel) {
     var timeStapFromatted = (dateas / 1000).round();
 
-    if (ratingModel != null && isfirstLaunch){
-      for (int i = 0; i< starState.length ; i++){
-        starState[i] = i <= ratingModel.rating.round();
+    if (ratingModel != null && isfirstLaunch) {
+      for (int i = 0; i < starState.length; i++) {
+        starState[i] = i < ratingModel.rating.round();
       }
       isfirstLaunch = !isfirstLaunch;
-        paintStarts();
+      paintStarts();
     }
 
     return Container(
       color: Colors.transparent,
-      height: 250,
+      height: MediaQuery.of(context).size.height / 3,
       child: Container(
         child: Column(
           children: <Widget>[
@@ -685,11 +573,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                               buttonSected,
                               timeStapFromatted)));
                     }
-
                     BlocBuilder(
                         bloc: postRatingBloc,
                         builder: (BuildContext context, state) {
-                          print(state);
                           if (state is RatingPublished) {
                             print('RatingPubllished');
                             return Spacer();
@@ -699,6 +585,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                           }
                           return Center(child: CircularProgressIndicator());
                         });
+
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -725,12 +612,19 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     );
   }
 
-  void clearStates() {
+  void clearStates([int rating = 0]) {
     starState[0] = false;
     starState[1] = false;
     starState[2] = false;
     starState[3] = false;
     starState[4] = false;
+
+    if (rating != 0) {
+      for (var i = 0; i < rating; i++) {
+        starState[i] = true;
+      }
+    }
+    paintStarts();
   }
 
   void paintStarts() {

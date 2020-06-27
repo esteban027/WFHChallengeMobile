@@ -31,7 +31,6 @@ class _HomeViewState extends State<HomeView> {
 
   List<String> moviesDescription = ['Movie title', '', '', 'Movie title'];
   List<SectionModel> sections = [];
-  int userId = 0;
 
   @override
   void initState() {
@@ -100,9 +99,6 @@ class _HomeViewState extends State<HomeView> {
                   (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
-                    var ass = snapshot.data.id;
-                    userId = snapshot.data.id;
-
                     return Text(
                       snapshot.data.name.split(' ').first,
                       style: TextStyle(
@@ -163,15 +159,41 @@ class _HomeViewState extends State<HomeView> {
       child: _section(TypeOfCard.normal, sections[section]),
       onTap: () {
         final String title = sections[section].id.split("!")[0];
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TopMovieFilter(
-                      title: title,
-                      bloc: moviesBloc,
-                      event: section == 0 ? FetchTopMovies(page: 1) : FetchMoviesRecommendationToUser(userId),
-                      userModel: userId,
-                    )));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => TopMovieFilter(
+        //               title: title,
+        //               bloc: moviesBloc,
+        //               event: FetchTopMovies(page: 1),
+        //             )));
+        
+        // Navigator.of(rootNavigator: true);
+
+          var rute =   CupertinoPageRoute(
+            builder: (context) => TopMovieFilter(
+              title: title,
+              bloc: moviesBloc,
+              event: FetchTopMovies(page: 1),
+          ),
+          maintainState: false,
+          fullscreenDialog: false
+          );
+
+        Navigator.of(context).push(rute);
+        // Navigator.push(
+        //   context,
+        //   CupertinoPageRoute(
+        //     builder: (context) => TopMovieFilter(
+        //       title: title,
+        //       bloc: moviesBloc,
+        //       event: FetchTopMovies(page: 1),
+        //   ),
+        //   maintainState: false,
+        //   fullscreenDialog: false
+          
+        //   ),
+        // );
       },
     );
   }
@@ -215,7 +237,7 @@ class _HomeViewState extends State<HomeView> {
 
     final BorderRadius borderRadius = BorderRadius.circular(6.0);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
-
+    print(sectionModel.description);
     return Container(
       child: Stack(
         children: <Widget>[
