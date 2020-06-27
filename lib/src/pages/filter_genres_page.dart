@@ -18,7 +18,6 @@ class FilterGenresView extends StatefulWidget {
 }
 
 class _FilterGenresViewState extends State<FilterGenresView> {
-
   final List<String> genres = [];
   Map<String, bool> genresState = {};
 
@@ -32,7 +31,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.height);
+
     genreBloc.add(FetchAllGenresSections());
 
     List<String> selectedGenres = [];
@@ -47,26 +46,24 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
     return Scaffold(
       backgroundColor: _backgroundColor,
-      appBar: AppBar(
-          backgroundColor: _backgroundColor,
-          actions: <Widget>[
-            Container(
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  genresState.forEach((key, value) {
-                    if (value == true) {
-                      shouldEnable = true;
-                    }
-                  });
-                  showSearch(context: context, delegate: DataSearch(moviesBloc));
-                },
-              ),
-              // decoration: BoxDecoration(
-              //   color:  Colors.deepOrange, 
-              // ),
-            )
-          ]),
+      appBar: AppBar(backgroundColor: _backgroundColor, actions: <Widget>[
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              genresState.forEach((key, value) {
+                if (value == true) {
+                  shouldEnable = true;
+                }
+              });
+              showSearch(context: context, delegate: DataSearch(moviesBloc));
+            },
+          ),
+          // decoration: BoxDecoration(
+          //   color:  Colors.deepOrange,
+          // ),
+        )
+      ]),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -88,7 +85,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                     }
                     return Center(child: CircularProgressIndicator());
                   }),
-              height: MediaQuery.of(context).size.height - 304 ,
+              height: MediaQuery.of(context).size.height - 304,
             ),
             _filterButton(selectedGenres)
           ],
@@ -137,7 +134,6 @@ class _FilterGenresViewState extends State<FilterGenresView> {
               },
               activeColor: _buttonColor,
               checkColor: Colors.white,
-              
             )
           ],
         ),
@@ -158,17 +154,18 @@ class _FilterGenresViewState extends State<FilterGenresView> {
     bool isEmpty = selectedGenres.isEmpty;
     return Container(
       child: RaisedButton(
-        onPressed: isEmpty ? null :() {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FilterView(
-                        moviesBloc: moviesBloc,
-                        event: FetchMoviesByGenres(selectedGenres),
-                        genres: selectedGenres,
-                      )));
-        },
-
+        onPressed: isEmpty
+            ? null
+            : () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FilterView(
+                              moviesBloc: moviesBloc,
+                              event: FetchMoviesByGenres(selectedGenres),
+                              genres: selectedGenres,
+                            )));
+              },
         child: Text('Apply filter'),
         color: isEmpty ? Colors.grey : _buttonColor,
         textColor: Colors.white,
