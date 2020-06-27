@@ -14,23 +14,23 @@ enum TypeOfFilter { rating, title, releaseDate, withuotFilter }
 
 class TopMovieFilter extends StatefulWidget {
   final String title;
-  final LoadMoviesBloc bloc;
+ 
   final PageEvent event;
   final String genreEvent;
-  final int userModel;
+  final int userId;
 
   TopMovieFilter(
       {Key key,
       @required this.title,
-      @required this.bloc,
+      
       @required this.event,
-      this.userModel,
+      this.userId,
       this.genreEvent})
       : super(key: key);
 
   @override
   _TopMovieFilterState createState() =>
-      _TopMovieFilterState(title, bloc, event,genreEvent);
+      _TopMovieFilterState(title,event,genreEvent);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
@@ -44,21 +44,20 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
-  _TopMovieFilterState(this.title, this.bloc, this.event, this.genreEvent);
+  _TopMovieFilterState(this.title, this.event, this.genreEvent);
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
   double heightOfModalBottomSheet = 200;
   bool shouldReloadMovies = true;
-  bool didFinishLoading = true;
 
   Future<void> loadMoviesPage([bool isLoading = true]) async {
     shouldReloadMovies = true;
     switch (event.toString()) {
       case "Instance of 'FetchTopMovies'":
         if (isLoading) {
-          bloc.add(FetchTopMovies(page: page));
+          bloc.add(FetchTopMovies());
         }
         break;
       case "Instance of 'FetchTopMoviesByLatestRelease'":
@@ -74,7 +73,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
       case "Instance of 'FetchMoviesRecommendationToUser'":
         if (isLoading) {
-          bloc.add(FetchMoviesRecommendationToUser(widget.userModel));
+          bloc.add(FetchMoviesRecommendationToUser(widget.userId));
         }
         break;
     }
@@ -83,6 +82,8 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   @override
   void initState() {
     super.initState();
+    this.bloc = LoadMoviesBloc();
+    movies = [];
     shouldReloadMovies = true;
     bloc.add(ReturnToInitialState());
     loadMoviesPage(true);
@@ -131,14 +132,12 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                     print(state);
                     if (state is MoviesLoaded) {
                       movies.addAll(state.moviesPage.items);
-                      didFinishLoading = true;
-
+                  
                       var gallery = MoviesGallery(
                         movies: movies,
-                        nextPage: loadMoviesPage,
                         isFirstCall: true,
                       );
-                      gallery.changeStatus();
+                      // gallery.changeStatus();
 
                       return gallery;
                     }
@@ -149,7 +148,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                       height: MediaQuery.of(context).size.height - 400,
                     );
                   })
-              : MoviesGallery(movies: filteredmovies, nextPage: loadMoviesPage)
+              : MoviesGallery(movies: filteredmovies)
         ],
       ),
     );

@@ -167,10 +167,9 @@ class _HomeViewState extends State<HomeView> {
             context,
             MaterialPageRoute(
                 builder: (context) => TopMovieFilter(
-                      title: title,
-                      bloc: moviesBloc,
-                      event: section == 0 ? FetchTopMovies(page: 1) : FetchMoviesRecommendationToUser(userId),
-                      userModel: userId,
+                      title: title,                    
+                      event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(userId),
+                      userId: userId,
                     )));
       },
     );
@@ -187,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
                 MaterialPageRoute(
                     builder: (context) => TopMovieFilter(
                           title: sections[section].id,
-                          bloc: moviesBloc,
+                          
                           event: FetchTopMoviesByLatestRelease(),
                         )));
           },

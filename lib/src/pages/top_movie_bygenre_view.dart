@@ -97,7 +97,7 @@ class _TopMovieState extends State<TopMovie> {
                   MaterialPageRoute(
                       builder: (context) => TopMovieFilter(
                             title: genres[index].id,
-                            bloc: bloc,
+                         
                             event: FetchTopMoviesByGenres([genres[index].id]),
                             genreEvent: genres[index].id,
                           )));
