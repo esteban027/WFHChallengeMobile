@@ -65,15 +65,18 @@ class _HomeViewState extends State<HomeView> {
                     sections = state.sectionsPage.items;
                     return _drawSections();
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: _orange,
+                      strokeWidth: 5,
+                      valueColor: AlwaysStoppedAnimation(_darkblue),
+                    ),
+                  );
                 }),
             height: MediaQuery.of(context).size.height - 250,
-            // width: MediaQuery.of(context).size.width,
           ),
         ],
       ),
-      // height: MediaQuery.of(context).size.height - 84,
-      // width: MediaQuery.of(context).size.width,
     );
   }
 
@@ -111,17 +114,21 @@ class _HomeViewState extends State<HomeView> {
                   return Container(
                     child: CircularProgressIndicator(
                       backgroundColor: _orange,
-                      strokeWidth: 5,
+                      strokeWidth: 1,
                       valueColor: AlwaysStoppedAnimation(_darkblue),
                     ),
-                    width: 20,
-                    height: 20,
+                    width: 5,
+                    height: 5,
                   );
                 }
-                return CircularProgressIndicator(
-                  backgroundColor: _orange,
-                  strokeWidth: 1,
-                  valueColor: AlwaysStoppedAnimation(_darkblue),
+                return Container(
+                    child: CircularProgressIndicator(
+                      backgroundColor: _orange,
+                      strokeWidth: 1,
+                      valueColor: AlwaysStoppedAnimation(_darkblue),
+                    ),
+                    width: 15,
+                    height: 15,
                 );
               },
             )
@@ -210,7 +217,7 @@ class _HomeViewState extends State<HomeView> {
   Widget _section(TypeOfCard type, SectionModel sectionModel) {
     final width = (MediaQuery.of(context).size.width);
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
-    final double widthMovie = type == TypeOfCard.normal ? width : width - 250;
+    final double widthMovie = type == TypeOfCard.normal ? width : (width / 2) - 35;
 
     final BorderRadius borderRadius = BorderRadius.circular(6.0);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
@@ -279,8 +286,8 @@ class _HomeViewState extends State<HomeView> {
         fit: StackFit.passthrough,
       ),
       margin: EdgeInsets.only(
-        left: type == TypeOfCard.normal ? 35 : 10,
-        right: type == TypeOfCard.normal ? 35 : 10,
+        left: type == TypeOfCard.normal ? 35 : 0,
+        right: type == TypeOfCard.normal ? 35 : 0,
         top: 20,
       ),
     );

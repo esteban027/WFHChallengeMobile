@@ -257,15 +257,13 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
   }
 
   Widget _filterButton(List<String> selectedGenres, UserModel user) {
-    bool isEmpty = selectedGenres.length < 5;
+    bool isEmpty = selectedGenres.isEmpty;
     String genresString = '';
     final signInRepository =
         Provider.of<SignInRepository>(context, listen: false);
     return Container(
       child: RaisedButton(
-        onPressed: isEmpty
-            ? null
-            : () async {
+        onPressed: () async {
                 setState(() {
                   showProgress = true;
                 });
@@ -282,11 +280,11 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => TabView()));
               },
-        child: Text('Apply filter'),
+        child: Text('Next'),
         padding: EdgeInsets.only(left: 140, right: 140, top: 13, bottom: 13),
         color: isEmpty ? Colors.grey : _orange,
         textColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(108)),
         disabledColor: Colors.grey,
       ),
       margin: EdgeInsets.only(bottom: 30),
