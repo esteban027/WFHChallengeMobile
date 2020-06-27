@@ -62,9 +62,9 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                   showSearch(context: context, delegate: DataSearch(moviesBloc));
                 },
               ),
-              decoration: BoxDecoration(
-                // color:  Colors.deepOrange, 
-              ),
+              // decoration: BoxDecoration(
+              //   color:  Colors.deepOrange, 
+              // ),
             )
           ]),
       body: Container(
@@ -88,10 +88,8 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                     }
                     return Center(child: CircularProgressIndicator());
                   }),
-              // height: MediaQuery.of(context).size.height - 325,
               height: MediaQuery.of(context).size.height - 304 ,
             ),
-            // SizedBox(height: 40,),
             _filterButton(selectedGenres)
           ],
         ),
@@ -139,6 +137,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
               },
               activeColor: _buttonColor,
               checkColor: Colors.white,
+              
             )
           ],
         ),
@@ -157,24 +156,26 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   Widget _filterButton(List<String> selectedGenres) {
     bool isEmpty = selectedGenres.isEmpty;
-    return RaisedButton(
-      onPressed: isEmpty ? null :() {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FilterView(
-                      moviesBloc: moviesBloc,
-                      event: FetchMoviesByGenres(selectedGenres),
-                      genres: selectedGenres,
-                    )));
-      },
+    return Container(
+      child: RaisedButton(
+        onPressed: isEmpty ? null :() {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FilterView(
+                        moviesBloc: moviesBloc,
+                        event: FetchMoviesByGenres(selectedGenres),
+                        genres: selectedGenres,
+                      )));
+        },
 
-      child: Text('Apply filter'),
-      padding: EdgeInsets.only(left: 100, right: 100, top: 13, bottom: 13),
-      color: isEmpty ? Colors.grey : _buttonColor,
-      textColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      disabledColor: Colors.grey,
+        child: Text('Apply filter'),
+        color: isEmpty ? Colors.grey : _buttonColor,
+        textColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(108)),
+        disabledColor: Colors.grey,
+      ),
+      width: MediaQuery.of(context).size.width - 40,
     );
   }
 }

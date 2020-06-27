@@ -31,7 +31,6 @@ class _HomeViewState extends State<HomeView> {
 
   List<String> moviesDescription = ['Movie title', '', '', 'Movie title'];
   List<SectionModel> sections = [];
-  int userId = 0;
 
   @override
   void initState() {
@@ -100,9 +99,6 @@ class _HomeViewState extends State<HomeView> {
                   (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
-                    var ass = snapshot.data.id;
-                    userId = snapshot.data.id;
-
                     return Text(
                       snapshot.data.name.split(' ').first,
                       style: TextStyle(
@@ -170,7 +166,11 @@ class _HomeViewState extends State<HomeView> {
                       title: title,                    
                       event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(userId),
                       userId: userId,
-                    )));
+                    ),
+            maintainState: false,
+            fullscreenDialog: false
+                    )
+                    );
       },
     );
   }
@@ -214,7 +214,7 @@ class _HomeViewState extends State<HomeView> {
 
     final BorderRadius borderRadius = BorderRadius.circular(6.0);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
-
+    print(sectionModel.description);
     return Container(
       child: Stack(
         children: <Widget>[

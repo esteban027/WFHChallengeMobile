@@ -96,7 +96,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
         child: Center(
           child: Column(
             children: <Widget>[
-              _sortBy(context),
+              _sortBy(),
               _moviesGallery(),
             ],
           ),
@@ -154,7 +154,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     );
   }
 
-  Widget _sortBy(BuildContext context) {
+  Widget _sortBy() {
     double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       child: Container(
@@ -209,6 +209,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   void bottomSheet() {
     shouldReloadMovies = false;
     showModalBottomSheet(
+      useRootNavigator: true,
         context: context,
         builder: (context) {
           return Container(
