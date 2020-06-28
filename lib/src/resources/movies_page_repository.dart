@@ -26,7 +26,7 @@ class MoviesPageRepository {
   Future<MoviesPageModel> fetchMoviesByGenres(int page, List<String> genres) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
-      Parameter(ParamaterType.limit, '50'),
+      Parameter(ParamaterType.limit, '100'),
       Parameter.forSupersetFilter('genres', genres)
     ];
     return netwok.fetchMovies(parameters);
@@ -36,7 +36,7 @@ class MoviesPageRepository {
       int page, List<String> genres) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
-      Parameter(ParamaterType.limit, '10'),
+      Parameter(ParamaterType.limit, '100'),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter.forSupersetFilter('genres', genres)
     ];
@@ -46,7 +46,7 @@ class MoviesPageRepository {
   Future<MoviesPageModel> fetchMoviesByTitle(int page, String title) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
-      Parameter(ParamaterType.limit, '50'),
+      Parameter(ParamaterType.limit, '100'),
       Parameter.forFilter(FilterType.partial, 'title', title)
     ];
     return netwok.fetchMovies(parameters);
@@ -58,7 +58,7 @@ class MoviesPageRepository {
     var yearStart = new DateTime.utc(year, 1, 1);
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
-      Parameter(ParamaterType.limit, '50'),
+      Parameter(ParamaterType.limit, '100'),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter.forFilter(
           FilterType.greaterOrEqual, 'release_date', yearStart.toString())

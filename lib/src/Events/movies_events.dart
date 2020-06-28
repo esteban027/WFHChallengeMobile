@@ -6,9 +6,8 @@ class FetchAllMovies extends BasicPageEvent {
 }
 
 class FetchTopMovies extends BasicPageEvent {
-  final int page;
 
-  FetchTopMovies({ @required this.page}) : super(page);
+  FetchTopMovies([int page = 1]) : super(page);
 }
 
 class FetchMoviesByGenres extends BasicPageEvent {

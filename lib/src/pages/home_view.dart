@@ -166,17 +166,18 @@ class _HomeViewState extends State<HomeView> {
       child: _section(TypeOfCard.normal, sections[section]),
       onTap: () {
         final String title = sections[section].id.split("!")[0];
-          var rute =   CupertinoPageRoute(
-            builder: (context) => TopMovieFilter(
-              title: title,
-              bloc: moviesBloc,
-              event: FetchTopMovies(page: 1),
-          ),
-          maintainState: false,
-          fullscreenDialog: false
-          );
-
-        Navigator.of(context).push(rute);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TopMovieFilter(
+                      title: title,                    
+                      event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(userId),
+                      userId: userId,
+                    ),
+            maintainState: false,
+            fullscreenDialog: false
+                    )
+                    );
       },
     );
   }
@@ -192,7 +193,7 @@ class _HomeViewState extends State<HomeView> {
                 MaterialPageRoute(
                     builder: (context) => TopMovieFilter(
                           title: sections[section].id,
-                          bloc: moviesBloc,
+                          
                           event: FetchTopMoviesByLatestRelease(),
                         )));
           },

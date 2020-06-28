@@ -26,12 +26,12 @@ class DataSearch extends SearchDelegate {
   ThemeData appBarTheme(BuildContext context) {
     moviesBloc.add(FetchMoviesByTitle(query));
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        // provider.getMovies();
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels >=
+    //       _scrollController.position.maxScrollExtent - 200) {
+    //     // provider.getMovies();
+    //   }
+    // });
 
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
@@ -99,10 +99,8 @@ class DataSearch extends SearchDelegate {
             builder: (BuildContext context, state) {
               if (state is MoviesLoaded) {
                 // final moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().contains(query.toLowerCase())).toList();
-
-                movies.addAll(state.moviesPage.items);
                 var gallery = MoviesGallery(
-                  movies: movies,
+                  movies: state.moviesPage.items,
                 );
                 return gallery;
               }

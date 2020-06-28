@@ -9,10 +9,10 @@ import 'package:flutter/cupertino.dart';
 
 class MoviesGallery extends StatefulWidget {
   final List<MovieModel> movies;
-  final Function nextPage;
+  
   bool isFirstCall = true;
 
-  MoviesGallery({@required this.movies, this.nextPage, this.isFirstCall});
+  MoviesGallery({@required this.movies, this.isFirstCall});
   
   void changeStatus() {
     isFirstCall = true;
@@ -20,7 +20,7 @@ class MoviesGallery extends StatefulWidget {
 
   @override
   _MoviesGalleryState createState() => _MoviesGalleryState(
-      movies: movies, nextPage: nextPage, isFirstCall: isFirstCall);
+      movies: movies, isFirstCall: isFirstCall);
 }
 
 class _MoviesGalleryState extends State<MoviesGallery> {
@@ -60,18 +60,17 @@ class _MoviesGalleryState extends State<MoviesGallery> {
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
-    print(isFirstCall);
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 400) {
-        shouldUpdateMovies = isFirstCall;
-        if (shouldUpdateMovies) {
-          nextPage(true);
-          isFirstCall = !isFirstCall;
-        }
-      }
-    });
+  
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels >=
+    //       _scrollController.position.maxScrollExtent - 400) {
+    //     shouldUpdateMovies = isFirstCall;
+    //     if (shouldUpdateMovies) {
+    //       nextPage(true);
+    //       isFirstCall = !isFirstCall;
+    //     }
+    //   }
+    // });
 
     return Container(
       child: _movieGrid(),

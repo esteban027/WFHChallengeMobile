@@ -18,7 +18,6 @@ class FilterGenresView extends StatefulWidget {
 }
 
 class _FilterGenresViewState extends State<FilterGenresView> {
-
   final List<String> genres = [];
   Map<String, bool> genresState = {};
 
@@ -32,7 +31,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.height);
+
     genreBloc.add(FetchAllGenresSections());
 
     List<String> selectedGenres = [];
@@ -88,7 +87,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                     }
                     return Center(child: CircularProgressIndicator());
                   }),
-              height: MediaQuery.of(context).size.height - 304 ,
+              height: MediaQuery.of(context).size.height - 304,
             ),
             _filterButton(selectedGenres)
           ],
@@ -158,24 +157,25 @@ class _FilterGenresViewState extends State<FilterGenresView> {
     bool isEmpty = selectedGenres.isEmpty;
     return Container(
       child: RaisedButton(
-        onPressed: isEmpty ? null :() {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FilterView(
-                        moviesBloc: moviesBloc,
-                        event: FetchMoviesByGenres(selectedGenres),
-                        genres: selectedGenres,
-                      )));
-        },
-
+        onPressed: isEmpty
+            ? null
+            : () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FilterView(
+                              moviesBloc: moviesBloc,
+                              event: FetchMoviesByGenres(selectedGenres),
+                              genres: selectedGenres,
+                            )));
+              },
         child: Text('Apply filter'),
         color: isEmpty ? Colors.grey : _buttonColor,
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(108)),
         disabledColor: Colors.grey,
       ),
-      width: MediaQuery.of(context).size.width - 40,
+      width: MediaQuery.of(context).size.width ,
     );
   }
 }
