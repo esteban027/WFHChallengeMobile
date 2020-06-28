@@ -59,9 +59,6 @@ class _FilterGenresViewState extends State<FilterGenresView> {
               showSearch(context: context, delegate: DataSearch(moviesBloc));
             },
           ),
-          // decoration: BoxDecoration(
-          //   color:  Colors.deepOrange,
-          // ),
         )
       ]),
       body: Container(
@@ -172,7 +169,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(108)),
         disabledColor: Colors.grey,
       ),
-      width: MediaQuery.of(context).size.width - 40,
+      width: MediaQuery.of(context).size.width ,
     );
   }
 }
