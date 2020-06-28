@@ -31,6 +31,7 @@ class _HomeViewState extends State<HomeView> {
 
   List<String> moviesDescription = ['Movie title', '', '', 'Movie title'];
   List<SectionModel> sections = [];
+  int userId = 0;
 
   @override
   void initState() {
@@ -102,6 +103,7 @@ class _HomeViewState extends State<HomeView> {
                   (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
+                    userId = snapshot.data.id;
                     return Text(
                       snapshot.data.name.split(' ').first,
                       style: TextStyle(
