@@ -86,6 +86,7 @@ bool isFirstLaunch  = true ;
 
   void getuser (SignInRepository signInRepository) async {
     user = await signInRepository.getUserInfo();
+
     setState(() {});
   }
 
@@ -93,6 +94,7 @@ bool isFirstLaunch  = true ;
     if (isFirstLaunch){
         final signInRepository =
         Provider.of<SignInRepository>(context, listen: false);
+        
         getuser(signInRepository);
       isFirstLaunch = !isFirstLaunch;
     }
@@ -133,7 +135,7 @@ bool isFirstLaunch  = true ;
               //       (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
               //     if (snapshot.connectionState == ConnectionState.done) {
               //       if (snapshot.hasData) {
-              //         userId = snapshot.data.id;
+              //         
               //         return Text(
               //           snapshot.data.name.split(' ').first,
               //           style: TextStyle(
@@ -204,8 +206,8 @@ bool isFirstLaunch  = true ;
             MaterialPageRoute(
                 builder: (context) => TopMovieFilter(
                       title: title,                    
-                      event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(userId),
-                      userId: userId,
+                      event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(user.id),
+                      userId: user.id,
                     ),
             maintainState: false,
             fullscreenDialog: false
