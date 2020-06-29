@@ -48,7 +48,6 @@ class _TopMovieState extends State<TopMovie> {
             child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
           ),
           width: 40,
-          height: 15,
         ),
       ),
       child: Container(
@@ -59,7 +58,7 @@ class _TopMovieState extends State<TopMovie> {
                 'Top Movies by Genre',
                 style: TextStyle(fontSize: 23, color: Colors.white),
               ),
-              margin: EdgeInsets.only(top: 15, bottom: 20),
+              margin: EdgeInsets.only(top: 5, bottom: 10),
             ),
             BlocBuilder(
                 bloc: genreBloc,
@@ -107,8 +106,7 @@ class _TopMovieState extends State<TopMovie> {
         itemCount: genres.length,
         padding: EdgeInsets.only(left: 10, right: 10, top: 20),
       ),
-      // height: MediaQuery.of(context).size.height - 176,
-      height: MediaQuery.of(context).size.height - 234,
+      height: MediaQuery.of(context).size.height * 0.73,
     );
   }
 

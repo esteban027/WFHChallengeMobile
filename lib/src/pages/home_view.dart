@@ -26,6 +26,7 @@ class _HomeViewState extends State<HomeView> {
 
   final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
   final _orange = Color.fromRGBO(235, 89, 25, 1);
+   UserModel user;
 
   List<String> categories = [];
 
@@ -33,10 +34,12 @@ class _HomeViewState extends State<HomeView> {
   List<SectionModel> sections = [];
   int userId = 0;
 
+bool isFirstLaunch  = true ;
   @override
   void initState() {
     super.initState();
     sectionsBloc.add(FetchAllHomeSections());
+
   }
 
   @override
@@ -74,79 +77,107 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   );
                 }),
-            height: MediaQuery.of(context).size.height - 250,
+            height: MediaQuery.of(context).size.height * 0.75,
           ),
         ],
       ),
     );
   }
 
+  void getuser (SignInRepository signInRepository) async {
+    user = await signInRepository.getUserInfo();
+    setState(() {});
+  }
+
   Widget _title() {
-    final signInRepository =
+    if (isFirstLaunch){
+        final signInRepository =
         Provider.of<SignInRepository>(context, listen: false);
-    final user = signInRepository.getUserInfo();
-    return Column(
-      children: <Widget>[
-        Container(
-          child: Row(children: <Widget>[
-            Text(
-              'Hey',
+        getuser(signInRepository);
+      isFirstLaunch = !isFirstLaunch;
+    }
+  
+    return Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.07),
+      child: Column(
+        children: <Widget>[
+          Container(
+            child: Row(children: <Widget>[
+              Text(
+                'Hey',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+                user != null ?  Text(
+                        user.name.split(' ').first,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w100),
+                        textAlign: TextAlign.center,
+                      ) : Container(
+                      child: CircularProgressIndicator(
+                        backgroundColor: _orange,
+                        strokeWidth: 1,
+                        valueColor: AlwaysStoppedAnimation(_darkblue),
+                      ),
+                      width: 5,
+                      height: 5,
+                    ),
+              // FutureBuilder<UserModel>(
+              //   future: user,
+              //   builder:
+              //       (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.done) {
+              //       if (snapshot.hasData) {
+              //         userId = snapshot.data.id;
+              //         return Text(
+              //           snapshot.data.name.split(' ').first,
+              //           style: TextStyle(
+              //               color: Colors.white,
+              //               fontSize: 23,
+              //               fontWeight: FontWeight.w100),
+              //           textAlign: TextAlign.center,
+              //         );
+              //       }
+              //       return Container(
+              //         child: CircularProgressIndicator(
+              //           backgroundColor: _orange,
+              //           strokeWidth: 1,
+              //           valueColor: AlwaysStoppedAnimation(_darkblue),
+              //         ),
+              //         width: 5,
+              //         height: 5,
+              //       );
+              //     }
+              //     return Container(
+              //         child: CircularProgressIndicator(
+              //           backgroundColor: _orange,
+              //           strokeWidth: 1,
+              //           valueColor: AlwaysStoppedAnimation(_darkblue),
+              //         ),
+              //         width: 15,
+              //         height: 15,
+              //     );
+              //   },
+              // )
+            ], mainAxisAlignment: MainAxisAlignment.center),
+            //margin: EdgeInsets.only(top: 80),
+          ),
+          Container(
+            child: Text(
+              'Welcome to HeyMovie',
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  fontWeight: FontWeight.w600),
+                  color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300),
               textAlign: TextAlign.center,
             ),
-            FutureBuilder<UserModel>(
-              future: user,
-              builder:
-                  (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    userId = snapshot.data.id;
-                    return Text(
-                      snapshot.data.name.split(' ').first,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 23,
-                          fontWeight: FontWeight.w100),
-                      textAlign: TextAlign.center,
-                    );
-                  }
-                  return Container(
-                    child: CircularProgressIndicator(
-                      backgroundColor: _orange,
-                      strokeWidth: 1,
-                      valueColor: AlwaysStoppedAnimation(_darkblue),
-                    ),
-                    width: 5,
-                    height: 5,
-                  );
-                }
-                return Container(
-                    child: CircularProgressIndicator(
-                      backgroundColor: _orange,
-                      strokeWidth: 1,
-                      valueColor: AlwaysStoppedAnimation(_darkblue),
-                    ),
-                    width: 15,
-                    height: 15,
-                );
-              },
-            )
-          ], mainAxisAlignment: MainAxisAlignment.center),
-          margin: EdgeInsets.only(top: 80),
-        ),
-        Container(
-          child: Text(
-            'Welcome to HeyMovie',
-            style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300),
-            textAlign: TextAlign.center,
+            margin: EdgeInsets.only(top: 5),
           ),
-          margin: EdgeInsets.only(top: 5),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -200,6 +231,7 @@ class _HomeViewState extends State<HomeView> {
                         )));
           },
         ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.03,),
         GestureDetector(
           child: _section(TypeOfCard.splited, sections[section]),
           onTap: () {
@@ -219,9 +251,9 @@ class _HomeViewState extends State<HomeView> {
   Widget _section(TypeOfCard type, SectionModel sectionModel) {
     final width = (MediaQuery.of(context).size.width);
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
-    final double widthMovie = type == TypeOfCard.normal ? width : (width / 2) - 35;
+    final double widthMovie = type == TypeOfCard.normal ? width : (width * 0.385);
 
-    final BorderRadius borderRadius = BorderRadius.circular(6.0);
+    final BorderRadius borderRadius = BorderRadius.circular(11.0);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
     print(sectionModel.description);
     return Container(

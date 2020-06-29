@@ -23,7 +23,7 @@ class UserRatingBloc extends Bloc<BasicRatingEvent, RatingsState> {
       yield* _mapFetchRatingsByUserIdAndMovieId(event.page, event.userId, event.movieId);
     } else if (event is UpdateRating) {
       yield* _mapUpdateRating(event.rating);
-    } else if (event is ReturnToInitialState) {
+    } else if (event is RatingBlocReturnToInitialState) {
       yield initialState;
     }
   }

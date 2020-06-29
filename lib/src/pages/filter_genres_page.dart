@@ -87,14 +87,13 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                     }
                     return Center(child: CircularProgressIndicator());
                   }),
-              height: MediaQuery.of(context).size.height - 304,
+              height: MediaQuery.of(context).size.height * 0.62,
             ),
             _filterButton(selectedGenres)
           ],
         ),
         color: _containerColor,
-        // margin: EdgeInsets.all(20),
-        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+        margin: EdgeInsets.only(left: 20, right: 20),
         height: MediaQuery.of(context).size.height,
       ),
     );
@@ -111,7 +110,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
       ),
       padding: EdgeInsets.only(left: 15, top: 17),
       color: Color.fromRGBO(22, 25, 29, 1),
-      height: 52,
+      height: 50,
       width: MediaQuery.of(context).size.width,
     );
   }

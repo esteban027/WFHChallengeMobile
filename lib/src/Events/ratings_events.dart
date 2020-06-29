@@ -27,3 +27,7 @@ class FetchRatingByUserIdAndMovieId extends BasicRatingEvent {
     int movieId;
     FetchRatingByUserIdAndMovieId(this.userId, this.movieId, [int page = 1] ) : super(page);
 }
+
+class RatingBlocReturnToInitialState extends BasicRatingEvent {
+  RatingBlocReturnToInitialState() : super(1);
+}

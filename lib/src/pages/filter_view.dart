@@ -157,14 +157,14 @@ class _FilterViewState extends State<FilterView> {
         children: rows,
         scrollDirection: Axis.horizontal,
       ),
-      height: 50,
+      height: MediaQuery.of(context).size.height * 0.074,
     );
   }
 
   Widget _moviesGallery(PageEvent event) {
     return Container(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height - 330,
+        height: MediaQuery.of(context).size.height * 0.57,
         child: BlocBuilder(
             bloc: moviesBloc,
             builder: (BuildContext context, state) {

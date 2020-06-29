@@ -1,3 +1,4 @@
+import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
 import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
@@ -93,13 +94,16 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
   Map<int, bool> starState = {0: false, 1: false, 2: false, 3: false, 4: false};
 
-  final ratingBloc = LoadRatingsBloc();
+  final graphRatingBloc = LoadRatingsBloc();
   final postRatingBloc = UserRatingBloc();
+
+
 
   @override
   void initState() {
     super.initState();
-    ratingBloc.add(FetchRatingsByMovieId(widget.movie.id));
+    postRatingBloc.add(RatingBlocReturnToInitialState());
+    graphRatingBloc.add(FetchRatingsByMovieId(widget.movie.id));
   }
 
   @override
@@ -258,7 +262,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   // margin: EdgeInsets.only(top: 11),
                 ),
                 BlocBuilder(
-                    bloc: ratingBloc,
+                    bloc: graphRatingBloc,
                     builder: (BuildContext context, state) {
                       if (state is GraphicRatingsLoaded) {
                         return LineChartSample1(state.ratingList);
@@ -480,6 +484,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         useRootNavigator: true,
         context: context,
         builder: (context) {
+          
           return StatefulBuilder(
               builder: (BuildContext context, setStateModal) {
             return BlocBuilder(
@@ -489,10 +494,13 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     return alert(setStateModal, state.rating);
                   } else if (state is RatingsNotLoaded) {
                     return alert(setStateModal, null);
+                  } else if (state is RatingPublished || state is RatingNotPublished) {
+                    postRatingBloc.add(RatingBlocReturnToInitialState());
+                    Navigator.pop(context);
                   }
                   return Container(
-                    child: CircularProgressIndicator(),
-                    height: MediaQuery.of(context).size.height / 3,
+                    child: Center(child: CircularProgressIndicator()),
+                    height: MediaQuery.of(context).size.height * 0.3,
                     color: _darkBlue,
                   );
                 });
@@ -514,7 +522,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
     return Container(
       color: Colors.transparent,
-      height: MediaQuery.of(context).size.height / 3,
+      height: MediaQuery.of(context).size.height * 0.4,
       child: Container(
         child: Column(
           children: <Widget>[
@@ -573,20 +581,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                               buttonSected,
                               timeStapFromatted)));
                     }
-                    BlocBuilder(
-                        bloc: postRatingBloc,
-                        builder: (BuildContext context, state) {
-                          if (state is RatingPublished) {
-                            print('RatingPubllished');
-                            return Spacer();
-                          } else if (state is RatingNotPublished) {
-                            print('Rating no Publlished');
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          return Center(child: CircularProgressIndicator());
-                        });
-
-                    Navigator.pop(context);
                   },
                   child: Text(
                     'Rate It',
@@ -594,7 +588,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w500),
-                  )),
+                  ),
+                  ),
               width: MediaQuery.of(context).size.width - 40,
               decoration: BoxDecoration(
                   color: _buttonColor,

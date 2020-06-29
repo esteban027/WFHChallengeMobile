@@ -88,32 +88,41 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     bloc.add(ReturnToInitialState());
     loadMoviesPage(true);
   }
+  Future<bool> _goBack() async {
+    Navigator.pop(context);
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Container(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              _sortBy(),
-              _moviesGallery(),
-            ],
+    return WillPopScope(
+      onWillPop: (){
+        Navigator.maybePop(context);
+      },
+          child: CupertinoPageScaffold(
+        child: Container(
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                _sortBy(),
+                _moviesGallery(),
+              ],
+            ),
           ),
+          decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
         ),
-        decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
-      ),
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-        leading: Container(
-          child: FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: Color.fromRGBO(28, 31, 44, 1),
+          leading: Container(
+            child: FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+            ),
+            width: 40,
+            height: 15,
           ),
-          width: 40,
-          height: 15,
         ),
       ),
     );
@@ -123,34 +132,31 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     final filteredmovies = filter(movies, type);
     return Container(
       width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          shouldReloadMovies
-              ? BlocBuilder(
-                  bloc: bloc,
-                  builder: (BuildContext context, state) {
-                    print(state);
-                    if (state is MoviesLoaded) {
-                      movies.addAll(state.moviesPage.items);
-                  
-                      var gallery = MoviesGallery(
-                        movies: movies,
-                        isFirstCall: true,
-                      );
-                      // gallery.changeStatus();
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: shouldReloadMovies
+          ? BlocBuilder(
+              bloc: bloc,
+              builder: (BuildContext context, state) {
+                print(state);
+                if (state is MoviesLoaded) {
+                  movies.addAll(state.moviesPage.items);
+              
+                  var gallery = MoviesGallery(
+                    movies: movies,
+                    isFirstCall: true,
+                  );
+                  // gallery.changeStatus();
 
-                      return gallery;
-                    }
+                  return gallery;
+                }
 
-                    return Container(
-                      child: Center(child: CircularProgressIndicator()),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 400,
-                    );
-                  })
-              : MoviesGallery(movies: filteredmovies)
-        ],
-      ),
+                return Container(
+                  child: Center(child: CircularProgressIndicator()),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 400,
+                );
+              })
+          : MoviesGallery(movies: filteredmovies),
     );
   }
 
@@ -159,7 +165,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     return GestureDetector(
       child: Container(
         width: width - 50,
-        height: 50,
+        height: MediaQuery.of(context).size.height * 0.08,
         color: _darkBlue,
         child: Row(
           children: <Widget>[
