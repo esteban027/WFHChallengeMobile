@@ -104,7 +104,9 @@ class LineChartSample1State extends State<LineChartSample1> {
         dateList.sort((a, b) => a.compareTo(b));
         minsX.add(dateList.first.toDouble());
         maxsX.add(dateList.last.toDouble());
-      }
+      } else 
+      minsX.add(dateList.first.toDouble());
+      maxsX.add(dateList.last.toDouble());
     });
   }
 
@@ -119,9 +121,9 @@ class LineChartSample1State extends State<LineChartSample1> {
 
     List<int> temporalYearDate = [];
 
-    ratingsList.forEach((rating) {
-      years.add(rating.year);
-    });
+    // ratingsList.forEach((rating) {
+    //   years.add(rating.year);
+    // });
 
     for (int i = 0; i< ratingsList.length; i++) {
       FlSpot spot = FlSpot(ratingsList[i].year.toDouble(), ratingsList[i].rating);
@@ -143,8 +145,8 @@ class LineChartSample1State extends State<LineChartSample1> {
       });
       datesList.add(temporalYearDate);
     } else {
-      dates.forEach((date) {
-        temporalYearDate.add(date.year);
+      years.forEach((year) {
+        temporalYearDate.add(year);
       });
       datesList.add(temporalYearDate);
     }
