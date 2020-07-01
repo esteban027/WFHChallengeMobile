@@ -47,8 +47,14 @@ class Network {
       throw Exception(response.statusCode);
     }
   }
-  Future<MoviesPageModel> fetchRecommendations(int userId, [List<Parameter> parameterList]) async {
-    Uri uri = Uri.http(_url, _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ userId.toString());
+  Future<MoviesPageModel> fetchRecommendations(int id, bool fecthFromUser,[List<Parameter> parameterList]) async {
+    var path ;
+    if (fecthFromUser){
+      path = _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ id.toString();
+    } else {
+      path = _recommendationsEndpoint+ '/' + _movieEndpoint + '/'+ id.toString();
+    }
+    Uri uri = Uri.http(_url, path);
 
     if (parameterList != null) {
       uri = uri.replace(queryParameters: convert(parameterList));

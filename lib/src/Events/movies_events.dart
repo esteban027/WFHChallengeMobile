@@ -37,6 +37,11 @@ class FetchMoviesRecommendationToUser extends BasicPageEvent{
   FetchMoviesRecommendationToUser(this.userId, [int page = 1]) : super(page);
 }
 
+class FetchMoviesRecommendationFromMovie extends BasicPageEvent{
+  int movieId;
+  FetchMoviesRecommendationFromMovie(this.movieId, [int page = 1]) : super(page);
+}
+
 class PaginateMovies extends BasicPageEvent {
   PaginateMovies() : super(1);
 }
