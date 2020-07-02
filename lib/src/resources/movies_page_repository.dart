@@ -70,6 +70,15 @@ class MoviesPageRepository {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString())
     ];
-    return netwok.fetchRecommendations(userId,parameters);
+    var fetchFromUser = true ;
+    return netwok.fetchRecommendations(userId,fetchFromUser,parameters);
+  }
+
+  Future<MoviesPageModel> fetchMoviesRecommendationFrom(int movieId, int page ) {
+    List<Parameter> parameters = [
+      Parameter(ParamaterType.page, page.toString())
+    ];
+    var fetchFromUser = false;
+    return netwok.fetchRecommendations(movieId,fetchFromUser, parameters);
   }
 }
