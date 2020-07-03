@@ -30,9 +30,9 @@ class DetailMovieView extends StatefulWidget {
     List<TimeSeriesSales> data = _timeStampsToDate(ratings);
     List<TimeSeriesSales> dataPoints = _timeStampsToDate(ratings);
 
-    dataPoints.forEach((element) {
-      print(element.sales);
-    });
+    // dataPoints.forEach((element) {
+    //   print(element.sales);
+    // });
 
     return [
       new charts.Series<TimeSeriesSales, DateTime>(
@@ -266,12 +266,27 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     builder: (BuildContext context, state) {
                       if (state is GraphicRatingsLoaded) {
                         return LineChartSample1(state.ratingList);
-                        // return LineChartSample2(state.ratingsPage);
                       } else if (state is RatingsLoading) {
                         return Center(child: CircularProgressIndicator());
                       }
                       return Center(child: CircularProgressIndicator());
-                    }),
+                    }
+                ),
+
+                // MOVIES YOU SHOULD WATCH
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(17.0),
+                    child: Text(
+                      'Movies like this you should watch',
+                      style: TextStyle(color: Colors.white, fontSize: 15.0),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  color: _darkBlue,
+                  width: MediaQuery.of(context).size.width - 40,
+                  height: 52,
+                ),
               ],
             ),
           ),
