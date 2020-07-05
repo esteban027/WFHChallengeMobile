@@ -1,4 +1,5 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
 import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
@@ -12,7 +13,9 @@ import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
+import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
+import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
