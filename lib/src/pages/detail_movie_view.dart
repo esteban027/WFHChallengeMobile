@@ -1,14 +1,19 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
+import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
+import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
+import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
 import 'package:WFHchallenge/src/widgets/chart_widget.dart';
+import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -96,14 +101,14 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
   final graphRatingBloc = LoadRatingsBloc();
   final postRatingBloc = UserRatingBloc();
-
-
+  final moviesBloc = LoadMoviesBloc();
 
   @override
   void initState() {
     super.initState();
     postRatingBloc.add(RatingBlocReturnToInitialState());
     graphRatingBloc.add(FetchRatingsByMovieId(widget.movie.id));
+    moviesBloc.add(FetchMoviesRecommendationFromMovie(widget.movie.id));
   }
 
   @override
@@ -270,10 +275,10 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                         return Center(child: CircularProgressIndicator());
                       }
                       return Center(child: CircularProgressIndicator());
-                    }
-                ),
+                    }),
 
                 // MOVIES YOU SHOULD WATCH
+
                 Container(
                   child: Padding(
                     padding: const EdgeInsets.all(17.0),
@@ -287,12 +292,39 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   width: MediaQuery.of(context).size.width - 40,
                   height: 52,
                 ),
+
+                BlocBuilder(
+                    bloc: moviesBloc,
+                    builder: (BuildContext context, state) {
+                      if (state is MoviesLoaded) {
+                        // return LineChartSample1(state.ratingList);
+                        return _moviesRecomendation(state.moviesPage.items);
+                      } else if (state is MoviesLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    }),
               ],
             ),
           ),
         ],
       ),
       backgroundColor: _blue,
+    );
+  }
+
+  Widget _moviesRecomendation(List<MovieModel> movies) {
+    return Container(
+      child: ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return MoviePoster(movie: movies[index]);
+        },
+        scrollDirection: Axis.horizontal,
+        itemCount: movies.length,
+      ),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.25,
+      margin: EdgeInsets.only(top: 20),
     );
   }
 
@@ -499,7 +531,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         useRootNavigator: true,
         context: context,
         builder: (context) {
-          
           return StatefulBuilder(
               builder: (BuildContext context, setStateModal) {
             return BlocBuilder(
@@ -509,7 +540,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     return alert(setStateModal, state.rating);
                   } else if (state is RatingsNotLoaded) {
                     return alert(setStateModal, null);
-                  } else if (state is RatingPublished || state is RatingNotPublished) {
+                  } else if (state is RatingPublished ||
+                      state is RatingNotPublished) {
                     postRatingBloc.add(RatingBlocReturnToInitialState());
                     Navigator.pop(context);
                   }
@@ -580,31 +612,25 @@ class _DetailMovieViewState extends State<DetailMovieView> {
             ),
             Container(
               child: FlatButton(
-                  onPressed: () {
-                    if (ratingModel != null) {
-                      postRatingBloc.add(UpdateRating(
-                          RatingModel.createNewRatingInit(
-                              userId,
-                              widget.movie.id,
-                              buttonSected,
-                              timeStapFromatted)));
-                    } else {
-                      postRatingBloc.add(PublishNewRating(
-                          RatingModel.createNewRatingInit(
-                              userId,
-                              widget.movie.id,
-                              buttonSected,
-                              timeStapFromatted)));
-                    }
-                  },
-                  child: Text(
-                    'Rate It',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  ),
+                onPressed: () {
+                  if (ratingModel != null) {
+                    postRatingBloc.add(UpdateRating(
+                        RatingModel.createNewRatingInit(userId, widget.movie.id,
+                            buttonSected, timeStapFromatted)));
+                  } else {
+                    postRatingBloc.add(PublishNewRating(
+                        RatingModel.createNewRatingInit(userId, widget.movie.id,
+                            buttonSected, timeStapFromatted)));
+                  }
+                },
+                child: Text(
+                  'Rate It',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
               width: MediaQuery.of(context).size.width - 40,
               decoration: BoxDecoration(
                   color: _buttonColor,
