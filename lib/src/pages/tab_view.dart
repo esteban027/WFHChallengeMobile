@@ -1,8 +1,11 @@
+import 'package:WFHchallenge/hey_movie_icons.dart';
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
+import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
+import 'package:WFHchallenge/src/pages/watch_list_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 class TabView extends StatefulWidget {
   @override
@@ -13,16 +16,14 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
   // TabController _tabController;
   String userName = '';
 
-
   @override
   void initState() {
     super.initState();
     // _tabController = TabController(length: 3, vsync: this);
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
     Color _blue = Color.fromRGBO(28, 31, 44, 1);
     final Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
@@ -41,10 +42,13 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
                 icon: Icon(
               CupertinoIcons.home,
             )),
-              BottomNavigationBarItem(
-                icon: Icon(
+            BottomNavigationBarItem(
+              icon: Icon(
                 CupertinoIcons.search,
               ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(HeyMovie.watchlistwachtlist),
             )
           ],
           backgroundColor: _blue,
@@ -68,6 +72,14 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
                 },
               );
               break;
+            case 2:
+              return CupertinoTabView(
+                builder: (context) {
+                  return WatchListView(
+                    event: FetchTopMovies(),
+                  );
+                },
+              );
           }
           return CircularProgressIndicator();
         },

@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
 
           SplashScreen.navigate(
         name: asset,
-        next: (context) => userLogged ? WelcomePage() : TabView(),
+        next: (context) => userLogged ? TabView() : WelcomePage(),
         until: () => getUser(context),
         startAnimation: 'Untitled',
         backgroundColor: Colors.white12,
@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<Void> getUser(BuildContext context) async {
+  getUser(BuildContext context) async {
     final signInRepository =
         Provider.of<SignInRepository>(context, listen: false);
     final userId = signInRepository.getUserId();
