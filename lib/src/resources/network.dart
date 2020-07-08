@@ -246,7 +246,7 @@ class Network {
     }
   }
 
-  Future<WatchlistPageModel> fetchWatchlistByUser([List<Parameter> parameterList]) async {
+  Future<MoviesPageModel> fetchWatchlistByUser([List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _watchlistEndpoint);
 
     if (parameterList != null) {
@@ -258,7 +258,34 @@ class Network {
     if (response.statusCode == 200) {
       WatchlistPageModel watchlist =
       WatchlistPageModel.fromJson(json.decode(response.body));
-      return watchlist;
+      return await fetchMoviesFromWatchlist(watchlist);
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+  
+  Future<MoviesPageModel> fetchMoviesFromWatchlist(WatchlistPageModel watchlist) async {
+    Uri uri = Uri.http(_url, _movieEndpoint);
+    List<String> movieIds = [];
+    watchlist.items.forEach((watchlist) {
+      movieIds.add(' '+ watchlist.movie.toString() + ' ');
+    });
+
+    List<Parameter> parameterList = [
+      Parameter(ParamaterType.page, '1'),
+      Parameter(ParamaterType.limit, '1000'),
+      Parameter.forListFilter('id' , movieIds,FilterType.anyOf)
+    ];
+
+    uri = uri.replace(queryParameters: convert(parameterList));
+
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      MoviesPageModel moviePageModel =
+      MoviesPageModel.fromJson(json.decode(response.body));
+      return moviePageModel;
     } else {
       throw Exception(response.statusCode);
     }

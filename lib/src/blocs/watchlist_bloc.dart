@@ -61,8 +61,8 @@ class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
 
   Stream<WatchlistState> _mapFetchWatchlistByUserId( int page, int userId) async* {
     try {
-      final watchlist = await this.repository.fetchWatchlistByUserId(page, userId, );
-      yield WatchlistLoaded(watchlist);
+      final movieWatchlist = await this.repository.fetchMovieWatchlistByUserId(page, userId, );
+      yield MovieWatchlistLoaded(movieWatchlist);
     } catch (_) {
       yield WatchlistNotLoaded();
     }

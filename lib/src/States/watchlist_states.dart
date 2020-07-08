@@ -1,3 +1,4 @@
+import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:flutter/foundation.dart';
 import '../models/watchlist_page_model.dart';
 
@@ -9,23 +10,15 @@ class WatchlistLoading extends WatchlistState {
   String toString() => 'WatchlistLoading';
 }
 
-class WatchlistLoaded extends WatchlistState {
-  final WatchlistPageModel watchlist;
+class MovieWatchlistLoaded extends WatchlistState {
+  final MoviesPageModel moviesWatchlist;
 
-  WatchlistLoaded(this.watchlist);
-
-  @override
-  String toString() => 'WatchlistLoaded{genres: $watchlist}';
-}
-
-class  SingleWatchlistElementLoaded extends WatchlistState {
-  final WatchlistModel watchlist;
-
-  SingleWatchlistElementLoaded(this.watchlist);
+  MovieWatchlistLoaded(this.moviesWatchlist);
 
   @override
-  String toString() => 'WatchlistLoaded{genres: $watchlist}';
+  String toString() => 'WatchlistLoaded{genres: $moviesWatchlist}';
 }
+
 class WatchlistNotLoaded extends WatchlistState {
   @override
   String toString() => 'WatchlistNotLoaded';

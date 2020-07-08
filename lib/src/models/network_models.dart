@@ -87,11 +87,11 @@ class Parameter {
     this.value = _buildFilterValue(filterType, field, value);
   }
 
-  Parameter.forSupersetFilter(String field, List<String> values) {
+  Parameter.forListFilter(String field, List<String> values,[FilterType filterType = FilterType.superset]) {
     type = ParamaterType.filter;
     String valuesListFormattedString = _buildValuesListString(values);
     this.value = _buildFilterValue(
-        FilterType.superset, field, valuesListFormattedString);
+        filterType, field, valuesListFormattedString);
   }
 
   Parameter.forSort(SortType sortType, String field) {
