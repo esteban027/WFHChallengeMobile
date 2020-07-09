@@ -304,4 +304,22 @@ class Network {
       return false;
     }
   }
+
+  Future<bool> checkIfMovieIsInUserWatchlist(int userId, int movieId) async {
+    Uri uri = Uri.http(
+        _url,
+        _watchlistEndpoint +
+            '/' +
+            movieId.toString() +
+            '_' +
+            userId.toString());
+
+    var request = get(uri, headers: getHeader);
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

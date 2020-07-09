@@ -7,7 +7,7 @@ import '../models/watchlist_page_model.dart';
 import '../models/network_models.dart';
 
 class WatchlistRepository {
-  final netwok = Network();
+  final network = Network();
 
   Future<MoviesPageModel> fetchMovieWatchlistByUserId(int page, int userId) {
      List<Parameter> parameters = [
@@ -15,14 +15,18 @@ class WatchlistRepository {
       Parameter(ParamaterType.limit, '50'),
       Parameter.forFilter(FilterType.exact, 'user', userId.toString()),
     ];
-    return netwok.fetchWatchlistByUser(parameters);
+    return network.fetchWatchlistByUser(parameters);
   }
 
   Future<bool> postNewWatchlistElement(WatchlistModel watchlist) {
-    return netwok.postNewWatchlistElement(watchlist);
+    return network.postNewWatchlistElement(watchlist);
   }
 
   Future<bool> deleteWatchlist(WatchlistModel watchlistModel) {
-    return netwok.deleteWatchlistElement(watchlistModel);
+    return network.deleteWatchlistElement(watchlistModel);
+  }
+
+  Future<bool> checkIfMovieIsInUserWatchlist(int userId, int movieId) {
+    return network.checkIfMovieIsInUserWatchlist(userId, movieId);
   }
 }

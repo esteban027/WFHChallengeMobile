@@ -21,5 +21,11 @@ class FetchWatchlistByUser extends BasicWatchlistEvent {
   FetchWatchlistByUser(this.userId, [int page = 1] ) : super(page);
 }
 
+class CheckIfMovieIsInUserWatchlist extends BasicWatchlistEvent {
+  int userId;
+  int movieId;
+  CheckIfMovieIsInUserWatchlist(this.userId,this.movieId) : super(0);
+}
+
 
 

@@ -26,6 +26,8 @@ class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
       yield* _mapFetchWatchlistByUserId(event.page, event.userId);
     } else if (event is DeleteFromWatchlist) {
       yield* _mapDeleteWatchlistElement(event.watchlist);
+    } else if (event is CheckIfMovieIsInUserWatchlist){
+      yield* _mapCheckIfMovieIsInUserWatchlist(event.userId,event.movieId);
     } else if (event is RatingBlocReturnToInitialState) {
       yield initialState;
     }
@@ -63,6 +65,21 @@ class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
     try {
       final movieWatchlist = await this.repository.fetchMovieWatchlistByUserId(page, userId, );
       yield MovieWatchlistLoaded(movieWatchlist);
+    } catch (_) {
+      yield WatchlistNotLoaded();
+    }
+  }
+
+  Stream<WatchlistState> _mapCheckIfMovieIsInUserWatchlist(
+      int userId, int movieId) async* {
+    try {
+      final movieIsInWatchlist =
+          await this.repository.checkIfMovieIsInUserWatchlist(userId, movieId);
+      if (movieIsInWatchlist) {
+        yield WatchlistExists();
+      } else {
+        yield WatchlistDoesNotExists();
+      }
     } catch (_) {
       yield WatchlistNotLoaded();
     }

@@ -39,3 +39,13 @@ class WatchlistNotPublished extends WatchlistState {
   String toString() => 'Watchlist Not Published';
 }
 
+class WatchlistExists extends WatchlistState {
+  @override
+  String toString() => 'Watchlist Published';
+}
+
+class WatchlistDoesNotExists extends WatchlistState {
+  @override
+  String toString() => 'Watchlist Not Published';
+}
+
