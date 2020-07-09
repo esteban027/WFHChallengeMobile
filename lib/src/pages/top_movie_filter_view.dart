@@ -14,7 +14,7 @@ enum TypeOfFilter { rating, title, releaseDate, withuotFilter }
 
 class TopMovieFilter extends StatefulWidget {
   final String title;
- 
+
   final PageEvent event;
   final String genreEvent;
   final int userId;
@@ -22,7 +22,6 @@ class TopMovieFilter extends StatefulWidget {
   TopMovieFilter(
       {Key key,
       @required this.title,
-      
       @required this.event,
       this.userId,
       this.genreEvent})
@@ -30,7 +29,7 @@ class TopMovieFilter extends StatefulWidget {
 
   @override
   _TopMovieFilterState createState() =>
-      _TopMovieFilterState(title,event,genreEvent);
+      _TopMovieFilterState(title, event, genreEvent);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
@@ -88,6 +87,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     bloc.add(ReturnToInitialState());
     loadMoviesPage(true);
   }
+
   Future<bool> _goBack() async {
     Navigator.pop(context);
     return false;
@@ -96,10 +96,10 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: (){
+      onWillPop: () {
         Navigator.maybePop(context);
       },
-          child: CupertinoPageScaffold(
+      child: CupertinoPageScaffold(
         child: Container(
           child: Center(
             child: Column(
@@ -140,10 +140,11 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                 print(state);
                 if (state is MoviesLoaded) {
                   movies.addAll(state.moviesPage.items);
-              
+
                   var gallery = MoviesGallery(
                     movies: movies,
                     isFirstCall: true,
+                    userId: widget.userId,
                   );
                   // gallery.changeStatus();
 
@@ -156,7 +157,10 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                   height: MediaQuery.of(context).size.height - 400,
                 );
               })
-          : MoviesGallery(movies: filteredmovies),
+          : MoviesGallery(
+              movies: filteredmovies,
+              userId: widget.userId,
+            ),
     );
   }
 
@@ -215,7 +219,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   void bottomSheet() {
     shouldReloadMovies = false;
     showModalBottomSheet(
-      useRootNavigator: true,
+        useRootNavigator: true,
         context: context,
         builder: (context) {
           return Container(

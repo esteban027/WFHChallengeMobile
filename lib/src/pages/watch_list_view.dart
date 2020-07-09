@@ -1,7 +1,10 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/States/watchlist_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,11 +20,12 @@ class WatchListView extends StatefulWidget {
   WatchListView({Key key, @required this.event, this.userId}) : super(key: key);
 
   @override
-  _WatchListViewState createState() => _WatchListViewState(event);
+  _WatchListViewState createState() => _WatchListViewState(event, userId);
 }
 
 class _WatchListViewState extends State<WatchListView> {
-  final bloc = LoadMoviesBloc();
+  final bloc = WatchlistBloc();
+  final int userId;
   PageEvent event;
   int page = 1;
   Color _bestRating = Colors.white;
@@ -29,27 +33,21 @@ class _WatchListViewState extends State<WatchListView> {
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
-  _WatchListViewState(this.event);
+  _WatchListViewState(this.event, this.userId);
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
   double heightOfModalBottomSheet = 200;
   bool shouldReloadMovies = true;
-
-  Future<void> loadMoviesPage([bool isLoading = true]) async {
-    shouldReloadMovies = true;
-    bloc.add(FetchTopMovies());
-  }
+  bool showEmptyView = false;
 
   @override
   void initState() {
     super.initState();
     movies = [];
     shouldReloadMovies = true;
-    // bloc.add(ReturnToInitialState());
-    // loadMoviesPage(true);
-    bloc.add(FetchTopMovies());
+    bloc.add(FetchWatchlistByUser(userId));
   }
 
   @override
@@ -64,36 +62,11 @@ class _WatchListViewState extends State<WatchListView> {
             child: Column(
               children: <Widget>[
                 _sortBy(),
-                Container(
-                  child: Text(
-                    'You don’t have movies on your watchlist yet.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.03),
-                ),
-                _moviesYouShouldAdd(),
-                _moviesGallery(),
+                showEmptyView ? _moviesYouShouldAdd() : _moviesGallery(),
               ],
             ),
           ),
           decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
-        ),
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-          leading: Container(
-            child: FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
-            ),
-            width: 40,
-            height: 15,
-          ),
         ),
       ),
     );
@@ -103,19 +76,33 @@ class _WatchListViewState extends State<WatchListView> {
     final filteredmovies = filter(movies, type);
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.55,
+      height: showEmptyView
+          ? MediaQuery.of(context).size.height * 0.55
+          : MediaQuery.of(context).size.height * 0.72,
       child: shouldReloadMovies
           ? BlocBuilder(
               bloc: bloc,
               builder: (BuildContext context, state) {
-                print(state);
-                if (state is MoviesLoaded) {
+                if (state is MovieWatchlistLoaded) {
                   movies = [];
-                  movies.addAll(state.moviesPage.items);
+                  var moviesWacthList = state.moviesWatchlist.items;
+                  if (moviesWacthList.length > 0) {
+                    showEmptyView = false;
+                  } else {
+                    showEmptyView = true;
+
+                    return Container(
+                      child: Center(child: CircularProgressIndicator()),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 400,
+                    );
+                  }
+                  movies.addAll(state.moviesWatchlist.items);
 
                   var gallery = MoviesGallery(
                     movies: movies,
                     isFirstCall: true,
+                    userId: widget.userId,
                   );
 
                   return gallery;
@@ -127,7 +114,10 @@ class _WatchListViewState extends State<WatchListView> {
                   height: MediaQuery.of(context).size.height - 400,
                 );
               })
-          : MoviesGallery(movies: filteredmovies),
+          : MoviesGallery(
+              movies: filteredmovies,
+              userId: widget.userId,
+            ),
     );
   }
 
@@ -168,19 +158,36 @@ class _WatchListViewState extends State<WatchListView> {
 
   Widget _moviesYouShouldAdd() {
     double width = MediaQuery.of(context).size.width;
-    return Container(
-      width: width - 50,
-      height: MediaQuery.of(context).size.height * 0.06,
-      color: _darkBlue,
-      child: Container(
-        child: Center(
+    return Column(
+      children: <Widget>[
+        Container(
           child: Text(
-            'Movies you should add in your Watchlist',
+            'You don’t have movies on your watchlist yet.',
             style: TextStyle(
-                color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500),
+              color: Colors.white,
+              fontSize: 14,
+            ),
           ),
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.03),
         ),
-      ),
+        Container(
+          width: width - 50,
+          height: MediaQuery.of(context).size.height * 0.06,
+          color: _darkBlue,
+          child: Container(
+            child: Center(
+              child: Text(
+                'Movies you should add in your Watchlist',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 

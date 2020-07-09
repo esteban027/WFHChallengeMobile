@@ -10,11 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DataSearch extends SearchDelegate {
-
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   // final provider = new Provider();
   final LoadMoviesBloc moviesBloc;
-  
+
   DataSearch(this.moviesBloc);
 
   String selecter = '';
@@ -27,116 +26,107 @@ class DataSearch extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-
-      moviesBloc.add(FetchMoviesByTitle(query));
+    moviesBloc.add(FetchMoviesByTitle(query));
 
     _scrollController.addListener(() {
-      if(_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
         // provider.getMovies();
       }
     });
 
-
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
-      inputDecorationTheme: InputDecorationTheme(
-        hintStyle: TextStyle(color: Color.fromRGBO(191, 192, 192, 1) )
-      ),
-      primaryColor: _blue,
-      primaryTextTheme: theme.primaryTextTheme,
-      textTheme: theme.textTheme.copyWith(
-            title: theme.textTheme.title
-                .copyWith(color: Colors.grey))
-    );
+        inputDecorationTheme: InputDecorationTheme(
+            hintStyle: TextStyle(color: Color.fromRGBO(191, 192, 192, 1))),
+        primaryColor: _blue,
+        primaryTextTheme: theme.primaryTextTheme,
+        textTheme: theme.textTheme.copyWith(
+            title: theme.textTheme.title.copyWith(color: Colors.grey)));
   }
-  
+
   @override
   List<Widget> buildActions(BuildContext context) {
-      return [
-        IconButton(
-          icon: Icon(Icons.clear),
-          onPressed: (){
-            query = '';
-          }, 
-        )
-      ];
-    }
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      )
+    ];
+  }
 
   @override
   Widget buildLeading(BuildContext context) {
-    return 
-      IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: (){
-          close(context, null);
-        }, 
-      );
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
   }
-  
+
   @override
   Widget buildResults(BuildContext context) {
     FocusScopeNode currentFocuts = FocusScope.of(context);
-    if (!currentFocuts.hasPrimaryFocus){
+    if (!currentFocuts.hasPrimaryFocus) {
       currentFocuts.unfocus();
     }
     return Container(
-      child: MoviesGallery(movies: movies2),
+        child: MoviesGallery(movies: movies2),
         decoration: BoxDecoration(
-      image: DecorationImage(
-        image: AssetImage('assets/gradient.png'),
-        fit: BoxFit.cover,
-      ),
-        )
-    );
+          image: DecorationImage(
+            image: AssetImage('assets/gradient.png'),
+            fit: BoxFit.cover,
+          ),
+        ));
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-  return Container(
-    margin: EdgeInsets.only(bottom: 0),
-    child: Container(
-      child: BlocBuilder(
-        bloc: moviesBloc,
-        builder: (BuildContext context, state){
-          if (state is MoviesLoaded){
-            //inal moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().contains(query.toLowerCase())).toList();
-            movies2 = state.moviesPage.items;
-            return GridView.count(
-              crossAxisCount: 3,
-              childAspectRatio: (99/145),
-              controller: _scrollController,
-              children: List.generate(state.moviesPage.items.length, (index) {
-                return GestureDetector(
-                   child:  MoviePoster(movie: state.moviesPage.items[index]),
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailMovieView(
-                          movie: state.moviesPage.items[index],
-                        )));
-                  },
+    return Container(
+      margin: EdgeInsets.only(bottom: 0),
+      child: Container(
+        child: BlocBuilder(
+            bloc: moviesBloc,
+            builder: (BuildContext context, state) {
+              if (state is MoviesLoaded) {
+                //inal moviesFilter = (query.isEmpty) ? movies2 : state.moviesPage.items.where((movie) => movie.title.toLowerCase().contains(query.toLowerCase())).toList();
+                movies2 = state.moviesPage.items;
+                return GridView.count(
+                  crossAxisCount: 3,
+                  childAspectRatio: (99 / 145),
+                  controller: _scrollController,
+                  children:
+                      List.generate(state.moviesPage.items.length, (index) {
+                    return GestureDetector(
+                      child: MoviePoster(movie: state.moviesPage.items[index]),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailMovieView(
+                                      movie: state.moviesPage.items[index],
+                                    )));
+                      },
+                    );
+                  }),
                 );
 
-              }),
-            );
-
-         //   return MoviesGallery(movies: state.moviesPage.items);
-          }
-          return Center(child: CircularProgressIndicator());
-        }
+                //   return MoviesGallery(movies: state.moviesPage.items);
+              }
+              return Center(child: CircularProgressIndicator());
+            }),
+        //  height: MediaQuery.of(context).size.height * 0.6,
       ),
-   //  height: MediaQuery.of(context).size.height * 0.6,
-   ),
-    decoration: BoxDecoration(
-      image: DecorationImage(
-        image: AssetImage('assets/gradient.png'),
-        fit: BoxFit.cover,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/gradient.png'),
+          fit: BoxFit.cover,
+        ),
       ),
-
-    ),
-    // color: Colors.green,
-  );
-}
-
+      // color: Colors.green,
+    );
+  }
 }

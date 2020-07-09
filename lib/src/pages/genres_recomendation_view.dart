@@ -214,8 +214,7 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
         decoration: BoxDecoration(
             color: genresState[genres[index]] ? _clearBlue : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.blue)
-        ),
+            border: Border.all(color: Colors.blue)),
       ));
       index++;
     });
@@ -264,22 +263,22 @@ class _GenresRecomendationViewState extends State<GenresRecomendationView> {
     return Container(
       child: RaisedButton(
         onPressed: () async {
-                setState(() {
-                  showProgress = true;
-                });
+          setState(() {
+            showProgress = true;
+          });
 
-                for (int i = 0; i < selectedGenres.length; i++) {
-                  if (i == 0) {
-                    genresString = selectedGenres[i];
-                  } else {
-                    genresString += '|' + selectedGenres[i];
-                  }
-                }
-                user.genres = genresString;
-                await signInRepository.createUser(user);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TabView()));
-              },
+          for (int i = 0; i < selectedGenres.length; i++) {
+            if (i == 0) {
+              genresString = selectedGenres[i];
+            } else {
+              genresString += '|' + selectedGenres[i];
+            }
+          }
+          user.genres = genresString;
+          await signInRepository.createUser(user);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TabView(user.id)));
+        },
         child: Text('Next'),
         padding: EdgeInsets.only(left: 140, right: 140, top: 13, bottom: 13),
         color: isEmpty ? Colors.grey : _orange,

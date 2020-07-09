@@ -6,6 +6,7 @@ import 'package:WFHchallenge/src/States/ratings_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
+import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
@@ -21,12 +22,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class DetailMovieView extends StatefulWidget {
-  DetailMovieView({
-    Key key,
-    @required this.movie,
-  }) : super(key: key);
+  DetailMovieView({Key key, @required this.movie, @required this.userId})
+      : super(key: key);
 
   final MovieModel movie;
+  final int userId;
+
   @override
   _DetailMovieViewState createState() => _DetailMovieViewState();
 
@@ -102,6 +103,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final graphRatingBloc = LoadRatingsBloc();
   final postRatingBloc = UserRatingBloc();
   final moviesBloc = LoadMoviesBloc();
+  final watchListBloc = WatchlistBloc();
 
   @override
   void initState() {
@@ -109,6 +111,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     postRatingBloc.add(RatingBlocReturnToInitialState());
     graphRatingBloc.add(FetchRatingsByMovieId(widget.movie.id));
     moviesBloc.add(FetchMoviesRecommendationFromMovie(widget.movie.id));
+    watchListBloc.add(Fetch)
   }
 
   @override
@@ -317,7 +320,10 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     return Container(
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return MoviePoster(movie: movies[index]);
+          return MoviePoster(
+            movie: movies[index],
+            user: widget.userId,
+          );
         },
         scrollDirection: Axis.horizontal,
         itemCount: movies.length,

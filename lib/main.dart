@@ -28,10 +28,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   bool userLogged = false;
-
-  void initState() {
-    // TODO: implement initState
-  }
+  int user = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +57,7 @@ class _MyAppState extends State<MyApp> {
 
           SplashScreen.navigate(
         name: asset,
-        next: (context) => userLogged ? TabView() : WelcomePage(),
+        next: (context) => userLogged ? TabView(user) : WelcomePage(),
         until: () => getUser(context),
         startAnimation: 'Untitled',
         backgroundColor: Colors.white12,
@@ -74,7 +71,7 @@ class _MyAppState extends State<MyApp> {
     final userId = signInRepository.getUserId();
     // Future.delayed(Duration(seconds: 5));
     try {
-      var user = await userId;
+      user = await userId;
       print(user);
       userLogged = true;
     } catch (error) {

@@ -1,5 +1,6 @@
 import 'package:WFHchallenge/hey_movie_icons.dart';
 import 'package:WFHchallenge/src/Events/movies_events.dart';
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
@@ -8,19 +9,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TabView extends StatefulWidget {
+  int user;
+
+  TabView(this.user);
+
   @override
-  _TabViewState createState() => _TabViewState();
+  _TabViewState createState() => _TabViewState(user);
 }
 
 class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
-  // TabController _tabController;
   String userName = '';
+  int user;
 
-  @override
-  void initState() {
-    super.initState();
-    // _tabController = TabController(length: 3, vsync: this);
-  }
+  _TabViewState(this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,8 @@ class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
               return CupertinoTabView(
                 builder: (context) {
                   return WatchListView(
-                    event: FetchTopMovies(),
+                    event: FetchWatchlistByUser(user),
+                    userId: user,
                   );
                 },
               );

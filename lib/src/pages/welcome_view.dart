@@ -24,7 +24,8 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final signInRepository =Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
 
@@ -67,7 +68,8 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Widget _appleButton() {
-    final signInRepository = Provider.of<SignInRepository>(context, listen: false);
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
     return FlatButton(
         onPressed: () async {
           setState(() {
@@ -117,13 +119,24 @@ class _WelcomePageState extends State<WelcomePage> {
                   )));
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => TabView()));
+          context, MaterialPageRoute(builder: (context) => TabView(user.id)));
     }
   }
 
-  Widget shouldShowProgreesIndicator(bool state){
-    return state ? Container(child: CircularProgressIndicator(backgroundColor: _orange, strokeWidth: 5, valueColor:  AlwaysStoppedAnimation(darkBlue),),margin: EdgeInsets.only(top: 50),) :
-    SizedBox(height: 5,width: 5,);
+  Widget shouldShowProgreesIndicator(bool state) {
+    return state
+        ? Container(
+            child: CircularProgressIndicator(
+              backgroundColor: _orange,
+              strokeWidth: 5,
+              valueColor: AlwaysStoppedAnimation(darkBlue),
+            ),
+            margin: EdgeInsets.only(top: 50),
+          )
+        : SizedBox(
+            height: 5,
+            width: 5,
+          );
   }
 
   Widget _googleButton() {

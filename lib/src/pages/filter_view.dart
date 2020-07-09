@@ -79,12 +79,11 @@ class _FilterViewState extends State<FilterView> {
         selectedGenres = genres;
       }
 
-        _selectedGenresString = '';
+      _selectedGenresString = '';
 
-        for (var i = 0; i < selectedGenres.length; i++) {
-          _selectedGenresString =
-              _selectedGenresString + ' ' + selectedGenres[i];
-        }
+      for (var i = 0; i < selectedGenres.length; i++) {
+        _selectedGenresString = _selectedGenresString + ' ' + selectedGenres[i];
+      }
     }
 
     moviesBloc.add(ReturnToInitialState());
