@@ -1,9 +1,7 @@
 import 'package:WFHchallenge/hey_movie_icons.dart';
-import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
-import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/pages/watch_list_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -74,7 +74,10 @@ class DataSearch extends SearchDelegate {
       currentFocuts.unfocus();
     }
     return Container(
-        child: MoviesGallery(movies: movies2),
+        child: MoviesGallery(
+          movies: movies2,
+          userId: null,
+        ),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/gradient.png'),
@@ -108,6 +111,7 @@ class DataSearch extends SearchDelegate {
                             MaterialPageRoute(
                                 builder: (context) => DetailMovieView(
                                       movie: state.moviesPage.items[index],
+                                      userId: null,
                                     )));
                       },
                     );

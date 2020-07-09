@@ -24,7 +24,9 @@ class WatchListView extends StatefulWidget {
 }
 
 class _WatchListViewState extends State<WatchListView> {
-  final bloc = WatchlistBloc();
+  final watchListBloc = WatchlistBloc();
+  final moviesBloc = LoadMoviesBloc();
+
   final int userId;
   PageEvent event;
   int page = 1;
@@ -42,16 +44,11 @@ class _WatchListViewState extends State<WatchListView> {
   bool shouldReloadMovies = true;
   bool showEmptyView = false;
 
-  @override
-  void initState() {
-    super.initState();
-    movies = [];
-    shouldReloadMovies = true;
-    bloc.add(FetchWatchlistByUser(userId));
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    watchListBloc.add(FetchWatchlistByUser(userId));
     return WillPopScope(
       onWillPop: () {
         return Navigator.maybePop(context);
@@ -61,8 +58,9 @@ class _WatchListViewState extends State<WatchListView> {
           child: Center(
             child: Column(
               children: <Widget>[
+                Spacer(),
                 _sortBy(),
-                showEmptyView ? _moviesYouShouldAdd() : _moviesGallery(),
+                _moviesGallery(),
               ],
             ),
           ),
@@ -78,34 +76,37 @@ class _WatchListViewState extends State<WatchListView> {
       width: double.infinity,
       height: showEmptyView
           ? MediaQuery.of(context).size.height * 0.55
-          : MediaQuery.of(context).size.height * 0.72,
+          : MediaQuery.of(context).size.height * 0.77,
       child: shouldReloadMovies
           ? BlocBuilder(
-              bloc: bloc,
+              bloc: watchListBloc,
               builder: (BuildContext context, state) {
+                print(state);
                 if (state is MovieWatchlistLoaded) {
                   movies = [];
                   var moviesWacthList = state.moviesWatchlist.items;
                   if (moviesWacthList.length > 0) {
                     showEmptyView = false;
+                    movies.addAll(state.moviesWatchlist.items);
+
+                    var gallery = MoviesGallery(
+                      movies: movies,
+                      isFirstCall: true,
+                      userId: widget.userId,
+                    );
+
+                    return gallery;
                   } else {
                     showEmptyView = true;
-
-                    return Container(
-                      child: Center(child: CircularProgressIndicator()),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 400,
-                    );
+                    moviesBloc
+                        .add(FetchMoviesRecommendationToUser(widget.userId));
+                    return _moviesYouShouldAdd();
                   }
-                  movies.addAll(state.moviesWatchlist.items);
-
-                  var gallery = MoviesGallery(
-                    movies: movies,
-                    isFirstCall: true,
-                    userId: widget.userId,
-                  );
-
-                  return gallery;
+                } else if (state is WatchlistNotLoaded) {
+                  showEmptyView = true;
+                  moviesBloc
+                      .add(FetchMoviesRecommendationToUser(widget.userId));
+                  return _moviesYouShouldAdd();
                 }
 
                 return Container(
@@ -186,9 +187,46 @@ class _WatchListViewState extends State<WatchListView> {
               ),
             ),
           ),
-        )
+        ),
+        _recomendationsGallery()
       ],
     );
+  }
+
+  Widget _recomendationsGallery() {
+    return Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height * 0.62,
+        child: BlocBuilder(
+            bloc: moviesBloc,
+            builder: (BuildContext context, state) {
+              if (state is MoviesLoaded) {
+                movies = [];
+                movies.addAll(state.moviesPage.items);
+
+                var gallery = MoviesGallery(
+                  movies: movies,
+                  isFirstCall: true,
+                  userId: widget.userId,
+                );
+
+                return gallery;
+              } else if (state is MoviesNotLoaded) {
+                showEmptyView = true;
+                print('Movies recomendations not loaded');
+                return Container(
+                  child: Center(child: CircularProgressIndicator()),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 400,
+                );
+              }
+
+              return Container(
+                child: Center(child: CircularProgressIndicator()),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 400,
+              );
+            }));
   }
 
   List<MovieModel> filter(List<MovieModel> movies, TypeOfFilter type) {

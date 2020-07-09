@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:WFHchallenge/src/pages/welcome_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
