@@ -1,5 +1,8 @@
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
+import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:flutter/material.dart';
 
 class MoviePoster extends StatelessWidget {
@@ -17,7 +20,10 @@ class MoviePoster extends StatelessWidget {
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
 
   final MovieModel movie;
-  MoviePoster({@required this.movie});
+  final int user;
+  final bloc = WatchlistBloc();
+
+  MoviePoster({@required this.movie, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,12 @@ class MoviePoster extends StatelessWidget {
                       size: 10.5,
                     ),
                     onTap: () {
-                      print('Added to watch list');
+                      var timeStapFromatted =
+                          ((DateTime.now().millisecondsSinceEpoch) / 1000)
+                              .round();
+                      var watchlist = WatchlistModel.buildLocal(
+                          user, movie.id, timeStapFromatted);
+                      bloc.add(AddToWatchlist(watchlist));
                     },
                   ),
                   decoration: BoxDecoration(

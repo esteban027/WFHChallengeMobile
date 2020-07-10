@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:WFHchallenge/src/models/user_model.dart';
+import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/page_model.dart';
@@ -18,6 +19,7 @@ class Network {
   String _userEndpoint = 'user';
   String _homeSectionsEndpoint = 'section';
   String _recommendationsEndpoint = 'recommendation';
+  String _watchlistEndpoint = 'watchlist';
 
   Map<String, String> postHeader = {
       'API_KEY':
@@ -227,5 +229,97 @@ class Network {
       throw Exception(response.statusCode);
     }
 
+  }
+
+  Future<bool> postNewWatchlistElement(WatchlistModel watchlist) async {
+    Uri uri = Uri.http(_url, _watchlistEndpoint);
+
+    var request =   post(uri,
+        body: jsonEncode(watchlist),
+        headers: postHeader
+    );
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<MoviesPageModel> fetchWatchlistByUser([List<Parameter> parameterList]) async {
+    Uri uri = Uri.http(_url, _watchlistEndpoint);
+
+    if (parameterList != null) {
+      uri = uri.replace(queryParameters: convert(parameterList));
+    }
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      WatchlistPageModel watchlist =
+      WatchlistPageModel.fromJson(json.decode(response.body));
+      return await fetchMoviesFromWatchlist(watchlist);
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+  
+  Future<MoviesPageModel> fetchMoviesFromWatchlist(WatchlistPageModel watchlist) async {
+    Uri uri = Uri.http(_url, _movieEndpoint);
+    List<String> movieIds = [];
+    watchlist.items.forEach((watchlist) {
+      movieIds.add(' '+ watchlist.movie.toString() + ' ');
+    });
+
+    List<Parameter> parameterList = [
+      Parameter(ParamaterType.page, '1'),
+      Parameter(ParamaterType.limit, '1000'),
+      Parameter.forListFilter('id' , movieIds,FilterType.anyOf)
+    ];
+
+    uri = uri.replace(queryParameters: convert(parameterList));
+
+
+    Response response = await get(uri
+        , headers: getHeader);
+    if (response.statusCode == 200) {
+      MoviesPageModel moviePageModel =
+      MoviesPageModel.fromJson(json.decode(response.body));
+      return moviePageModel;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
+  Future<bool> deleteWatchlistElement(WatchlistModel watchlist) async {
+    Uri uri = Uri.http(_url, _watchlistEndpoint + '/'+ watchlist.movie.toString()+ '_'+ watchlist.user.toString());
+
+    var request =   delete(uri,
+        headers: postHeader
+    );
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> checkIfMovieIsInUserWatchlist(int userId, int movieId) async {
+    Uri uri = Uri.http(
+        _url,
+        _watchlistEndpoint +
+            '/' +
+            movieId.toString() +
+            '_' +
+            userId.toString());
+
+    var request = get(uri, headers: getHeader);
+    Response response = await request;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:WFHchallenge/src/pages/home_view.dart';
 import 'package:WFHchallenge/src/pages/welcome_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   bool userLogged = false;
-
-  void initState() {
-    // TODO: implement initState
-  }
+  int user = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
           SplashScreen.navigate(
         name: asset,
-        next: (context) => userLogged ? WelcomePage() : TabView(),
+        next: (context) => userLogged ? TabView(user) : WelcomePage(),
         until: () => getUser(context),
         startAnimation: 'Untitled',
         backgroundColor: Colors.white12,
@@ -68,13 +62,13 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<Void> getUser(BuildContext context) async {
+  getUser(BuildContext context) async {
     final signInRepository =
         Provider.of<SignInRepository>(context, listen: false);
     final userId = signInRepository.getUserId();
     // Future.delayed(Duration(seconds: 5));
     try {
-      var user = await userId;
+      user = await userId;
       print(user);
       userLogged = true;
     } catch (error) {

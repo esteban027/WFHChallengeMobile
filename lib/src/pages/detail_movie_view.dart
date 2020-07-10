@@ -1,32 +1,34 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
+import 'package:WFHchallenge/src/States/watchlist_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
-import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
+import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
-import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DetailMovieView extends StatefulWidget {
-  DetailMovieView({
-    Key key,
-    @required this.movie,
-  }) : super(key: key);
+  DetailMovieView({Key key, @required this.movie, @required this.userId})
+      : super(key: key);
 
   final MovieModel movie;
+  final int userId;
+
   @override
   _DetailMovieViewState createState() => _DetailMovieViewState();
 
@@ -102,6 +104,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final graphRatingBloc = LoadRatingsBloc();
   final postRatingBloc = UserRatingBloc();
   final moviesBloc = LoadMoviesBloc();
+  final watchListBloc = WatchlistBloc();
+
+  bool publishedWatchlist = false;
 
   @override
   void initState() {
@@ -109,6 +114,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     postRatingBloc.add(RatingBlocReturnToInitialState());
     graphRatingBloc.add(FetchRatingsByMovieId(widget.movie.id));
     moviesBloc.add(FetchMoviesRecommendationFromMovie(widget.movie.id));
+    watchListBloc
+        .add(CheckIfMovieIsInUserWatchlist(widget.userId, widget.movie.id));
   }
 
   @override
@@ -170,24 +177,22 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   ],
                 ),
               ),
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: () {},
-                      child: Image.asset(
-                        'assets/Add.png',
-                        color: Colors.white,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Text(
-                      'Add to watchlist',
-                      style: TextStyle(fontSize: 10, color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
+              BlocBuilder(
+                  bloc: watchListBloc,
+                  builder: (BuildContext context, state) {
+                    print(state);
+                    if (state is WatchlistExists) {
+                      return _addToWachtList(true);
+                    } else if (state is WatchlistDoesNotExists) {
+                      return _addToWachtList(false);
+                    } else if (state is WatchlistPublished) {
+                      return _addToWachtList(publishedWatchlist);
+                    }
+                    // else if (state is WatchlistNotPublished) {
+                    //   return _addToWachtList(false);
+                    // }
+                    return Center(child: CircularProgressIndicator());
+                  }),
               Spacer(),
             ],
           ),
@@ -313,11 +318,52 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     );
   }
 
+  Widget _addToWachtList(bool isOnWachtList) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          FlatButton(
+              onPressed: () {
+                var timeStapFromatted =
+                    ((DateTime.now().millisecondsSinceEpoch) / 1000).round();
+                var watchlist = WatchlistModel.buildLocal(
+                    widget.userId, widget.movie.id, timeStapFromatted);
+                if (isOnWachtList) {
+                  areYouSureBottomSheet();
+                } else {
+                  setState(() {
+                    publishedWatchlist = true;
+                    watchListBloc.add(AddToWatchlist(watchlist));
+                  });
+                }
+              },
+              child: isOnWachtList
+                  ? SvgPicture.asset(
+                      'assets/Icons/Checkcheck.svg',
+                      color: Colors.white,
+                    )
+                  : Image.asset(
+                      'assets/Add.png',
+                      color: Colors.white,
+                      fit: BoxFit.fill,
+                    )),
+          Text(
+            isOnWachtList ? 'Watchlist' : 'Add to watchlist',
+            style: TextStyle(fontSize: 10, color: Colors.white),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _moviesRecomendation(List<MovieModel> movies) {
     return Container(
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return MoviePoster(movie: movies[index]);
+          return MoviePoster(
+            movie: movies[index],
+            user: widget.userId,
+          );
         },
         scrollDirection: Axis.horizontal,
         itemCount: movies.length,
@@ -398,7 +444,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
           top: 30,
           left: 0,
           child: FlatButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
             },
             child: Icon(
@@ -678,5 +724,70 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     });
 
     _buttonColor = state ? _orange : Colors.grey;
+  }
+
+  void areYouSureBottomSheet() {
+    var movieName = widget.movie.title;
+    var timeStapFromatted =
+        ((DateTime.now().millisecondsSinceEpoch) / 1000).round();
+    var watchlist = WatchlistModel.buildLocal(
+        widget.userId, widget.movie.id, timeStapFromatted);
+
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, setStateModal) {
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      'Are you sure that you want to remove $movieName from your Watchlist?',
+                      style: TextStyle(color: Colors.white, fontSize: 13),
+                    ),
+                    margin: EdgeInsets.symmetric(vertical: 32),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    child: FlatButton(
+                      onPressed: () {
+                        watchListBloc.add(DeleteFromWatchlist(watchlist));
+                        publishedWatchlist = false;
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Remove from my Watchlist',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    width: MediaQuery.of(context).size.width - 40,
+                    decoration: BoxDecoration(
+                        color: _orange,
+                        borderRadius: BorderRadius.circular(108)),
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.05),
+                  )
+                ],
+              ),
+              decoration: BoxDecoration(
+                  color: _blue,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
+              height: MediaQuery.of(context).size.height * 0.3,
+            );
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
   }
 }

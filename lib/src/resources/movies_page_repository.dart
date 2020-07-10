@@ -27,7 +27,7 @@ class MoviesPageRepository {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '100'),
-      Parameter.forSupersetFilter('genres', genres)
+      Parameter.forListFilter('genres', genres)
     ];
     return netwok.fetchMovies(parameters);
   }
@@ -38,7 +38,7 @@ class MoviesPageRepository {
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forSort(SortType.descendant, 'rating'),
-      Parameter.forSupersetFilter('genres', genres)
+      Parameter.forListFilter('genres', genres)
     ];
     return netwok.fetchMovies(parameters);
   }
