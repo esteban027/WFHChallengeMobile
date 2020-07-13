@@ -69,8 +69,7 @@ class _MyAppState extends State<MyApp> {
     // Future.delayed(Duration(seconds: 5));
     try {
       user = await userId;
-      print(user);
-      userLogged = true;
+      userLogged = user == null ? false : true;
     } catch (error) {
       print(error);
       userLogged = false;

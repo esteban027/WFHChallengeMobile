@@ -1,4 +1,3 @@
-
 class Movies {
   int page;
   int totalPages;
@@ -18,8 +17,8 @@ class Movies {
     this.items,
   );
 
-  Movies.fromJsonList( List<dynamic> jsonList) {
-    if (jsonList == null) return ;
+  Movies.fromJsonList(List<dynamic> jsonList) {
+    if (jsonList == null) return;
 
     for (var item in jsonList) {
       final movie = Movie.fromJsonMap(item);
@@ -31,8 +30,8 @@ class Movies {
     page = json['page'];
     totalPages = json['total_pages'];
     totalItems = json['total_items'];
-    itemsPerPage = json['items_per_page']; 
-    hasNext = json['has_next']; 
+    itemsPerPage = json['items_per_page'];
+    hasNext = json['has_next'];
     hasPrev = json['has_prev'];
   }
 }
@@ -49,33 +48,35 @@ class Movie {
   String description;
   double rating;
   int voteCount;
+  bool in_watchlist;
 
-  Movie({
-    this.title,
-    this.imdbId,
-    this.tmdbId,
-    this.posterPath,
-    this.releaseDate,
-    this.budget,
-    this.id,
-    this.genres,
-    this.description,
-    this.rating,
-    this.voteCount
-  });
+  Movie(
+      {this.title,
+      this.imdbId,
+      this.tmdbId,
+      this.posterPath,
+      this.releaseDate,
+      this.budget,
+      this.id,
+      this.genres,
+      this.description,
+      this.rating,
+      this.voteCount,
+      this.in_watchlist});
 
   Movie.fromJsonMap(Map<String, dynamic> json) {
-    title       = json['title'];
-    imdbId      = json['imdb_id'];
-    tmdbId      = json['tmdb_id'];
-    posterPath  = json['poster_path'];
+    title = json['title'];
+    imdbId = json['imdb_id'];
+    tmdbId = json['tmdb_id'];
+    posterPath = json['poster_path'];
     releaseDate = json['release_date'];
-    budget      = json['budget'];
-    id          = json['id'];
-    genres      = json['genres'];
+    budget = json['budget'];
+    id = json['id'];
+    genres = json['genres'];
     description = json['description'];
-    rating      = json['rating'];    
-    voteCount   = json['vote_count'];   
+    rating = json['rating'];
+    voteCount = json['vote_count'];
+    in_watchlist = json['in_watchlist'];
   }
 
   getPosterImage() {
@@ -92,5 +93,9 @@ class Movie {
 
   getRating() {
     return rating;
+  }
+
+  getinWatchList() {
+    return in_watchlist;
   }
 }

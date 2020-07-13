@@ -95,7 +95,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
       itemBuilder: (contex, index) {
         return GestureDetector(
           child: MoviePoster(
-            movie: movies[index],
+            movie: widget.movies[index],
             user: userId,
           ),
           onTap: () {
@@ -103,13 +103,13 @@ class _MoviesGalleryState extends State<MoviesGallery> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailMovieView(
-                          movie: movies[index],
+                          movie: widget.movies[index],
                           userId: userId,
                         )));
           },
         );
       },
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       controller: _scrollController,
       padding: EdgeInsets.only(left: 10, right: 10, top: 20),
     );

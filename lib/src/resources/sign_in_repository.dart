@@ -7,15 +7,13 @@ import '../models/user_model.dart';
 import 'network.dart';
 import 'package:WFHchallenge/src/models/network_models.dart';
 
-
 class SignInRepository {
   SignInRepository(this.appleSignInIsAvailable);
-  
+
   final bool appleSignInIsAvailable;
   final Network _network = Network();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-
 
   Future<UserModel> signinWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -37,7 +35,8 @@ class SignInRepository {
 
     assert(user.uid == currentUser.uid);
 
-    final backEndUser = UserModel.buildLocal(currentUser.uid,currentUser.displayName,currentUser.email,"");
+    final backEndUser = UserModel.buildLocal(
+        currentUser.uid, currentUser.displayName, currentUser.email, "");
     try {
       UserModel existentUser = await _checkIfUserExist();
       return existentUser;
@@ -50,13 +49,12 @@ class SignInRepository {
     await googleSignIn.signOut();
   }
 
-
   static Future<SignInRepository> check() async {
-    return SignInRepository( await AppleSignIn.isAvailable());
+    return SignInRepository(await AppleSignIn.isAvailable());
   }
-  
+
   Future<UserModel> sigInWithApple() async {
-      final result = await AppleSignIn.performRequests([
+    final result = await AppleSignIn.performRequests([
       AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
     ]);
 
@@ -66,8 +64,8 @@ class SignInRepository {
         final oAuthProvider = OAuthProvider(providerId: 'apple.com');
         final credential = oAuthProvider.getCredential(
             idToken: String.fromCharCodes(appleIdCredential.identityToken),
-            accessToken: String.fromCharCodes(appleIdCredential.authorizationCode)
-        );
+            accessToken:
+                String.fromCharCodes(appleIdCredential.authorizationCode));
         final authResult = await _auth.signInWithCredential(credential);
         final FirebaseUser user = authResult.user;
 
@@ -80,7 +78,8 @@ class SignInRepository {
         assert(user.uid == currentUser.uid);
         final name = appleIdCredential.fullName;
 
-        final backEndUser = UserModel.buildLocal(currentUser.uid, name.givenName + ' ' + name.familyName,currentUser.email,"");
+        final backEndUser = UserModel.buildLocal(currentUser.uid,
+            name.givenName + ' ' + name.familyName, currentUser.email, "");
         try {
           UserModel existentUser = await _checkIfUserExist();
           return existentUser;
@@ -102,7 +101,7 @@ class SignInRepository {
     }
   }
 
- Future<bool>createUser( UserModel user) async {
+  Future<bool> createUser(UserModel user) async {
     try {
       UserModel backEndUser = await _network.postUser(user);
       final prefs = await SharedPreferences.getInstance();
@@ -111,15 +110,16 @@ class SignInRepository {
     } catch (_) {
       return false;
     }
- }
+  }
 
- Future<UserModel> getUserInfo() async {
+  Future<UserModel> getUserInfo() async {
     final int userId = await getUserId();
-    final userModel = await _network.getUser([Parameter.forFilter(FilterType.exact, 'id', userId.toString())]);
+    final userModel = await _network.getUser(
+        [Parameter.forFilter(FilterType.exact, 'id', userId.toString())]);
     return userModel;
- }
+  }
 
- Future<UserModel> _checkIfUserExist() async {
+  Future<UserModel> _checkIfUserExist() async {
     try {
       final FirebaseUser currentUser = await _auth.currentUser();
       final currentUserFirebaseId = currentUser.uid;
@@ -133,11 +133,11 @@ class SignInRepository {
     } catch (_) {
       throw Exception("user Does Not Exist");
     }
- }
+  }
 
- Future<int> getUserId() async {
-   final prefs = await SharedPreferences.getInstance();
-   final int userId = prefs.getInt('userID') ?? 0;
-   return userId;
- }
+  Future<int> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int userId = prefs.getInt('userID');
+    return userId;
+  }
 }

@@ -88,7 +88,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   Color _buttonColor = Colors.grey;
   int dateas = (DateTime.now().millisecondsSinceEpoch);
   double buttonSected = 0;
-  var userId = 0;
+  var userId = 1;
   bool isfirstLaunch = true;
 
   List<Color> starsColor = [
@@ -114,8 +114,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     postRatingBloc.add(RatingBlocReturnToInitialState());
     graphRatingBloc.add(FetchRatingsByMovieId(widget.movie.id));
     moviesBloc.add(FetchMoviesRecommendationFromMovie(widget.movie.id));
-    watchListBloc
-        .add(CheckIfMovieIsInUserWatchlist(widget.userId, widget.movie.id));
+    watchListBloc.add(CheckIfMovieIsInUserWatchlist(
+        widget.userId == null ? 1 : widget.userId, widget.movie.id));
   }
 
   @override
