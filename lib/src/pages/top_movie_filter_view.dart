@@ -72,7 +72,8 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
       case "Instance of 'FetchMoviesRecommendationToUser'":
         if (isLoading) {
-          bloc.add(FetchMoviesRecommendationToUser(widget.userId));
+          bloc.add(FetchMoviesRecommendationToUser(
+              widget.userId == null ? 1 : widget.userId));
         }
         break;
     }
@@ -144,7 +145,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                   var gallery = MoviesGallery(
                     movies: movies,
                     isFirstCall: true,
-                    userId: widget.userId,
+                    userId: widget.userId == null ? 1 : widget.userId,
                   );
                   // gallery.changeStatus();
 
@@ -159,7 +160,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               })
           : MoviesGallery(
               movies: filteredmovies,
-              userId: widget.userId,
+              userId: widget.userId == null ? 1 : widget.userId,
             ),
     );
   }
