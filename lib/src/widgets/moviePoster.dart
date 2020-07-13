@@ -4,26 +4,40 @@ import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class MoviePoster extends StatelessWidget {
+class MoviePoster extends StatefulWidget {
+  final MovieModel movie;
+  final int user;
+  final bool isOnWatchList;
+
+  MoviePoster({@required this.movie, this.user, this.isOnWatchList});
+
+  @override
+  _MoviePosterState createState() => _MoviePosterState();
+}
+
+class _MoviePosterState extends State<MoviePoster> {
   final double heigthMovie = 145;
+
   final double widthMovie = 99;
+
   final double _widthRating = 48;
+
   final Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final Color _orange = Color.fromRGBO(235, 89, 25, 1);
+  bool isOnWatchList = false;
+
   final BoxShadow boxShadow = BoxShadow(
       color: Colors.black26,
       blurRadius: 10.0,
       spreadRadius: 2.0,
       offset: Offset(2.0, 10.0));
+
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
 
-  final MovieModel movie;
-  final int user;
   final bloc = WatchlistBloc();
-
-  MoviePoster({@required this.movie, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +49,7 @@ class MoviePoster extends StatelessWidget {
               ClipRRect(
                 child: FadeInImage(
                   placeholder: AssetImage('assets/defaultcover.png'),
-                  image: NetworkImage(movie.posterPath),
+                  image: NetworkImage(widget.movie.posterPath),
                   height: heigthMovie,
                   width: widthMovie,
                   fit: BoxFit.cover,
@@ -56,22 +70,33 @@ class MoviePoster extends StatelessWidget {
               Positioned(
                 child: Container(
                   child: GestureDetector(
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 10.5,
-                    ),
+                    child: isOnWatchList
+                        ? SvgPicture.asset(
+                            'assets/Icons/Checkcheck.svg',
+                            color: Colors.white,
+                            fit: BoxFit.scaleDown,
+                          )
+                        : Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 10.5,
+                          ),
                     onTap: () {
-                      var timeStapFromatted =
-                          ((DateTime.now().millisecondsSinceEpoch) / 1000)
-                              .round();
-                      var watchlist = WatchlistModel.buildLocal(
-                          user, movie.id, timeStapFromatted);
-                      bloc.add(AddToWatchlist(watchlist));
+                      setState(() {
+                        var timeStapFromatted =
+                            ((DateTime.now().millisecondsSinceEpoch) / 1000)
+                                .round();
+                        var watchlist = WatchlistModel.buildLocal(
+                            widget.user, widget.movie.id, timeStapFromatted);
+                        isOnWatchList = !isOnWatchList;
+
+                        bloc.add(AddToWatchlist(watchlist));
+                      });
                     },
                   ),
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(0, 0, 0, 0.9),
+                    color:
+                        isOnWatchList ? _orange : Color.fromRGBO(0, 0, 0, 0.9),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(14),
                         topLeft: Radius.circular(14)),
@@ -90,7 +115,7 @@ class MoviePoster extends StatelessWidget {
                     children: <Widget>[
                       Spacer(),
                       Text(
-                        movie.rating.toStringAsFixed(1),
+                        widget.movie.rating.toStringAsFixed(1),
                         style: TextStyle(color: Colors.white, fontSize: 11),
                       ),
                       Container(
@@ -116,7 +141,7 @@ class MoviePoster extends StatelessWidget {
           ),
           Container(
             child: Text(
-              movie.title,
+              widget.movie.title,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
