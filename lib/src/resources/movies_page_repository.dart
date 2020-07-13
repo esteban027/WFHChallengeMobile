@@ -13,9 +13,10 @@ class MoviesPageRepository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<MoviesPageModel> fetchTopMovies(int page) {
+  Future<MoviesPageModel> fetchTopMovies(int page, int userId) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forFilter(FilterType.greaterThan, 'vote_count', '10')
@@ -23,9 +24,10 @@ class MoviesPageRepository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<MoviesPageModel> fetchMoviesByGenres(int page, List<String> genres) {
+  Future<MoviesPageModel> fetchMoviesByGenres(int page, List<String> genres, int userId) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forListFilter('genres', genres)
     ];
@@ -33,9 +35,10 @@ class MoviesPageRepository {
   }
 
   Future<MoviesPageModel> fetchTopMoviesByGenres(
-      int page, List<String> genres) {
+      int page, List<String> genres, int userId) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter.forListFilter('genres', genres)
@@ -43,21 +46,23 @@ class MoviesPageRepository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<MoviesPageModel> fetchMoviesByTitle(int page, String title) {
+  Future<MoviesPageModel> fetchMoviesByTitle(int page, String title, int userId) {
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forFilter(FilterType.partial, 'title', title)
     ];
     return netwok.fetchMovies(parameters);
   }
 
-  Future<MoviesPageModel> fetchTopMoviesByReleaseDate(int page) {
+  Future<MoviesPageModel> fetchTopMoviesByReleaseDate(int page, userId) {
     var now = new DateTime.now();
     var year = now.year;
     var yearStart = new DateTime.utc(year, 1, 1);
     List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
       Parameter(ParamaterType.limit, '100'),
       Parameter.forSort(SortType.descendant, 'rating'),
       Parameter.forFilter(
@@ -66,17 +71,19 @@ class MoviesPageRepository {
     return netwok.fetchMovies(parameters);
   }
 
-  Future<MoviesPageModel> fetchMoviesRecommendationTo(int userId, int page ) {
+  Future<MoviesPageModel>  fetchMoviesRecommendationTo(int userId, int page ) {
     List<Parameter> parameters = [
-      Parameter(ParamaterType.page, page.toString())
+      Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
     ];
     var fetchFromUser = true ;
     return netwok.fetchRecommendations(userId,fetchFromUser,parameters);
   }
 
-  Future<MoviesPageModel> fetchMoviesRecommendationFrom(int movieId, int page ) {
+  Future<MoviesPageModel> fetchMoviesRecommendationFrom(int movieId, int page, int userId ) {
     List<Parameter> parameters = [
-      Parameter(ParamaterType.page, page.toString())
+      Parameter(ParamaterType.page, page.toString()),
+      Parameter(ParamaterType.userId,userId.toString()),
     ];
     var fetchFromUser = false;
     return netwok.fetchRecommendations(movieId,fetchFromUser, parameters);

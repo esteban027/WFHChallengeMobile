@@ -94,13 +94,13 @@ class _WatchListViewState extends State<WatchListView> {
                   } else {
                     showEmptyView = true;
                     moviesBloc
-                        .add(FetchMoviesRecommendationToUser(widget.userId));
+                        .add(FetchMoviesRecommendationToUser());
                     return _moviesYouShouldAdd();
                   }
                 } else if (state is WatchlistNotLoaded) {
                   showEmptyView = true;
                   moviesBloc
-                      .add(FetchMoviesRecommendationToUser(widget.userId));
+                      .add(FetchMoviesRecommendationToUser());
                   return _moviesYouShouldAdd();
                 }
                 return Container(

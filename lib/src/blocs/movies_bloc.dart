@@ -35,7 +35,7 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
     } else if (event is ReturnToInitialState) {
       yield initialState;
     } else if (event is FetchMoviesRecommendationToUser) {
-      yield*  _mapRecommendMoviesTo(event.userId, event.page);
+      yield*  _mapRecommendMoviesToUser(event.page);
     } else if (event is FetchMoviesRecommendationFromMovie) {
       yield* _mapRecommendMoviesFrom(event.movieId,event.page);
     } else if (event is PaginateMovies){
@@ -99,7 +99,7 @@ class LoadMoviesBloc extends Bloc<PageEvent, MoviesState> {
     }
   }
 
-  Stream<MoviesState> _mapRecommendMoviesTo(int page)  async* {
+  Stream<MoviesState> _mapRecommendMoviesToUser(int page)  async* {
     try {
       final movies = await this.repository.fetchMoviesRecommendationTo(userId, page);
       yield MoviesLoaded(movies);

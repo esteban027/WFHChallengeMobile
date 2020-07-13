@@ -1,4 +1,4 @@
-enum ParamaterType { limit, page, sort, filter }
+enum ParamaterType { limit, page, sort, filter, userId }
 
 extension ParameterTypeExtension on ParamaterType {
   String get name {
@@ -11,6 +11,8 @@ extension ParameterTypeExtension on ParamaterType {
         return 'sort';
       case ParamaterType.filter:
         return 'filter';
+      case ParamaterType.userId:
+        return 'user-id';
       default:
         return null;
     }
