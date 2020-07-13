@@ -72,8 +72,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
 
       case "Instance of 'FetchMoviesRecommendationToUser'":
         if (isLoading) {
-          bloc.add(FetchMoviesRecommendationToUser(
-              widget.userId == null ? 1 : widget.userId));
+          bloc.add(FetchMoviesRecommendationToUser());
         }
         break;
     }
