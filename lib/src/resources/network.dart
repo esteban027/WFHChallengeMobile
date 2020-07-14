@@ -32,14 +32,14 @@ class Network {
     'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
   };
 
-  Future<MoviesPageModel> fetchMovies([List<Parameter> parameterList]) async {
+  Future<MoviesPageModel> fetchMovies(List<Parameter> headers, [List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
 
     if (parameterList != null) {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri, headers: getHeader);
+    Response response = await get(uri, headers: convert(headers));
 
     if (response.statusCode == 200) {
       MoviesPageModel items =
@@ -49,7 +49,7 @@ class Network {
       throw Exception(response.statusCode);
     }
   }
-  Future<MoviesPageModel> fetchRecommendations(int id, bool fecthFromUser,[List<Parameter> parameterList]) async {
+  Future<MoviesPageModel> fetchRecommendations(int id, bool fecthFromUser,List<Parameter>headers, [List<Parameter> parameterList]) async {
     var path ;
     if (fecthFromUser){
       path = _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ id.toString();
@@ -62,7 +62,7 @@ class Network {
       uri = uri.replace(queryParameters: convert(parameterList));
     }
 
-    Response response = await get(uri, headers: getHeader);
+    Response response = await get(uri, headers: convert(headers));
 
     if (response.statusCode == 200) {
       MoviesPageModel items =
