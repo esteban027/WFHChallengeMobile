@@ -77,9 +77,6 @@ class _WatchListViewState extends State<WatchListView> {
               bloc: watchListBloc,
               builder: (BuildContext context, state) {
                 print(state);
-                if (state is WatchlistPublished) {
-                  print('object');
-                }
                 if (state is MovieWatchlistLoaded) {
                   movies = [];
                   var moviesWacthList = state.moviesWatchlist.items;
@@ -106,7 +103,6 @@ class _WatchListViewState extends State<WatchListView> {
                       .add(FetchMoviesRecommendationToUser(widget.userId));
                   return _moviesYouShouldAdd();
                 }
-
                 return Container(
                   child: Center(child: CircularProgressIndicator()),
                   width: MediaQuery.of(context).size.width,
