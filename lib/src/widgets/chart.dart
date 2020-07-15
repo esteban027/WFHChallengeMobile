@@ -47,54 +47,50 @@ class LineChartSample1State extends State<LineChartSample1> {
   Widget build(BuildContext context) {
     _timeStampsToDates();
 
-    return AspectRatio(
-      aspectRatio: 1.23,
-      child: Container(
-        child: Stack(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                const SizedBox(
-                  height: 37,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0, left: 6.0),
-                    child: LineChart(
-                      createLineChartData(
-                          minsX[graphNumber], maxsX[graphNumber]),
-                      swapAnimationDuration: const Duration(milliseconds: 500),
-                    ),
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const SizedBox(
+                height: 37,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0, left: 6.0),
+                  child: LineChart(
+                    createLineChartData(minsX[graphNumber], maxsX[graphNumber]),
+                    swapAnimationDuration: const Duration(milliseconds: 500),
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-            Positioned(
-              right: 0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.navigate_next,
-                  color:
-                      Colors.white.withOpacity(spotsList.length == 1 ? 0 : 1),
-                ),
-                onPressed: () {
-                  setState(() {
-                    if (graphNumber == spotsList.length - 1) {
-                      graphNumber = 0;
-                    } else {
-                      graphNumber++;
-                    }
-                  });
-                },
               ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+          Positioned(
+            right: 0,
+            child: IconButton(
+              icon: Icon(
+                Icons.navigate_next,
+                color: Colors.white.withOpacity(spotsList.length == 1 ? 0 : 1),
+              ),
+              onPressed: () {
+                setState(() {
+                  if (graphNumber == spotsList.length - 1) {
+                    graphNumber = 0;
+                  } else {
+                    graphNumber++;
+                  }
+                });
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+      height: MediaQuery.of(context).size.height * 0.4,
     );
   }
 
@@ -104,9 +100,10 @@ class LineChartSample1State extends State<LineChartSample1> {
         dateList.sort((a, b) => a.compareTo(b));
         minsX.add(dateList.first.toDouble());
         maxsX.add(dateList.last.toDouble());
-      } else 
-      minsX.add(dateList.first.toDouble());
-      maxsX.add(dateList.last.toDouble());
+      } else if (dateList.length != 0) {
+        minsX.add(dateList.first.toDouble());
+        maxsX.add(dateList.last.toDouble());
+      }
     });
   }
 
@@ -125,8 +122,9 @@ class LineChartSample1State extends State<LineChartSample1> {
     //   years.add(rating.year);
     // });
 
-    for (int i = 0; i< ratingsList.length; i++) {
-      FlSpot spot = FlSpot(ratingsList[i].year.toDouble(), ratingsList[i].rating);
+    for (int i = 0; i < ratingsList.length; i++) {
+      FlSpot spot =
+          FlSpot(ratingsList[i].year.toDouble(), ratingsList[i].rating);
       years.add(ratingsList[i].year);
       spots.add(spot);
     }
@@ -251,7 +249,6 @@ class LineChartSample1State extends State<LineChartSample1> {
           reservedSize: 30,
         ),
       ),
-
       borderData: FlBorderData(
         show: true,
         border: const Border(

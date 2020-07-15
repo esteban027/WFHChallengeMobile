@@ -1,15 +1,9 @@
-import 'package:WFHchallenge/src/Events/post_events.dart';
 import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/watchlist_states.dart';
-import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
-import 'package:http/http.dart';
-
 import '../resources/watchlist_repository.dart';
 import 'package:bloc/bloc.dart';
 import '../Events/ratings_events.dart';
-import '../Events/post_events.dart';
-import '../States/ratings_states.dart';
 
 class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
   WatchlistRepository repository;
@@ -35,21 +29,23 @@ class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
 
   Stream<WatchlistState> _mapAddToWatchlist(WatchlistModel watchlist) async* {
     try {
-      final ratingsPostSuccess = await this.repository.postNewWatchlistElement(watchlist);
+      final ratingsPostSuccess =
+          await this.repository.postNewWatchlistElement(watchlist);
       if (ratingsPostSuccess) {
         yield WatchlistPublished();
       } else {
         yield WatchlistNotPublished();
       }
-
     } catch (_) {
       yield WatchlistNotPublished();
     }
   }
 
-  Stream<WatchlistState> _mapDeleteWatchlistElement(WatchlistModel watchlist) async* {
+  Stream<WatchlistState> _mapDeleteWatchlistElement(
+      WatchlistModel watchlist) async* {
     try {
-      final watchlistDeletionSuccess = await this.repository.deleteWatchlist(watchlist);
+      final watchlistDeletionSuccess =
+          await this.repository.deleteWatchlist(watchlist);
       if (watchlistDeletionSuccess) {
         yield WatchlistPublished();
       } else {
@@ -60,8 +56,8 @@ class WatchlistBloc extends Bloc<BasicWatchlistEvent, WatchlistState> {
     }
   }
 
-
-  Stream<WatchlistState> _mapFetchWatchlistByUserId( int page, int userId) async* {
+  Stream<WatchlistState> _mapFetchWatchlistByUserId(
+      int page, int userId) async* {
     try {
       final movieWatchlist = await this.repository.fetchMovieWatchlistByUserId(page, userId, );
       yield MovieWatchlistLoaded(movieWatchlist);

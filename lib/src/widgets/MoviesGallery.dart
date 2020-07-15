@@ -9,26 +9,32 @@ import 'package:flutter/cupertino.dart';
 
 class MoviesGallery extends StatefulWidget {
   final List<MovieModel> movies;
-  
+  int userId;
   bool isFirstCall = true;
 
-  MoviesGallery({@required this.movies, this.isFirstCall});
-  
+  MoviesGallery(
+      {@required this.movies, this.isFirstCall, @required this.userId});
+
   void changeStatus() {
     isFirstCall = true;
   }
 
   @override
   _MoviesGalleryState createState() => _MoviesGalleryState(
-      movies: movies, isFirstCall: isFirstCall);
+      movies: movies, isFirstCall: isFirstCall, userId: userId);
 }
 
 class _MoviesGalleryState extends State<MoviesGallery> {
   List<MovieModel> movies;
   final Function nextPage;
   bool isFirstCall = true;
+  int userId;
 
-  _MoviesGalleryState({@required this.movies, this.nextPage, this.isFirstCall});
+  _MoviesGalleryState(
+      {@required this.movies,
+      this.nextPage,
+      this.isFirstCall,
+      @required this.userId});
 
   List<Widget> rowsOfMovies = List();
 
@@ -60,7 +66,7 @@ class _MoviesGalleryState extends State<MoviesGallery> {
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
-  
+
     // _scrollController.addListener(() {
     //   if (_scrollController.position.pixels >=
     //       _scrollController.position.maxScrollExtent - 400) {
@@ -89,19 +95,21 @@ class _MoviesGalleryState extends State<MoviesGallery> {
       itemBuilder: (contex, index) {
         return GestureDetector(
           child: MoviePoster(
-            movie: movies[index],
+            movie: widget.movies[index],
+            user: userId,
           ),
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailMovieView(
-                          movie: movies[index],
+                          movie: widget.movies[index],
+                          userId: userId,
                         )));
           },
         );
       },
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       controller: _scrollController,
       padding: EdgeInsets.only(left: 10, right: 10, top: 20),
     );

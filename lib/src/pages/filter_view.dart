@@ -79,12 +79,11 @@ class _FilterViewState extends State<FilterView> {
         selectedGenres = genres;
       }
 
-        _selectedGenresString = '';
+      _selectedGenresString = '';
 
-        for (var i = 0; i < selectedGenres.length; i++) {
-          _selectedGenresString =
-              _selectedGenresString + ' ' + selectedGenres[i];
-        }
+      for (var i = 0; i < selectedGenres.length; i++) {
+        _selectedGenresString = _selectedGenresString + ' ' + selectedGenres[i];
+      }
     }
 
     moviesBloc.add(ReturnToInitialState());
@@ -170,9 +169,10 @@ class _FilterViewState extends State<FilterView> {
             builder: (BuildContext context, state) {
               if (state is MoviesLoaded) {
                 final filteredmovies = filter(state.moviesPage.items, type);
-                return MoviesGallery(movies: filteredmovies
-                    // nextPage: () => moviesBloc.add(event),
-                    );
+                return MoviesGallery(
+                  movies: filteredmovies, userId: null,
+                  // nextPage: () => moviesBloc.add(event),
+                );
               } else if (state is MoviesLoading) {
                 return Center(child: CircularProgressIndicator());
               }

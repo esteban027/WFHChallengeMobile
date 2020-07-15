@@ -33,8 +33,7 @@ class FetchTopMoviesByLatestRelease extends BasicPageEvent {
 }
 
 class FetchMoviesRecommendationToUser extends BasicPageEvent{
-  int userId;
-  FetchMoviesRecommendationToUser(this.userId, [int page = 1]) : super(page);
+  FetchMoviesRecommendationToUser([int page = 1]) : super(page);
 }
 
 class FetchMoviesRecommendationFromMovie extends BasicPageEvent{

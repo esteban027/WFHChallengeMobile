@@ -1,10 +1,11 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
+import 'package:WFHchallenge/src/States/watchlist_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
-import 'package:WFHchallenge/src/models/Movie.dart';
+import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
-import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,117 +13,55 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum TypeOfFilter { rating, title, releaseDate, withuotFilter }
 
-class TopMovieFilter extends StatefulWidget {
-  final String title;
-
+class WatchListView extends StatefulWidget {
   final PageEvent event;
-  final String genreEvent;
   final int userId;
 
-  TopMovieFilter(
-      {Key key,
-      @required this.title,
-      @required this.event,
-      this.userId,
-      this.genreEvent})
-      : super(key: key);
+  WatchListView({Key key, @required this.event, this.userId}) : super(key: key);
 
   @override
-  _TopMovieFilterState createState() =>
-      _TopMovieFilterState(title, event, genreEvent);
+  _WatchListViewState createState() => _WatchListViewState(event, userId);
 }
 
-class _TopMovieFilterState extends State<TopMovieFilter> {
-  String title;
-  LoadMoviesBloc bloc;
+class _WatchListViewState extends State<WatchListView> {
+  final watchListBloc = WatchlistBloc();
+  final moviesBloc = LoadMoviesBloc();
+
+  final int userId;
   PageEvent event;
   int page = 1;
-  String genreEvent;
   Color _bestRating = Colors.white;
   Color _alfabetical = Colors.white;
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
-  _TopMovieFilterState(this.title, this.event, this.genreEvent);
+  _WatchListViewState(this.event, this.userId);
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
   double heightOfModalBottomSheet = 200;
   bool shouldReloadMovies = true;
-
-  Future<void> loadMoviesPage([bool isLoading = true]) async {
-    shouldReloadMovies = true;
-    switch (event.toString()) {
-      case "Instance of 'FetchTopMovies'":
-        if (isLoading) {
-          bloc.add(FetchTopMovies());
-        }
-        break;
-      case "Instance of 'FetchTopMoviesByLatestRelease'":
-        if (isLoading) {
-          bloc.add(FetchTopMoviesByLatestRelease());
-        }
-        break;
-      case "Instance of 'FetchTopMoviesByGenres'":
-        if (isLoading) {
-          bloc.add(FetchTopMoviesByGenres([genreEvent]));
-        }
-        break;
-
-      case "Instance of 'FetchMoviesRecommendationToUser'":
-        if (isLoading) {
-          bloc.add(FetchMoviesRecommendationToUser());
-        }
-        break;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this.bloc = LoadMoviesBloc();
-    movies = [];
-    shouldReloadMovies = true;
-    bloc.add(ReturnToInitialState());
-    loadMoviesPage(true);
-  }
-
-  Future<bool> _goBack() async {
-    Navigator.pop(context);
-    return false;
-  }
+  bool showEmptyView = false;
 
   @override
   Widget build(BuildContext context) {
+    watchListBloc.add(FetchWatchlistByUser(userId));
     return WillPopScope(
       onWillPop: () {
-        Navigator.maybePop(context);
+        return Navigator.maybePop(context);
       },
       child: CupertinoPageScaffold(
         child: Container(
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                _sortBy(),
-                _moviesGallery(),
-              ],
-            ),
+          child: Column(
+            children: <Widget>[
+              // Spacer(),
+              _sortBy(),
+              _moviesGallery(),
+              Spacer()
+            ],
           ),
           decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
-        ),
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-          leading: Container(
-            child: FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
-            ),
-            width: 40,
-            height: 15,
-          ),
         ),
       ),
     );
@@ -135,22 +74,35 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
       height: MediaQuery.of(context).size.height * 0.7,
       child: shouldReloadMovies
           ? BlocBuilder(
-              bloc: bloc,
+              bloc: watchListBloc,
               builder: (BuildContext context, state) {
                 print(state);
-                if (state is MoviesLoaded) {
-                  movies.addAll(state.moviesPage.items);
+                if (state is MovieWatchlistLoaded) {
+                  movies = [];
+                  var moviesWacthList = state.moviesWatchlist.items;
+                  if (moviesWacthList.length > 0) {
+                    showEmptyView = false;
+                    movies.addAll(state.moviesWatchlist.items);
 
-                  var gallery = MoviesGallery(
-                    movies: movies,
-                    isFirstCall: true,
-                    userId: widget.userId == null ? 1 : widget.userId,
-                  );
-                  // gallery.changeStatus();
+                    var gallery = MoviesGallery(
+                      movies: movies,
+                      isFirstCall: true,
+                      userId: widget.userId,
+                    );
 
-                  return gallery;
+                    return gallery;
+                  } else {
+                    showEmptyView = true;
+                    moviesBloc
+                        .add(FetchMoviesRecommendationToUser());
+                    return _moviesYouShouldAdd();
+                  }
+                } else if (state is WatchlistNotLoaded) {
+                  showEmptyView = true;
+                  moviesBloc
+                      .add(FetchMoviesRecommendationToUser());
+                  return _moviesYouShouldAdd();
                 }
-
                 return Container(
                   child: Center(child: CircularProgressIndicator()),
                   width: MediaQuery.of(context).size.width,
@@ -159,7 +111,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
               })
           : MoviesGallery(
               movies: filteredmovies,
-              userId: widget.userId == null ? 1 : widget.userId,
+              userId: widget.userId,
             ),
     );
   }
@@ -175,7 +127,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
           children: <Widget>[
             Container(
               child: Text(
-                'Top movies by $title',
+                'Your Watchlist',
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               margin: EdgeInsets.only(left: 15),
@@ -191,11 +143,85 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
             )
           ],
         ),
-        margin: EdgeInsets.only(top: 10),
+        margin: EdgeInsets.only(top: 90),
       ),
       onTap: () {
         bottomSheet();
       },
+    );
+  }
+
+  Widget _moviesYouShouldAdd() {
+    double width = MediaQuery.of(context).size.width;
+    return Column(
+      children: <Widget>[
+        Container(
+          child: Text(
+            'You don’t have movies on your watchlist yet.',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.03),
+        ),
+        Container(
+          width: width - 50,
+          height: MediaQuery.of(context).size.height * 0.06,
+          color: _darkBlue,
+          child: Container(
+            child: Center(
+              child: Text(
+                'Movies you should add in your Watchlist',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+        ),
+        _recomendationsGallery()
+      ],
+    );
+  }
+
+  Widget _recomendationsGallery() {
+    return Container(
+      width: double.infinity,
+      height: showEmptyView
+          ? MediaQuery.of(context).size.height * 0.55
+          : MediaQuery.of(context).size.height * 0.5,
+      child: BlocBuilder(
+          bloc: moviesBloc,
+          builder: (BuildContext context, state) {
+            if (state is MoviesLoaded) {
+              movies = [];
+              movies.addAll(state.moviesPage.items);
+              var gallery = MoviesGallery(
+                movies: movies,
+                isFirstCall: true,
+                userId: widget.userId,
+              );
+
+              return gallery;
+            } else if (state is MoviesNotLoaded) {
+              showEmptyView = true;
+              print('Movies recomendations not loaded');
+              return Container(
+                child: Center(child: CircularProgressIndicator()),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 400,
+              );
+            }
+
+            return Container(
+              child: Center(child: CircularProgressIndicator()),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - 400,
+            );
+          }),
     );
   }
 
@@ -217,7 +243,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   void bottomSheet() {
-    shouldReloadMovies = false;
+    shouldReloadMovies = true;
     showModalBottomSheet(
         useRootNavigator: true,
         context: context,
