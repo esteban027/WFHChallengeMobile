@@ -1,5 +1,4 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
 import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
@@ -13,9 +12,7 @@ import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
-import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
-import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,7 +162,11 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 child: Column(
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        postRatingBloc.add(FetchRatingByUserIdAndMovieId(
+                            widget.userId, widget.movie.id));
+                        commentsSheet();
+                      },
                       child: Image.asset(
                         'assets/review.png',
                         color: Colors.white,
@@ -295,13 +296,25 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 // REVIEWS
 
                 Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(17.0),
-                    child: Text(
-                      'Reviews (000 user reviews)',
-                      style: TextStyle(color: Colors.white, fontSize: 15.0),
-                      textAlign: TextAlign.left,
-                    ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          'Reviews (000 user reviews)',
+                          style: TextStyle(color: Colors.white, fontSize: 15.0),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          Icons.navigate_next,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
                   color: _darkBlue,
                   width: MediaQuery.of(context).size.width - 40,
@@ -316,7 +329,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
           // MOVIES YOU SHOULD WATCH
 
           Container(
-            // color: _blueContainer,
             margin: EdgeInsets.only(top: 20),
             child: Column(
               children: <Widget>[
@@ -384,7 +396,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     )
                   ],
                 ),
-                // margin: EdgeInsets.only(left: 10),
+                margin: EdgeInsets.only(left: 10),
               ),
               Spacer(),
               Text('jun 6 2020',
@@ -906,6 +918,156 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   )),
               height: MediaQuery.of(context).size.height * 0.3,
             );
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+  }
+
+  Widget alerComments(StateSetter setStateModal2, RatingModel ratingModel) {
+    var timeStapFromatted = (dateas / 1000).round();
+
+    if (ratingModel != null && isfirstLaunch) {
+      for (int i = 0; i < starState.length; i++) {
+        starState[i] = i < ratingModel.rating.round();
+      }
+      isfirstLaunch = !isfirstLaunch;
+      paintStarts();
+    }
+
+    return Container(
+      color: Colors.transparent,
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20),
+              child: Row(
+                children: <Widget>[
+                  Text('Add a Review',
+                      style: TextStyle(color: Colors.white, fontSize: 13)),
+                ],
+              ),
+            ),
+            Divider(
+              height: 5,
+              color: Colors.white,
+            ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Spacer(),
+                        numberAndStart(1, setStateModal2),
+                        Spacer(),
+                        numberAndStart(2, setStateModal2),
+                        Spacer(),
+                        numberAndStart(3, setStateModal2),
+                        Spacer(),
+                        numberAndStart(4, setStateModal2),
+                        Spacer(),
+                        numberAndStart(5, setStateModal2),
+                        Spacer(),
+                      ],
+                    ),
+                    padding: EdgeInsets.only(top: 31, bottom: 43),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: TextField(
+                maxLines: 8,
+                decoration: InputDecoration.collapsed(
+                  hintText: "Add a review of this movie",
+                  fillColor: Colors.white,
+                  focusColor: Colors.white,
+                  hoverColor: Colors.white,
+                  hintStyle: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 11,
+                  ),
+                ),
+                cursorColor: _orange,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+              ),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.15,
+              // margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(width: 1, color: Colors.white)),
+            ),
+            Container(
+              child: FlatButton(
+                onPressed: () {
+                  if (ratingModel != null) {
+                    postRatingBloc.add(UpdateRating(
+                        RatingModel.createNewRatingInit(userId, widget.movie.id,
+                            buttonSected, timeStapFromatted)));
+                  } else {
+                    postRatingBloc.add(PublishNewRating(
+                        RatingModel.createNewRatingInit(userId, widget.movie.id,
+                            buttonSected, timeStapFromatted)));
+                  }
+                },
+                child: Text(
+                  'Rate It',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              width: MediaQuery.of(context).size.width - 40,
+              margin: EdgeInsets.only(top: 26),
+              decoration: BoxDecoration(
+                  color: _buttonColor,
+                  borderRadius: BorderRadius.circular(108)),
+            )
+          ],
+        ),
+        decoration: BoxDecoration(
+            color: _blue,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            )),
+      ),
+    );
+  }
+
+  void commentsSheet() {
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, setStateModal) {
+            return BlocBuilder(
+                bloc: postRatingBloc,
+                builder: (BuildContext context, state) {
+                  if (state is SingleRatingLoaded) {
+                    return alerComments(setStateModal, state.rating);
+                  } else if (state is RatingsNotLoaded) {
+                    return alerComments(setStateModal, null);
+                  } else if (state is RatingPublished ||
+                      state is RatingNotPublished) {
+                    postRatingBloc.add(RatingBlocReturnToInitialState());
+                    Navigator.pop(context);
+                  }
+                  return Container(
+                    child: Center(child: CircularProgressIndicator()),
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    color: _darkBlue,
+                  );
+                });
           });
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
