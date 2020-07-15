@@ -35,7 +35,7 @@ class _MoviePosterState extends State<MoviePoster> {
       offset: Offset(2.0, 10.0));
 
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
-  bool isOnWatchList = false;
+  bool isOnWatchList;
   final bloc = WatchlistBloc();
 
   @override
@@ -93,9 +93,12 @@ class _MoviePosterState extends State<MoviePoster> {
                                 .round();
                         var watchlist = WatchlistModel.buildLocal(
                             widget.user, widget.movie.id, timeStapFromatted);
+                        if (isOnWatchList) {
+                          bloc.add(DeleteFromWatchlist(watchlist));
+                        } else {
+                          bloc.add(AddToWatchlist(watchlist));
+                        }
                         isOnWatchList = !isOnWatchList;
-                        bloc.add(DeleteFromWatchlist(watchlist));
-                        bloc.add(AddToWatchlist(watchlist));
                       });
                     },
                   ),

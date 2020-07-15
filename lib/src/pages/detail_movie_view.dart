@@ -248,7 +248,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     ),
                     width: widthContainer,
                     height: 90,
-                    margin: EdgeInsets.only(top: 11),
+                    margin: EdgeInsets.only(top: 11, bottom: 10),
                   ),
                 ),
               ],
@@ -283,9 +283,43 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                       }
                       return Center(child: CircularProgressIndicator());
                     }),
+              ],
+            ),
+          ),
 
-                // MOVIES YOU SHOULD WATCH
+          Container(
+            color: _blueContainer,
+            margin: EdgeInsets.only(right: 20, left: 20, top: 20),
+            child: Column(
+              children: <Widget>[
+                // REVIEWS
 
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(17.0),
+                    child: Text(
+                      'Reviews (000 user reviews)',
+                      style: TextStyle(color: Colors.white, fontSize: 15.0),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  color: _darkBlue,
+                  width: MediaQuery.of(context).size.width - 40,
+                  height: 52,
+                ),
+
+                _reviews(),
+              ],
+            ),
+          ),
+
+          // MOVIES YOU SHOULD WATCH
+
+          Container(
+            // color: _blueContainer,
+            margin: EdgeInsets.only(top: 20),
+            child: Column(
+              children: <Widget>[
                 Container(
                   child: Padding(
                     padding: const EdgeInsets.all(17.0),
@@ -299,7 +333,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   width: MediaQuery.of(context).size.width - 40,
                   height: 52,
                 ),
-
                 BlocBuilder(
                     bloc: moviesBloc,
                     builder: (BuildContext context, state) {
@@ -317,6 +350,80 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         ],
       ),
       backgroundColor: _blue,
+    );
+  }
+
+  Widget _commentsRow() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text('Daniel Beltran',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  )),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Text('3',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: _orange,
+                        )),
+                    Container(
+                      child: Image.asset(
+                        'assets/Star.png',
+                        color: _orange,
+                        fit: BoxFit.fill,
+                      ),
+                      width: 10,
+                      height: 10,
+                    )
+                  ],
+                ),
+                // margin: EdgeInsets.only(left: 10),
+              ),
+              Spacer(),
+              Text('jun 6 2020',
+                  style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
+                  )),
+            ],
+          ),
+          Container(
+            child: Text(
+                'Not as good as the first but enjoyable. The music wasnt as good as the first.',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white,
+                )),
+            margin: EdgeInsets.only(top: 10),
+          )
+        ],
+      ),
+      margin: EdgeInsets.all(15),
+    );
+  }
+
+  Widget _reviews() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _commentsRow(),
+          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
+          _commentsRow(),
+          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
+          _commentsRow(),
+          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
+          _commentsRow(),
+        ],
+      ),
+      height: 400,
     );
   }
 
@@ -362,9 +469,20 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     return Container(
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return MoviePoster(
-            movie: movies[index],
-            user: widget.userId,
+          return GestureDetector(
+            child: MoviePoster(
+              movie: movies[index],
+              user: widget.userId,
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailMovieView(
+                            movie: movies[index],
+                            userId: userId,
+                          )));
+            },
           );
         },
         scrollDirection: Axis.horizontal,
