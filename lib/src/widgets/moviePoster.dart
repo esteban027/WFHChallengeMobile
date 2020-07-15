@@ -27,7 +27,6 @@ class _MoviePosterState extends State<MoviePoster> {
   final Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final Color _orange = Color.fromRGBO(235, 89, 25, 1);
-  bool isOnWatchList = false;
 
   final BoxShadow boxShadow = BoxShadow(
       color: Colors.black26,
@@ -36,8 +35,14 @@ class _MoviePosterState extends State<MoviePoster> {
       offset: Offset(2.0, 10.0));
 
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
-
+  bool isOnWatchList = false;
   final bloc = WatchlistBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    isOnWatchList = widget.movie.inWatchlist;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +94,7 @@ class _MoviePosterState extends State<MoviePoster> {
                         var watchlist = WatchlistModel.buildLocal(
                             widget.user, widget.movie.id, timeStapFromatted);
                         isOnWatchList = !isOnWatchList;
-
+                        bloc.add(DeleteFromWatchlist(watchlist));
                         bloc.add(AddToWatchlist(watchlist));
                       });
                     },
