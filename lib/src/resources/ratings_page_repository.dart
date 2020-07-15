@@ -9,7 +9,7 @@ class RatingsRepository {
   final netwok = Network();
 
   Future<List<GraphicRating>> fetchRatingsByMovieId(int movieId) {
-   /* List<Parameter> parameters = [
+    /* List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
       Parameter.forFilter(FilterType.exact, 'movie', movieId.toString()),
@@ -18,8 +18,9 @@ class RatingsRepository {
     return netwok.getGraphicRatingByMovie(movieId);
   }
 
-  Future<RatingModel> fetchRatingsByUserId(int page, int userId,int movieId) {
-    return netwok.fetchUserRatingByMovie(movieId.toString() + '_' + userId.toString());
+  Future<RatingModel> fetchRatingsByUserId(int page, int userId, int movieId) {
+    return netwok
+        .fetchUserRatingByMovie(movieId.toString() + '_' + userId.toString());
   }
 
   Future<bool> postNewRating(RatingModel rating) {
