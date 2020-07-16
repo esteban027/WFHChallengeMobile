@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:WFHchallenge/src/models/review_page_model.dart';
 import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/page_model.dart';
@@ -34,7 +35,8 @@ class Network {
         'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
   };
 
-  Future<MoviesPageModel> fetchMovies(List<Parameter> headers, [List<Parameter> parameterList]) async {
+  Future<MoviesPageModel> fetchMovies(List<Parameter> headers,
+      [List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
 
     if (parameterList != null) {
@@ -51,10 +53,14 @@ class Network {
       throw Exception(response.statusCode);
     }
   }
-  Future<MoviesPageModel> fetchRecommendations(int id, bool fecthFromUser,List<Parameter>headers, [List<Parameter> parameterList]) async {
-    var path ;
-    if (fecthFromUser){
-      path = _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ id.toString();
+
+  Future<MoviesPageModel> fetchRecommendations(
+      int id, bool fecthFromUser, List<Parameter> headers,
+      [List<Parameter> parameterList]) async {
+    var path;
+    if (fecthFromUser) {
+      path =
+          _recommendationsEndpoint + '/' + _userEndpoint + '/' + id.toString();
     } else {
       path =
           _recommendationsEndpoint + '/' + _movieEndpoint + '/' + id.toString();
@@ -241,7 +247,7 @@ class Network {
     }
   }
 
-  Future<MoviesPageModel> fetchWatchlistByUser(
+  Future<MoviesPageModel> fetchWatchlistByUser(int userId,
       [List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _watchlistEndpoint);
 
@@ -253,14 +259,17 @@ class Network {
     if (response.statusCode == 200) {
       WatchlistPageModel watchlist =
           WatchlistPageModel.fromJson(json.decode(response.body));
-      return await fetchMoviesFromWatchlist(watchlist);
+      List<Parameter> headers = [
+        Parameter(ParamaterType.userId, userId.toString()),
+      ];
+      return await fetchMoviesFromWatchlist(watchlist, headers);
     } else {
       throw Exception(response.statusCode);
     }
   }
 
   Future<MoviesPageModel> fetchMoviesFromWatchlist(
-      WatchlistPageModel watchlist) async {
+      WatchlistPageModel watchlist, List<Parameter> headers) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
     List<String> movieIds = [];
     watchlist.items.forEach((watchlist) {
@@ -275,7 +284,7 @@ class Network {
 
     uri = uri.replace(queryParameters: convert(parameterList));
 
-    Response response = await get(uri, headers: getHeader);
+    Response response = await get(uri, headers: convert(headers));
     if (response.statusCode == 200) {
       MoviesPageModel moviePageModel =
           MoviesPageModel.fromJson(json.decode(response.body));
