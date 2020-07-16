@@ -1,6 +1,7 @@
 import 'package:WFHchallenge/src/models/review_page_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReviewListView extends StatefulWidget {
   List<ReviewModel> reviews;
@@ -107,6 +108,9 @@ class _ReviewListViewState extends State<ReviewListView> {
 
   Widget _commentsRow(ReviewModel review) {
     var date = new DateTime.fromMillisecondsSinceEpoch(review.timestamp * 1000);
+    final DateFormat formatter = DateFormat('LLLL dd,yyyy');
+    final String formatted = formatter.format(date);
+
     return Container(
       child: Column(
         children: <Widget>[
@@ -140,7 +144,7 @@ class _ReviewListViewState extends State<ReviewListView> {
                 margin: EdgeInsets.only(left: 10),
               ),
               Spacer(),
-              Text(date.toString(),
+              Text(formatted,
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w300,
@@ -148,20 +152,28 @@ class _ReviewListViewState extends State<ReviewListView> {
                   )),
             ],
           ),
-          Container(
-            child: Text(
-              review.comment,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.white,
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  review.comment,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                margin: EdgeInsets.only(top: 10),
               ),
-              textAlign: TextAlign.left,
-            ),
-            margin: EdgeInsets.only(top: 10),
+            ],
+          ),
+          Divider(
+            color: Color.fromRGBO(40, 65, 109, 1),
+            height: 20,
           )
         ],
       ),
-      margin: EdgeInsets.all(15),
+      margin: EdgeInsets.all(30),
     );
   }
 }
