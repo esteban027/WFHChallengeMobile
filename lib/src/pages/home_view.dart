@@ -26,7 +26,7 @@ class _HomeViewState extends State<HomeView> {
 
   final _darkblue = Color.fromRGBO(22, 25, 39, 1.0);
   final _orange = Color.fromRGBO(235, 89, 25, 1);
-   UserModel user;
+  UserModel user;
 
   List<String> categories = [];
 
@@ -34,12 +34,11 @@ class _HomeViewState extends State<HomeView> {
   List<SectionModel> sections = [];
   int userId = 0;
 
-bool isFirstLaunch  = true ;
+  bool isFirstLaunch = true;
   @override
   void initState() {
     super.initState();
     sectionsBloc.add(FetchAllHomeSections());
-
   }
 
   @override
@@ -84,21 +83,21 @@ bool isFirstLaunch  = true ;
     );
   }
 
-  void getuser (SignInRepository signInRepository) async {
+  void getuser(SignInRepository signInRepository) async {
     user = await signInRepository.getUserInfo();
 
     setState(() {});
   }
 
   Widget _title() {
-    if (isFirstLaunch){
-        final signInRepository =
-        Provider.of<SignInRepository>(context, listen: false);
-        
-        getuser(signInRepository);
+    if (isFirstLaunch) {
+      final signInRepository =
+          Provider.of<SignInRepository>(context, listen: false);
+
+      getuser(signInRepository);
       isFirstLaunch = !isFirstLaunch;
     }
-  
+
     return Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.07),
       child: Column(
@@ -113,14 +112,16 @@ bool isFirstLaunch  = true ;
                     fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
-                user != null ?  Text(
-                        user.name.split(' ').first,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 23,
-                            fontWeight: FontWeight.w100),
-                        textAlign: TextAlign.center,
-                      ) : Container(
+              user != null
+                  ? Text(
+                      user.name.split(' ').first,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 23,
+                          fontWeight: FontWeight.w100),
+                      textAlign: TextAlign.center,
+                    )
+                  : Container(
                       child: CircularProgressIndicator(
                         backgroundColor: _orange,
                         strokeWidth: 1,
@@ -129,51 +130,15 @@ bool isFirstLaunch  = true ;
                       width: 5,
                       height: 5,
                     ),
-              // FutureBuilder<UserModel>(
-              //   future: user,
-              //   builder:
-              //       (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.done) {
-              //       if (snapshot.hasData) {
-              //         
-              //         return Text(
-              //           snapshot.data.name.split(' ').first,
-              //           style: TextStyle(
-              //               color: Colors.white,
-              //               fontSize: 23,
-              //               fontWeight: FontWeight.w100),
-              //           textAlign: TextAlign.center,
-              //         );
-              //       }
-              //       return Container(
-              //         child: CircularProgressIndicator(
-              //           backgroundColor: _orange,
-              //           strokeWidth: 1,
-              //           valueColor: AlwaysStoppedAnimation(_darkblue),
-              //         ),
-              //         width: 5,
-              //         height: 5,
-              //       );
-              //     }
-              //     return Container(
-              //         child: CircularProgressIndicator(
-              //           backgroundColor: _orange,
-              //           strokeWidth: 1,
-              //           valueColor: AlwaysStoppedAnimation(_darkblue),
-              //         ),
-              //         width: 15,
-              //         height: 15,
-              //     );
-              //   },
-              // )
             ], mainAxisAlignment: MainAxisAlignment.center),
-            //margin: EdgeInsets.only(top: 80),
           ),
           Container(
             child: Text(
               'Welcome to HeyMovie',
               style: TextStyle(
-                  color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300),
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300),
               textAlign: TextAlign.center,
             ),
             margin: EdgeInsets.only(top: 5),
@@ -205,14 +170,14 @@ bool isFirstLaunch  = true ;
             context,
             MaterialPageRoute(
                 builder: (context) => TopMovieFilter(
-                      title: title,                    
-                      event: section == 0 ? FetchTopMovies() : FetchMoviesRecommendationToUser(user.id),
+                      title: title,
+                      event: section == 0
+                          ? FetchTopMovies()
+                          : FetchMoviesRecommendationToUser(user.id),
                       userId: user.id,
                     ),
-            maintainState: false,
-            fullscreenDialog: false
-                    )
-                    );
+                maintainState: false,
+                fullscreenDialog: false));
       },
     );
   }
@@ -227,13 +192,14 @@ bool isFirstLaunch  = true ;
                 context,
                 MaterialPageRoute(
                     builder: (context) => TopMovieFilter(
-                          title: sections[section].id,
-                          
+                          title: sections[section - 1].id,
                           event: FetchTopMoviesByLatestRelease(),
                         )));
           },
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.03,),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.03,
+        ),
         GestureDetector(
           child: _section(TypeOfCard.splited, sections[section]),
           onTap: () {
@@ -253,11 +219,11 @@ bool isFirstLaunch  = true ;
   Widget _section(TypeOfCard type, SectionModel sectionModel) {
     final width = (MediaQuery.of(context).size.width);
     final double heigthMovie = type == TypeOfCard.normal ? 227 : 150;
-    final double widthMovie = type == TypeOfCard.normal ? width : (width * 0.385);
+    final double widthMovie =
+        type == TypeOfCard.normal ? width : (width * 0.385);
 
     final BorderRadius borderRadius = BorderRadius.circular(11.0);
     final Color _blue = Color.fromRGBO(28, 31, 44, 1);
-    print(sectionModel.description);
     return Container(
       child: Stack(
         children: <Widget>[
@@ -300,15 +266,17 @@ bool isFirstLaunch  = true ;
                     ),
                   ),
                   Container(
-                    child: sectionModel.description !=' '? Text(
-                      sectionModel.description,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w100),
-                    ):null,
+                    child: sectionModel.description != ' '
+                        ? Text(
+                            sectionModel.description,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w100),
+                          )
+                        : null,
                     padding: EdgeInsets.only(left: 2),
                   ),
                 ],

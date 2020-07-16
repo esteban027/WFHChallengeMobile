@@ -47,14 +47,12 @@ class ReviewModel {
   int _timestamp;
   RatingReviewModel _rating;
 
-
-  ReviewModel(ReviewModel) {
-    _user = ReviewModel['user'];
-    _movieId = ReviewModel['movie'];
-    _comment = ReviewModel['comment'];
-    _timestamp = ReviewModel['timestamp'];
-    _rating = RatingReviewModel(ReviewModel['rating']);
-
+  ReviewModel(reviewModel) {
+    _user = reviewModel['user'];
+    _movieId = reviewModel['movie'];
+    _comment = reviewModel['comment'];
+    _timestamp = reviewModel['timestamp'];
+    _rating = RatingReviewModel(reviewModel['rating']);
   }
 
   ReviewModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -69,11 +67,11 @@ class ReviewModel {
       this._user, this._movieId, this._comment, this._timestamp);
 
   Map toJson() => {
-    "user" : this.user,
-    "movie" : this.movieId,
-    "comment" : this._comment,
-    "timestamp" : this.timestamp
-  };
+        "user": this.user,
+        "movie": this.movieId,
+        "comment": this._comment,
+        "timestamp": this.timestamp
+      };
 
   int get user => _user;
 
