@@ -3,11 +3,12 @@ import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/States/sections_states.dart';
 import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
-import 'package:WFHchallenge/src/models/sections_page_model.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:WFHchallenge/src/search/search_delegate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'filter_view.dart';
 
 class FilterGenresView extends StatefulWidget {
@@ -31,7 +32,6 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   @override
   Widget build(BuildContext context) {
-
     genreBloc.add(FetchAllGenresSections());
 
     List<String> selectedGenres = [];
@@ -46,26 +46,29 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
     return Scaffold(
       backgroundColor: _backgroundColor,
-      appBar: AppBar(
-          backgroundColor: _backgroundColor,
-          actions: <Widget>[
-            Container(
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  genresState.forEach((key, value) {
-                    if (value == true) {
-                      shouldEnable = true;
-                    }
-                  });
-                  showSearch(context: context, delegate: DataSearch(moviesBloc));
-                },
-              ),
-              // decoration: BoxDecoration(
-              //   color:  Colors.deepOrange, 
-              // ),
-            )
-          ]),
+      appBar: AppBar(backgroundColor: _backgroundColor, actions: <Widget>[
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              genresState.forEach((key, value) {
+                if (value == true) {
+                  shouldEnable = true;
+                }
+              });
+              final signInRepository =
+                  Provider.of<SignInRepository>(context, listen: false);
+
+              var user = await signInRepository.getUserInfo();
+              showSearch(
+                  context: context, delegate: DataSearch(moviesBloc, user));
+            },
+          ),
+          // decoration: BoxDecoration(
+          //   color:  Colors.deepOrange,
+          // ),
+        )
+      ]),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -135,7 +138,6 @@ class _FilterGenresViewState extends State<FilterGenresView> {
               },
               activeColor: _buttonColor,
               checkColor: Colors.white,
-              
             )
           ],
         ),
@@ -174,7 +176,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(108)),
         disabledColor: Colors.grey,
       ),
-      width: MediaQuery.of(context).size.width ,
+      width: MediaQuery.of(context).size.width,
     );
   }
 }
