@@ -15,7 +15,7 @@ class LoadReviewsBloc extends Bloc<PageEvent, ReviewsState> {
   Stream<ReviewsState> mapEventToState(PageEvent event) async* {
     repository = ReviewsRepository();
     if (event is FetchReviewsByMovieId) {
-      yield* _mapLoadReviewsByMovieId(event.page,event.movieId);
+      yield* _mapLoadReviewsByMovieId(event.page, event.movieId);
     } else if (event is PublishNewReview) {
       yield* _mapPublishNewReview(event.review);
     } else if (event is ReturnToInitialState) {
@@ -25,9 +25,11 @@ class LoadReviewsBloc extends Bloc<PageEvent, ReviewsState> {
 
   Stream<ReviewsState> _mapLoadReviewsByMovieId(int page, int movieId) async* {
     try {
-      final reviewList = await this.repository.fetchReviewsByMovieId(page, movieId);
+      final reviewList =
+          await this.repository.fetchReviewsByMovieId(page, movieId);
       yield ReviewsLoaded(reviewList);
-    } catch (_) {
+    } catch (error) {
+      print(error);
       yield ReviewsNotLoaded();
     }
   }
@@ -45,4 +47,3 @@ class LoadReviewsBloc extends Bloc<PageEvent, ReviewsState> {
     }
   }
 }
-

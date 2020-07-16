@@ -21,8 +21,7 @@ class UserModel {
     _genres = userModel['genres'];
   }
 
-  UserModel.buildLocal(
-      this._firebaseId,this._name, this._email, this._genres);
+  UserModel.buildLocal(this._firebaseId, this._name, this._email, this._genres);
 
   Map toJson() => {
         "external_token": this._firebaseId,

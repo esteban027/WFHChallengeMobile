@@ -1,25 +1,27 @@
 import 'package:WFHchallenge/src/Events/movies_events.dart';
-import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/Events/ratings_events.dart';
+import 'package:WFHchallenge/src/Events/reviews_events.dart';
 import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/States/ratings_states.dart';
+import 'package:WFHchallenge/src/States/reviews_states.dart';
 import 'package:WFHchallenge/src/States/watchlist_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
+import 'package:WFHchallenge/src/blocs/reviews_bloc.dart';
 import 'package:WFHchallenge/src/blocs/user_rating_bloc.dart';
 import 'package:WFHchallenge/src/blocs/ratings_bloc.dart';
 import 'package:WFHchallenge/src/blocs/watchlist_bloc.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/models/ratings_page_model.dart';
+import 'package:WFHchallenge/src/models/review_page_model.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/models/watchlist_page_model.dart';
+import 'package:WFHchallenge/src/pages/reviews_listst_view.dart';
 import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
-import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/chart.dart';
-import 'package:WFHchallenge/src/widgets/chart_widget.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,51 +35,6 @@ class DetailMovieView extends StatefulWidget {
 
   @override
   _DetailMovieViewState createState() => _DetailMovieViewState();
-
-  static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData(
-      RatingsPageModel ratings) {
-    List<TimeSeriesSales> data = _timeStampsToDate(ratings);
-    List<TimeSeriesSales> dataPoints = _timeStampsToDate(ratings);
-
-    // dataPoints.forEach((element) {
-    //   print(element.sales);
-    // });
-
-    return [
-      new charts.Series<TimeSeriesSales, DateTime>(
-        id: 'Score',
-        colorFn: (_, __) =>
-            charts.ColorUtil.fromDartColor(Color.fromRGBO(235, 89, 25, 1)),
-        domainFn: (TimeSeriesSales sales, _) => sales.time,
-        measureFn: (TimeSeriesSales sales, _) => sales.sales,
-        data: data,
-      ),
-      charts.Series<TimeSeriesSales, DateTime>(
-          id: 'ScorePoints',
-          colorFn: (_, __) => charts.MaterialPalette.deepOrange.shadeDefault,
-          domainFn: (TimeSeriesSales sales, _) => sales.time,
-          measureFn: (TimeSeriesSales sales, _) => sales.sales,
-          data: dataPoints)
-        ..setAttribute(charts.rendererIdKey, 'customPoint'),
-    ];
-  }
-
-  static List<TimeSeriesSales> _timeStampsToDate(RatingsPageModel ratings) {
-    int counter = 0;
-    List<DateTime> dates = [];
-    List<TimeSeriesSales> points = [];
-
-    ratings.items.forEach((rating) {
-      dates.add(DateTime.fromMillisecondsSinceEpoch(rating.timestamp * 1000));
-    });
-
-    dates.forEach((element) {
-      points.add(TimeSeriesSales(element, ratings.items[counter].rating));
-      counter++;
-    });
-
-    return points;
-  }
 }
 
 class _DetailMovieViewState extends State<DetailMovieView> {
@@ -90,8 +47,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   Color _buttonColor = Colors.grey;
   int dateas = (DateTime.now().millisecondsSinceEpoch);
   double buttonSected = 0;
-  var userId = 1;
   bool isfirstLaunch = true;
+  String comment;
+  bool alreadyReviewed = false;
 
   List<Color> starsColor = [
     Colors.grey,
@@ -107,9 +65,13 @@ class _DetailMovieViewState extends State<DetailMovieView> {
   final postRatingBloc = UserRatingBloc();
   final moviesBloc = LoadMoviesBloc();
   final watchListBloc = WatchlistBloc();
+  final reviewsBloc = LoadReviewsBloc();
 
   bool publishedWatchlist = false;
+  UserModel userModel;
+  List<ReviewModel> reviews = [];
 
+  TextEditingController reviewController = new TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -120,12 +82,18 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         widget.userId == null ? 1 : widget.userId, widget.movie.id));
   }
 
+  void getuser() async {
+    final signInRepository =
+        Provider.of<SignInRepository>(context, listen: false);
+    userModel = await signInRepository.getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double widthContainer = MediaQuery.of(context).size.width - 80;
-
+    getuser();
     List<String> genres = widget.movie.genre.split('|');
-
+    reviewsBloc.add(FetchReviewsByMovieId(widget.movie.id));
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -140,12 +108,8 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   children: <Widget>[
                     FlatButton(
                       onPressed: () async {
-                        final signInRepository = Provider.of<SignInRepository>(
-                            context,
-                            listen: false);
-                        userId = await signInRepository.getUserId();
                         postRatingBloc.add(FetchRatingByUserIdAndMovieId(
-                            userId, widget.movie.id));
+                            widget.userId, widget.movie.id));
                         bottomSheet();
                       },
                       child: Image.asset(
@@ -165,7 +129,11 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 child: Column(
                   children: <Widget>[
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        postRatingBloc.add(FetchRatingByUserIdAndMovieId(
+                            widget.userId, widget.movie.id));
+                        commentsSheet();
+                      },
                       child: Image.asset(
                         'assets/review.png',
                         color: Colors.white,
@@ -182,7 +150,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
               BlocBuilder(
                   bloc: watchListBloc,
                   builder: (BuildContext context, state) {
-                    print(state);
+                    // print(state);
                     if (state is WatchlistExists) {
                       return _addToWachtList(true);
                     } else if (state is WatchlistDoesNotExists) {
@@ -293,22 +261,23 @@ class _DetailMovieViewState extends State<DetailMovieView> {
             child: Column(
               children: <Widget>[
                 // REVIEWS
-
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(17.0),
-                    child: Text(
-                      'Reviews (000 user reviews)',
-                      style: TextStyle(color: Colors.white, fontSize: 15.0),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  color: _darkBlue,
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: 52,
-                ),
-
-                _reviews(),
+                BlocBuilder(
+                    bloc: reviewsBloc,
+                    builder: (BuildContext context, state) {
+                      print(state);
+                      if (state is ReviewsLoaded) {
+                        reviews = state.reviewsPage.items;
+                        if (reviews.length > 0) {
+                          var exist = reviews.firstWhere(
+                              (review) => review.user == widget.userId);
+                          alreadyReviewed = exist != null ? true : false;
+                        }
+                        return _reviewsSection(state.reviewsPage.items);
+                      } else if (state is ReviewsNotLoaded) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    }),
               ],
             ),
           ),
@@ -316,7 +285,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
           // MOVIES YOU SHOULD WATCH
 
           Container(
-            // color: _blueContainer,
             margin: EdgeInsets.only(top: 20),
             child: Column(
               children: <Widget>[
@@ -337,7 +305,6 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     bloc: moviesBloc,
                     builder: (BuildContext context, state) {
                       if (state is MoviesLoaded) {
-                        // return LineChartSample1(state.ratingList);
                         return _moviesRecomendation(state.moviesPage.items);
                       } else if (state is MoviesLoading) {
                         return Center(child: CircularProgressIndicator());
@@ -353,13 +320,72 @@ class _DetailMovieViewState extends State<DetailMovieView> {
     );
   }
 
-  Widget _commentsRow() {
+  Widget _reviewsSection(List<ReviewModel> reviews) {
+    var numberOfReviews = reviews.length;
+    List<Widget> reviewsCells = [];
+
+    if (numberOfReviews >= 4) {
+      for (int i = 0; i < 4; i++) {
+        reviewsCells.add(_commentsRow(reviews[i]));
+      }
+    } else if (numberOfReviews != 0) {
+      reviews.forEach((review) {
+        reviewsCells.add(_commentsRow(review));
+      });
+    }
+    return Column(
+      children: <Widget>[
+        Container(
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  'Reviews ($numberOfReviews user reviews)',
+                  style: TextStyle(color: Colors.white, fontSize: 15.0),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Spacer(),
+              IconButton(
+                icon: Icon(
+                  Icons.navigate_next,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ReviewListView(
+                                reviews: reviews,
+                              )));
+                },
+              ),
+            ],
+          ),
+          color: _darkBlue,
+          width: MediaQuery.of(context).size.width - 40,
+          height: 52,
+        ),
+        reviewsCells.length != 0
+            ? Column(
+                children: reviewsCells,
+              )
+            : Divider()
+      ],
+    );
+
+    // _reviews(),
+  }
+
+  Widget _commentsRow(ReviewModel review) {
+    var date = new DateTime.fromMillisecondsSinceEpoch(review.timestamp * 1000);
     return Container(
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
-              Text('Daniel Beltran',
+              Text(review.rating.userModel.name,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -368,7 +394,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
               Container(
                 child: Row(
                   children: <Widget>[
-                    Text('3',
+                    Text(review.rating.rating.toString(),
                         style: TextStyle(
                           fontSize: 11,
                           color: _orange,
@@ -384,10 +410,10 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                     )
                   ],
                 ),
-                // margin: EdgeInsets.only(left: 10),
+                margin: EdgeInsets.only(left: 10),
               ),
               Spacer(),
-              Text('jun 6 2020',
+              Text(date.toString(),
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w300,
@@ -397,33 +423,18 @@ class _DetailMovieViewState extends State<DetailMovieView> {
           ),
           Container(
             child: Text(
-                'Not as good as the first but enjoyable. The music wasnt as good as the first.',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.white,
-                )),
+              review.comment,
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.left,
+            ),
             margin: EdgeInsets.only(top: 10),
           )
         ],
       ),
       margin: EdgeInsets.all(15),
-    );
-  }
-
-  Widget _reviews() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          _commentsRow(),
-          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
-          _commentsRow(),
-          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
-          _commentsRow(),
-          Divider(height: 5, color: Color.fromRGBO(40, 65, 109, 1)),
-          _commentsRow(),
-        ],
-      ),
-      height: 400,
     );
   }
 
@@ -480,7 +491,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   MaterialPageRoute(
                       builder: (context) => DetailMovieView(
                             movie: movies[index],
-                            userId: userId,
+                            userId: widget.userId,
                           )));
             },
           );
@@ -781,12 +792,12 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 onPressed: () {
                   if (ratingModel != null) {
                     postRatingBloc.add(UpdateRating(
-                        RatingModel.createNewRatingInit(userId, widget.movie.id,
-                            buttonSected, timeStapFromatted)));
+                        RatingModel.createNewRatingInit(widget.userId,
+                            widget.movie.id, buttonSected, timeStapFromatted)));
                   } else {
                     postRatingBloc.add(PublishNewRating(
-                        RatingModel.createNewRatingInit(userId, widget.movie.id,
-                            buttonSected, timeStapFromatted)));
+                        RatingModel.createNewRatingInit(widget.userId,
+                            widget.movie.id, buttonSected, timeStapFromatted)));
                   }
                 },
                 child: Text(
@@ -906,6 +917,170 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   )),
               height: MediaQuery.of(context).size.height * 0.3,
             );
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+  }
+
+  Widget alerComments(StateSetter setStateModal3, RatingModel ratingModel) {
+    var timeStapFromatted = (dateas / 1000).round();
+    var newRating = RatingModel.createNewRatingInit(
+        widget.userId, widget.movie.id, buttonSected, timeStapFromatted);
+
+    if (ratingModel != null && isfirstLaunch) {
+      for (int i = 0; i < starState.length; i++) {
+        starState[i] = i < ratingModel.rating.round();
+      }
+      isfirstLaunch = !isfirstLaunch;
+      paintStarts();
+    }
+
+    return Container(
+      color: Colors.transparent,
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20),
+              child: Row(
+                children: <Widget>[
+                  Text('Add a Review',
+                      style: TextStyle(color: Colors.white, fontSize: 13)),
+                ],
+              ),
+            ),
+            Divider(
+              height: 5,
+              color: Colors.white,
+            ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Spacer(),
+                        numberAndStart(1, setStateModal3),
+                        Spacer(),
+                        numberAndStart(2, setStateModal3),
+                        Spacer(),
+                        numberAndStart(3, setStateModal3),
+                        Spacer(),
+                        numberAndStart(4, setStateModal3),
+                        Spacer(),
+                        numberAndStart(5, setStateModal3),
+                        Spacer(),
+                      ],
+                    ),
+                    padding: EdgeInsets.only(top: 31, bottom: 43),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: TextField(
+                maxLines: 4,
+                decoration: InputDecoration.collapsed(
+                  hintText: "Add a review of this movie",
+                  fillColor: Colors.white,
+                  focusColor: Colors.white,
+                  hoverColor: Colors.white,
+                  hintStyle: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 11,
+                  ),
+                ),
+                cursorColor: _orange,
+                controller: reviewController,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+              ),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.15,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(width: 1, color: Colors.white)),
+            ),
+            Container(
+              child: FlatButton(
+                onPressed: alreadyReviewed
+                    ? null
+                    : () {
+                        if (ratingModel != null) {
+                          postRatingBloc.add(UpdateRating(
+                              RatingModel.createNewRatingInit(
+                                  widget.userId,
+                                  widget.movie.id,
+                                  buttonSected,
+                                  timeStapFromatted)));
+                        } else {
+                          postRatingBloc.add(PublishNewRating(newRating));
+                        }
+                      },
+                child: Text(
+                  'Rate It',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              width: MediaQuery.of(context).size.width - 40,
+              margin: EdgeInsets.only(top: 26),
+              decoration: BoxDecoration(
+                  color: alreadyReviewed ? Colors.grey : _buttonColor,
+                  borderRadius: BorderRadius.circular(108)),
+            )
+          ],
+        ),
+        decoration: BoxDecoration(
+            color: _blue,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            )),
+      ),
+    );
+  }
+
+  void commentsSheet() {
+    var timeStapFromatted = (dateas / 1000).round();
+
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, setStateModal) {
+            return BlocBuilder(
+                bloc: postRatingBloc,
+                builder: (BuildContext context, state) {
+                  if (state is SingleRatingLoaded) {
+                    return alerComments(setStateModal, state.rating);
+                  } else if (state is RatingsNotLoaded) {
+                    return alerComments(setStateModal, null);
+                  } else if (state is RatingPublished) {
+                    var review = ReviewModel.createNewReviewInit(
+                      widget.userId,
+                      widget.movie.id,
+                      reviewController.text,
+                      timeStapFromatted,
+                    );
+
+                    postRatingBloc.add(RatingBlocReturnToInitialState());
+                    reviewsBloc.add(PublishNewReview(review));
+                    Navigator.pop(context);
+                  }
+                  return Container(
+                    child: Center(child: CircularProgressIndicator()),
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    color: _darkBlue,
+                  );
+                });
           });
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
