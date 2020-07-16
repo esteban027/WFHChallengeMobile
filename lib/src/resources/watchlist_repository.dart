@@ -10,12 +10,12 @@ class WatchlistRepository {
   final network = Network();
 
   Future<MoviesPageModel> fetchMovieWatchlistByUserId(int page, int userId) {
-     List<Parameter> parameters = [
+    List<Parameter> parameters = [
       Parameter(ParamaterType.page, page.toString()),
       Parameter(ParamaterType.limit, '50'),
       Parameter.forFilter(FilterType.exact, 'user', userId.toString()),
     ];
-    return network.fetchWatchlistByUser(parameters);
+    return network.fetchWatchlistByUser(userId, parameters);
   }
 
   Future<bool> postNewWatchlistElement(WatchlistModel watchlist) {
