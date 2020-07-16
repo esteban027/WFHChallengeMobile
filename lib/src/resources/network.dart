@@ -34,7 +34,8 @@ class Network {
         'y1N478S5GfjcSlaiyUp7oaztpRNUii7lhwl7cvbNinIjPu2AWzRf7T9qH7dFuPcC'
   };
 
-  Future<MoviesPageModel> fetchMovies(List<Parameter> headers, [List<Parameter> parameterList]) async {
+  Future<MoviesPageModel> fetchMovies(List<Parameter> headers,
+      [List<Parameter> parameterList]) async {
     Uri uri = Uri.http(_url, _movieEndpoint);
 
     if (parameterList != null) {
@@ -51,10 +52,14 @@ class Network {
       throw Exception(response.statusCode);
     }
   }
-  Future<MoviesPageModel> fetchRecommendations(int id, bool fecthFromUser,List<Parameter>headers, [List<Parameter> parameterList]) async {
-    var path ;
-    if (fecthFromUser){
-      path = _recommendationsEndpoint+ '/' + _userEndpoint + '/'+ id.toString();
+
+  Future<MoviesPageModel> fetchRecommendations(
+      int id, bool fecthFromUser, List<Parameter> headers,
+      [List<Parameter> parameterList]) async {
+    var path;
+    if (fecthFromUser) {
+      path =
+          _recommendationsEndpoint + '/' + _userEndpoint + '/' + id.toString();
     } else {
       path =
           _recommendationsEndpoint + '/' + _movieEndpoint + '/' + id.toString();
@@ -336,7 +341,7 @@ class Network {
     }
   }
 
-  Future<bool> postNewReview(ReviewModel review) async {
+  Future<bool> postNewReview(ReviewModelThin review) async {
     Uri uri = Uri.http(_url, _reviewEndpoint);
 
     var request = post(uri, body: jsonEncode(review), headers: postHeader);

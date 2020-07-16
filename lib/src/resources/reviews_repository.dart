@@ -17,7 +17,7 @@ class ReviewsRepository {
     return network.fetchReviews(parameters);
   }
 
-  Future<bool> postNewReview(ReviewModel review) {
+  Future<bool> postNewReview(ReviewModelThin review) {
     return network.postNewReview(review);
   }
 }

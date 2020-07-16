@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class DetailMovieView extends StatefulWidget {
   DetailMovieView({Key key, @required this.movie, @required this.userId})
@@ -380,6 +381,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
   Widget _commentsRow(ReviewModel review) {
     var date = new DateTime.fromMillisecondsSinceEpoch(review.timestamp * 1000);
+    final DateFormat formatter = DateFormat('LLLL dd,yyyy');
+    final String formatted = formatter.format(date);
+
     return Container(
       child: Column(
         children: <Widget>[
@@ -413,7 +417,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 margin: EdgeInsets.only(left: 10),
               ),
               Spacer(),
-              Text(date.toString(),
+              Text(formatted,
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w300,
@@ -421,16 +425,25 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   )),
             ],
           ),
-          Container(
-            child: Text(
-              review.comment,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.white,
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  review.comment,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                margin: EdgeInsets.only(top: 10),
               ),
-              textAlign: TextAlign.left,
-            ),
-            margin: EdgeInsets.only(top: 10),
+              Spacer()
+            ],
+          ),
+          Divider(
+            color: Color.fromRGBO(40, 65, 109, 1),
+            height: 20,
           )
         ],
       ),
@@ -922,10 +935,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
   }
 
-  Widget alerComments(StateSetter setStateModal3, RatingModel ratingModel) {
+  Widget alerComments(StateSetter setStateModal3, RatingModel ratingModel,
+      BuildContext alertContext) {
     var timeStapFromatted = (dateas / 1000).round();
-    var newRating = RatingModel.createNewRatingInit(
-        widget.userId, widget.movie.id, buttonSected, timeStapFromatted);
 
     if (ratingModel != null && isfirstLaunch) {
       for (int i = 0; i < starState.length; i++) {
@@ -1010,16 +1022,23 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 onPressed: alreadyReviewed
                     ? null
                     : () {
-                        if (ratingModel != null) {
-                          postRatingBloc.add(UpdateRating(
-                              RatingModel.createNewRatingInit(
-                                  widget.userId,
-                                  widget.movie.id,
-                                  buttonSected,
-                                  timeStapFromatted)));
-                        } else {
-                          postRatingBloc.add(PublishNewRating(newRating));
+                        if (ratingModel == null) {
+                          ratingModel = RatingModel.createNewRatingInit(
+                              widget.userId,
+                              widget.movie.id,
+                              buttonSected,
+                              timeStapFromatted);
                         }
+
+                        var review = ReviewModelThin.createNewReviewInit(
+                            widget.userId,
+                            widget.movie.id,
+                            reviewController.text,
+                            timeStapFromatted,
+                            ratingModel.rating);
+                        reviewsBloc.add(PublishNewReview(review));
+
+                        Navigator.pop(alertContext);
                       },
                 child: Text(
                   'Rate It',
@@ -1055,24 +1074,18 @@ class _DetailMovieViewState extends State<DetailMovieView> {
         context: context,
         builder: (context) {
           return StatefulBuilder(
-              builder: (BuildContext context, setStateModal) {
+              builder: (BuildContext contextAlert, setStateModal) {
             return BlocBuilder(
                 bloc: postRatingBloc,
                 builder: (BuildContext context, state) {
                   if (state is SingleRatingLoaded) {
-                    return alerComments(setStateModal, state.rating);
+                    return alerComments(
+                        setStateModal, state.rating, contextAlert);
                   } else if (state is RatingsNotLoaded) {
-                    return alerComments(setStateModal, null);
+                    return alerComments(setStateModal, null, contextAlert);
                   } else if (state is RatingPublished) {
-                    var review = ReviewModel.createNewReviewInit(
-                      widget.userId,
-                      widget.movie.id,
-                      reviewController.text,
-                      timeStapFromatted,
-                    );
-
                     postRatingBloc.add(RatingBlocReturnToInitialState());
-                    reviewsBloc.add(PublishNewReview(review));
+
                     Navigator.pop(context);
                   }
                   return Container(

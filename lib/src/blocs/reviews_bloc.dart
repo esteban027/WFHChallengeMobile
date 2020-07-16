@@ -34,7 +34,7 @@ class LoadReviewsBloc extends Bloc<PageEvent, ReviewsState> {
     }
   }
 
-  Stream<ReviewsState> _mapPublishNewReview(ReviewModel review) async* {
+  Stream<ReviewsState> _mapPublishNewReview(ReviewModelThin review) async* {
     try {
       final reviewPublished = await this.repository.postNewReview(review);
       if (reviewPublished) {
