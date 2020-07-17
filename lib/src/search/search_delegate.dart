@@ -3,7 +3,9 @@ import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/pages/detail_movie_view.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:WFHchallenge/src/widgets/moviePoster.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +15,8 @@ class DataSearch extends SearchDelegate {
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   // final provider = new Provider();
   final LoadMoviesBloc moviesBloc;
-
-  DataSearch(this.moviesBloc);
+  UserModel user;
+  DataSearch(this.moviesBloc, this.user);
 
   String selecter = '';
 
@@ -111,7 +113,7 @@ class DataSearch extends SearchDelegate {
                             MaterialPageRoute(
                                 builder: (context) => DetailMovieView(
                                       movie: state.moviesPage.items[index],
-                                      userId: null,
+                                      userId: user.id,
                                     )));
                       },
                     );

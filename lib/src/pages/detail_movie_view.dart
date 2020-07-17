@@ -265,14 +265,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                 BlocBuilder(
                     bloc: reviewsBloc,
                     builder: (BuildContext context, state) {
-                      print(state);
+                      // print(state);
                       if (state is ReviewsLoaded) {
                         reviews = state.reviewsPage.items;
-                        if (reviews.length > 0) {
-                          var exist = reviews.firstWhere(
-                              (review) => review.user == widget.userId);
-                          alreadyReviewed = exist != null ? true : false;
-                        }
                         return _reviewsSection(state.reviewsPage.items);
                       } else if (state is ReviewsNotLoaded) {
                         return Center(child: CircularProgressIndicator());
@@ -327,13 +322,20 @@ class _DetailMovieViewState extends State<DetailMovieView> {
 
     if (numberOfReviews >= 4) {
       for (int i = 0; i < 4; i++) {
+        if (reviews[i].user == userModel.id) {
+          alreadyReviewed = true;
+        }
         reviewsCells.add(_commentsRow(reviews[i]));
       }
     } else if (numberOfReviews != 0) {
       reviews.forEach((review) {
+        if (review.user == userModel.id) {
+          alreadyReviewed = true;
+        }
         reviewsCells.add(_commentsRow(review));
       });
     }
+
     return Column(
       children: <Widget>[
         Container(
@@ -994,7 +996,9 @@ class _DetailMovieViewState extends State<DetailMovieView> {
               child: TextField(
                 maxLines: 4,
                 decoration: InputDecoration.collapsed(
-                  hintText: "Add a review of this movie",
+                  hintText: alreadyReviewed
+                      ? "Movie already reviewed "
+                      : "Add a review of this movie",
                   fillColor: Colors.white,
                   focusColor: Colors.white,
                   hoverColor: Colors.white,
@@ -1009,6 +1013,7 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                   color: Colors.white,
                   fontSize: 11,
                 ),
+                enabled: !alreadyReviewed,
               ),
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.15,
