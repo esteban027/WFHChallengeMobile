@@ -48,6 +48,9 @@ class MovieModel {
   String _description;
   double _rating;
   int _voteCount;
+  String _expectedRating;
+  int _cosineSimilarity;
+  bool _inWatchlist;
 
   MovieModel(movieModel) {
     _title = movieModel['title'];
@@ -61,6 +64,17 @@ class MovieModel {
     _description = movieModel['description'];
     _rating = movieModel['rating'];
     _voteCount = movieModel['vote_count'];
+    _inWatchlist = movieModel['in_watchlist'];
+    try {
+      _expectedRating = movieModel['expected_rating'];
+    }catch(_){
+      _expectedRating = null;
+    }
+    try {
+      _cosineSimilarity = movieModel['cosine_similarity'];
+    }catch(_){
+      _cosineSimilarity = null;
+    }
   }
 
   String get title => _title;
@@ -72,7 +86,6 @@ class MovieModel {
   String get posterPath {
     return _posterPath == null ? 'https://images.benchmarkemail.com/client1222470/image8770405.png' : _posterPath;
   }
-  
 
   String get releaseDate => _releaseDate;
 
@@ -87,5 +100,11 @@ String get description => _description;
 double get rating => _rating;
 
 int get voteCount => _voteCount;
+
+String get expectedRate => _expectedRating;
+
+int get cosineSimilarity => _cosineSimilarity;
+
+bool get inWatchlist => _inWatchlist;
 }
 

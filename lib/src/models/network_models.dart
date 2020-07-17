@@ -1,4 +1,4 @@
-enum ParamaterType { limit, page, sort, filter }
+enum ParamaterType { limit, page, sort, filter, userId }
 
 extension ParameterTypeExtension on ParamaterType {
   String get name {
@@ -11,6 +11,8 @@ extension ParameterTypeExtension on ParamaterType {
         return 'sort';
       case ParamaterType.filter:
         return 'filter';
+      case ParamaterType.userId:
+        return 'user-id';
       default:
         return null;
     }
@@ -87,11 +89,11 @@ class Parameter {
     this.value = _buildFilterValue(filterType, field, value);
   }
 
-  Parameter.forSupersetFilter(String field, List<String> values) {
+  Parameter.forListFilter(String field, List<String> values,[FilterType filterType = FilterType.superset]) {
     type = ParamaterType.filter;
     String valuesListFormattedString = _buildValuesListString(values);
     this.value = _buildFilterValue(
-        FilterType.superset, field, valuesListFormattedString);
+        filterType, field, valuesListFormattedString);
   }
 
   Parameter.forSort(SortType sortType, String field) {

@@ -1,9 +1,10 @@
+import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/Events/pages_events.dart';
 import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/Movie.dart';
 import 'package:WFHchallenge/src/models/page_model.dart';
-import 'package:WFHchallenge/src/providers/provider.dart';
+import 'package:WFHchallenge/src/models/user_model.dart';
 import 'package:WFHchallenge/src/widgets/MoviesGallery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,19 +14,22 @@ enum TypeOfFilter { rating, title, releaseDate, withuotFilter }
 
 class TopMovieFilter extends StatefulWidget {
   final String title;
-  final LoadMoviesBloc bloc;
+
   final PageEvent event;
+  final String genreEvent;
+  final int userId;
 
   TopMovieFilter(
       {Key key,
       @required this.title,
-      @required this.bloc,
-      @required this.event})
+      @required this.event,
+      this.userId,
+      this.genreEvent})
       : super(key: key);
 
   @override
   _TopMovieFilterState createState() =>
-      _TopMovieFilterState(title, bloc, event);
+      _TopMovieFilterState(title, event, genreEvent);
 }
 
 class _TopMovieFilterState extends State<TopMovieFilter> {
@@ -33,81 +37,130 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   LoadMoviesBloc bloc;
   PageEvent event;
   int page = 1;
+  String genreEvent;
   Color _bestRating = Colors.white;
   Color _alfabetical = Colors.white;
   Color _release = Colors.white;
   TypeOfFilter type = TypeOfFilter.withuotFilter;
   List<MovieModel> movies = [];
-  _TopMovieFilterState(this.title, this.bloc, this.event);
-
-  final provider = new Provider();
+  _TopMovieFilterState(this.title, this.event, this.genreEvent);
 
   Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
   Color _blue = Color.fromRGBO(28, 31, 44, 1);
   Color _orange = Color.fromRGBO(235, 89, 25, 1);
+  double heightOfModalBottomSheet = 200;
+  bool shouldReloadMovies = true;
 
-  void loadMoviesPage([int page = 1]){
-    event.setPage(page);
-    
-    bloc.add(event);
+  Future<void> loadMoviesPage([bool isLoading = true]) async {
+    shouldReloadMovies = true;
+    switch (event.toString()) {
+      case "Instance of 'FetchTopMovies'":
+        if (isLoading) {
+          bloc.add(FetchTopMovies());
+        }
+        break;
+      case "Instance of 'FetchTopMoviesByLatestRelease'":
+        if (isLoading) {
+          bloc.add(FetchTopMoviesByLatestRelease());
+        }
+        break;
+      case "Instance of 'FetchTopMoviesByGenres'":
+        if (isLoading) {
+          bloc.add(FetchTopMoviesByGenres([genreEvent]));
+        }
+        break;
+
+      case "Instance of 'FetchMoviesRecommendationToUser'":
+        if (isLoading) {
+          bloc.add(FetchMoviesRecommendationToUser());
+        }
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.bloc = LoadMoviesBloc();
+    movies = [];
+    shouldReloadMovies = true;
+    bloc.add(ReturnToInitialState());
+    loadMoviesPage(true);
+  }
+
+  Future<bool> _goBack() async {
+    Navigator.pop(context);
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
-    bloc.add(ReturnToInitialState());
-    loadMoviesPage();
-
-    return CupertinoPageScaffold(
-      child: Container(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              _sortBy(),
-              _moviesGallery(),
-            ],
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.maybePop(context);
+      },
+      child: CupertinoPageScaffold(
+        child: Container(
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                _sortBy(),
+                _moviesGallery(),
+              ],
+            ),
           ),
+          decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
         ),
-        decoration: BoxDecoration(color: Color.fromRGBO(28, 31, 44, 1)),
-      ),
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Color.fromRGBO(28, 31, 44, 1),
-        leading: Container(
-          child: FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: Color.fromRGBO(28, 31, 44, 1),
+          leading: Container(
+            child: FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+            ),
+            width: 40,
+            height: 15,
           ),
-          width: 40,
-          height: 15,
         ),
       ),
     );
   }
 
   Widget _moviesGallery() {
+    final filteredmovies = filter(movies, type);
     return Container(
       width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          BlocBuilder(
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: shouldReloadMovies
+          ? BlocBuilder(
               bloc: bloc,
               builder: (BuildContext context, state) {
+                print(state);
                 if (state is MoviesLoaded) {
                   movies.addAll(state.moviesPage.items);
-                  // filter(movies, type), nextPage: state.moviesPage.hasNext ? () => loadMoviesPage(state.moviesPage.page + 1) : null,
-                  return MoviesGallery(
-                    movies: state.moviesPage.items
+
+                  var gallery = MoviesGallery(
+                    movies: movies,
+                    isFirstCall: true,
+                    userId: widget.userId == null ? 1 : widget.userId,
                   );
-                } 
-                // else if (state is MoviesLoading) {
-                //   return Center(child: CircularProgressIndicator());
-                // }
-                return Center(child: CircularProgressIndicator());
-              }
-          )
-        ],
-      ),
+                  // gallery.changeStatus();
+
+                  return gallery;
+                }
+
+                return Container(
+                  child: Center(child: CircularProgressIndicator()),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 400,
+                );
+              })
+          : MoviesGallery(
+              movies: filteredmovies,
+              userId: widget.userId == null ? 1 : widget.userId,
+            ),
     );
   }
 
@@ -116,7 +169,7 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
     return GestureDetector(
       child: Container(
         width: width - 50,
-        height: 50,
+        height: MediaQuery.of(context).size.height * 0.08,
         color: _darkBlue,
         child: Row(
           children: <Widget>[
@@ -164,7 +217,9 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
   }
 
   void bottomSheet() {
+    shouldReloadMovies = false;
     showModalBottomSheet(
+        useRootNavigator: true,
         context: context,
         builder: (context) {
           return Container(
@@ -202,7 +257,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                             fontSize: 13,
                             fontWeight: FontWeight.w500)),
                     onTap: () {
-                      // print('Best Rating');
                       setState(() {
                         _bestRating = _orange;
                         _alfabetical = Colors.white;
@@ -236,7 +290,6 @@ class _TopMovieFilterState extends State<TopMovieFilter> {
                             fontSize: 13,
                             fontWeight: FontWeight.w500)),
                     onTap: () {
-                      // print('Release dAte');
                       setState(() {
                         _release = _orange;
                         _bestRating = Colors.white;

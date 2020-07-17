@@ -18,7 +18,40 @@ class RatingsLoaded extends RatingsState {
   String toString() => 'RatingsLoaded{genres: $ratingsPage}';
 }
 
+class GraphicRatingsLoaded extends RatingsState {
+  List<GraphicRating> ratingList ;
+
+  GraphicRatingsLoaded(this.ratingList);
+
+  @override
+  String toString() => 'RatingsLoaded{genres: $ratingList}';
+}
+
+class  SingleRatingLoaded extends RatingsState {
+final RatingModel rating;
+
+SingleRatingLoaded(this.rating);
+
+@override
+String toString() => 'RatingLoaded{genres: $rating}';
+}
 class RatingsNotLoaded extends RatingsState {
   @override
   String toString() => 'RatingsNotLoaded';
 }
+
+class PublishingRating extends RatingsState {
+  @override
+  String toString() => 'Publishing Rating';
+}
+
+class RatingPublished extends RatingsState {
+  @override
+  String toString() => 'Rating Published';
+}
+
+class RatingNotPublished extends RatingsState {
+   @override
+  String toString() => 'Rating Not Published';
+}
+

@@ -1,12 +1,28 @@
+import 'package:WFHchallenge/hey_movie_icons.dart';
+import 'package:WFHchallenge/src/Events/watchlist_events.dart';
 import 'package:WFHchallenge/src/pages/filter_genres_page.dart';
 import 'package:WFHchallenge/src/pages/home_view.dart';
+import 'package:WFHchallenge/src/pages/watch_list_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TabView extends StatelessWidget {
+class TabView extends StatefulWidget {
+  int user;
+
+  TabView(this.user);
+
+  @override
+  _TabViewState createState() => _TabViewState(user);
+}
+
+class _TabViewState extends State<TabView> with SingleTickerProviderStateMixin {
+  String userName = '';
+  int user;
+
+  _TabViewState(this.user);
+
   @override
   Widget build(BuildContext context) {
-    Color _darkBlue = Color.fromRGBO(22, 25, 29, 1);
     Color _blue = Color.fromRGBO(28, 31, 44, 1);
     final Color _orange = Color.fromRGBO(235, 89, 25, 1);
 
@@ -18,18 +34,20 @@ class TabView extends StatelessWidget {
         DefaultCupertinoLocalizations.delegate,
       ],
       home: CupertinoTabScaffold(
+        resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(
               CupertinoIcons.home,
-              // color: Color.fromRGBO(235, 89, 25, 1),
             )),
-              BottomNavigationBarItem(
-                icon: Icon(
+            BottomNavigationBarItem(
+              icon: Icon(
                 CupertinoIcons.search,
-                // color: Color.fromRGBO(235, 89, 25, 1),
               ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(HeyMovie.watchlistwachtlist),
             )
           ],
           backgroundColor: _blue,
@@ -53,8 +71,17 @@ class TabView extends StatelessWidget {
                 },
               );
               break;
+            case 2:
+              return CupertinoTabView(
+                builder: (context) {
+                  return WatchListView(
+                    event: FetchWatchlistByUser(user),
+                    userId: user,
+                  );
+                },
+              );
           }
-          return null;
+          return CircularProgressIndicator();
         },
       ),
     );

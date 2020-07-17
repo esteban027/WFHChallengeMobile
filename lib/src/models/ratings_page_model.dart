@@ -38,9 +38,12 @@ class RatingsPageModel {
 
 class RatingModel {
   int _user;
+  //611
   int _movieId;
+  // 33
   double _rating;
   int _timestamp;
+  // milisec / 1000
 
   RatingModel(ratingModel) {
     _user = ratingModel['user'];
@@ -49,6 +52,23 @@ class RatingModel {
     _timestamp = ratingModel['timestamp'];
   }
 
+  RatingModel.fromJson(Map<String, dynamic> parsedJson) {
+    _user = parsedJson['user'];
+    _movieId = parsedJson['movie'];
+    _rating = parsedJson['rating'];
+    _timestamp = parsedJson['timestamp'];
+  }
+
+  RatingModel.createNewRatingInit(
+      this._user, this._movieId, this._rating, this._timestamp);
+
+  Map toJson() => {
+    "user" : this.user,
+    "movie" : this.movieId,
+    "rating" : this.rating,
+    "timestamp" : this.timestamp
+  };
+
  int get user => _user;
 
  int get movieId => _movieId;
@@ -56,4 +76,15 @@ class RatingModel {
  double get rating => _rating;
 
  int get timestamp => _timestamp;
+ }
+
+ class GraphicRating {
+  int _year;
+  double _rating;
+
+  GraphicRating(this._year,this._rating);
+
+  int get year => _year;
+
+  double get rating => _rating;
  }
