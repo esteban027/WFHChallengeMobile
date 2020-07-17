@@ -14,12 +14,14 @@ class FilterView extends StatefulWidget {
   final LoadMoviesBloc moviesBloc;
   final PageEvent event;
   final List<String> genres;
+  final int userId;
 
   FilterView(
       {Key key,
       @required this.moviesBloc,
       @required this.event,
-      @required this.genres})
+      @required this.genres,
+      @required this.userId})
       : super(key: key);
 
   @override
@@ -170,7 +172,7 @@ class _FilterViewState extends State<FilterView> {
               if (state is MoviesLoaded) {
                 final filteredmovies = filter(state.moviesPage.items, type);
                 return MoviesGallery(
-                  movies: filteredmovies, userId: null,
+                  movies: filteredmovies, userId: widget.userId,
                   // nextPage: () => moviesBloc.add(event),
                 );
               } else if (state is MoviesLoading) {

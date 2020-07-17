@@ -156,11 +156,16 @@ class _FilterGenresViewState extends State<FilterGenresView> {
 
   Widget _filterButton(List<String> selectedGenres) {
     bool isEmpty = selectedGenres.isEmpty;
+
     return Container(
       child: RaisedButton(
         onPressed: isEmpty
             ? null
-            : () {
+            : () async {
+                final signInRepository =
+                    Provider.of<SignInRepository>(context, listen: false);
+
+                var user = await signInRepository.getUserInfo();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -168,6 +173,7 @@ class _FilterGenresViewState extends State<FilterGenresView> {
                               moviesBloc: moviesBloc,
                               event: FetchMoviesByGenres(selectedGenres),
                               genres: selectedGenres,
+                              userId: user.id,
                             )));
               },
         child: Text('Apply filter'),
