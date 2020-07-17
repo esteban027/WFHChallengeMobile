@@ -1,16 +1,16 @@
 import 'package:WFHchallenge/src/Events/sections_events.dart';
 import 'package:WFHchallenge/src/Events/movies_events.dart';
 import 'package:WFHchallenge/src/States/sections_states.dart';
-import 'package:WFHchallenge/src/States/movies_states.dart';
 import 'package:WFHchallenge/src/blocs/sections_bloc.dart';
 import 'package:WFHchallenge/src/blocs/movies_bloc.dart';
 import 'package:WFHchallenge/src/models/sections_page_model.dart';
-import 'package:WFHchallenge/src/models/page_model.dart';
 import 'package:WFHchallenge/src/pages/top_movie_filter_view.dart';
 import 'package:WFHchallenge/src/resources/network.dart';
+import 'package:WFHchallenge/src/resources/sign_in_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class TopMovie extends StatefulWidget {
   final LoadMoviesBloc bloc;
@@ -27,7 +27,6 @@ class _TopMovieState extends State<TopMovie> {
   final double heigthMovie = 128;
   final Color _blue = Color.fromRGBO(28, 31, 44, 1);
   final BorderRadius borderRadius = BorderRadius.circular(6.0);
-  // final genres = ['Animation', 'Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Fantasy', 'Historical', 'Horror'];
 
   _TopMovieState(this.bloc);
 
@@ -64,7 +63,8 @@ class _TopMovieState extends State<TopMovie> {
                 bloc: genreBloc,
                 builder: (BuildContext context, state) {
                   if (state is SectionLoaded) {
-                    return topGenreCollection(state.sectionsPage.items, context);
+                    return topGenreCollection(
+                        state.sectionsPage.items, context);
                   }
                   return Center(child: CircularProgressIndicator());
                 })
@@ -85,20 +85,23 @@ class _TopMovieState extends State<TopMovie> {
             crossAxisCount: 2,
             crossAxisSpacing: 10.0,
             mainAxisSpacing: 10.0,
-            childAspectRatio: (157 / 108)
-        ),
+            childAspectRatio: (157 / 108)),
         itemBuilder: (contex, index) {
           return GestureDetector(
             child: topMoviePoster(genres[index].id, genres[index].posterPath),
-            onTap: () {
+            onTap: () async {
+              final signInRepository =
+                  Provider.of<SignInRepository>(context, listen: false);
+
+              var user = await signInRepository.getUserInfo();
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => TopMovieFilter(
                             title: genres[index].id,
-                         
                             event: FetchTopMoviesByGenres([genres[index].id]),
                             genreEvent: genres[index].id,
+                            userId: user.id,
                           )));
             },
           );

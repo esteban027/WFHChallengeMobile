@@ -304,6 +304,16 @@ class _DetailMovieViewState extends State<DetailMovieView> {
                         return _moviesRecomendation(state.moviesPage.items);
                       } else if (state is MoviesLoading) {
                         return Center(child: CircularProgressIndicator());
+                      } else if (state is MoviesNotLoaded) {
+                        return Container(
+                          margin: EdgeInsets.only(top: 20, bottom: 20),
+                          child:
+                              Text('The Movie should have more than 5 ratings',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                  )),
+                        );
                       }
                       return Center(child: CircularProgressIndicator());
                     }),
